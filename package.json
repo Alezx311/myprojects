@@ -1,0 +1,23 @@
+{
+  "name": "myprojects",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "watch": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bulma": "^0.8.0",
+    "express": "~4.16.1",
+    "note-art": "^0.1.24",
+    "p5": "^0.10.2",
+    "pug": "2.0.0-beta11",
+    "riffplay": "^1.0.4",
+    "scribbletune": "^3.4.3",
+    "socket.io": "^2.3.0",
+    "tabwriter": "^1.0.2",
+    "tone": "^13.8.25",
+    "vexflow": "^1.2.89",
+    "webaudiofont": "^2.5.48"
+  }
+}
