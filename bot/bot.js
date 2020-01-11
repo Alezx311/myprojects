@@ -1,15 +1,27 @@
 const Telegraf = require('telegraf')
-const bot = new Telegraf(process.env.MTBOT_KEY)
 
-const keyboards = {}
-const messages = {}
+const keyboards = require('./botSays/keyboards')
+const messages = require('./botSays/messages')
+const RouteFunction = require('./routes/routeFunction')
+const BOT_TOKEN = require('./config/config').bot_api
 
-bot.start(ctx => ctx.reply(messages.welcomeMessage))
-bot.help(ctx => ctx.reply(messages.helpMessage))
-bot.on('voice', ctx => ctx.reply(messages.OnVoiceMessage))
-bot.hears('Good weather on brighton beach', ctx => ctx.reply('Im not sure...'))
+const bot = new Telegraf(BOT_TOKEN)
+
+const user = require('./database/userModel')
+const song = require('./database/songModel')
+const track = require('./database/trackModel.js')
+
+bot.start(ctx => ctx.editMessageText(messages.welcomeMessage, keyboards.welcomeKeyboard))
+
+bot.help(ctx => ctx.editMessageText(messages.helpMessage, keyboards.helpKeyboard))
+
+bot.on('voice', ctx => ctx.editMessageText(messages.OnVoiceMessage, keyboards.onVoiceKeyboard))
+
+bot.command('start', ctx => ctx.reply(messages.welcomeMessage, keyboards.welcomeKeyboard))
 
 bot.launch()
+
+
 
 // получение через чат бота, проверить формат
 // сделать функцию вывода инфо и статистики с обноляющимися динамически значениями

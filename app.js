@@ -1,6 +1,5 @@
 const config = require('./config/config.js')
 const express = require('express')
-const socketIO = require('socket.io')
 const path = require('path')
 const PORT = config.port
 
@@ -11,6 +10,7 @@ const crudRouter = require('./routes/crud')
 const chatRouter = require('./routes/chat')
 const gamesRouter = require('./routes/games')
 const testRouter = require('./routes/test')
+const songsRouter = require('./routes/songs')
 
 const app = express()
 
@@ -28,6 +28,7 @@ app.use('/crud', crudRouter)
 app.use('/chat', chatRouter)
 app.use('/games', gamesRouter)
 app.use('/test', testRouter)
+app.use('/songs', songsRouter)
 
 app.listen(PORT)
 

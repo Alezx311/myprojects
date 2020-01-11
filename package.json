@@ -9,6 +9,7 @@
   "dependencies": {
     "bulma": "^0.8.0",
     "express": "~4.16.1",
+    "genius-api": "^0.4.1",
     "note-art": "^0.1.24",
     "p5": "^0.10.2",
     "pug": "2.0.0-beta11",

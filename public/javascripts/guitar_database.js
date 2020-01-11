@@ -1,4 +1,4 @@
-const music = {}
+let music = {}
 
 music.flScales = {
   major: 'R 2M 3M 4 5 6M 7M',
@@ -150,5 +150,3 @@ music.notesMain = [
     numQ: 12
   },
 ]
-
-module.exports = music

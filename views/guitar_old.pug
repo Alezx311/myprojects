@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    title Guitar Page
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css")
+    script(defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js")
+    script(src='/css/style.css')
+    script(src='/javascripts/lib/tone.js')
+    script(src='/javascripts/lib/zepto.js')
+    script(src='/javascripts/lib/tone-instruments.js')
+    script(src='/javascripts/lib/p5.js')
+    script(src='/javascripts/lib/p5.sound.js')
+    script(src='/javascripts/guitar_database.js')
+    
+  body
+    section.section
+      .container
+        p test section
+          a(href="guitar/synth") Synth Page
+    section.section
+      .container
+        p Draw section
+        #guitarDrawElement
+        #guitarInfoElement
+    section.section
+      .container
+        p Tuner section
+        #tunerDrawElement
+        #tunerInfoElement
+    section.section
+      .container
+        p Metronome section
+        #metronomeDrawElement
+        #metronomeInfoElement
+        .column
+          button#metronomeSubButton(class="button is-danger") | -
+          input#beatFreqRange(type="range", name="metronome" min="0" step="0" max="250" value="60" oninput="beatFreqValue.value=this.value")
+          input#beatFreqValue(type="number", name="metronome" min="0" step="0" max="250" value="60" oninput="beatFreqRange.value=this.value")
+          button#metronomeAddButton(class="button is-success") | +
+    section.section
+      .container
+        ul#pianoDrawElement
+          li(data-note='C4' class='key') D
+            div.black-key(data-note="C#4") R
+          li(data-note='D4' class='key') F
+            div.black-key(data-note="D#4") T
+          li(data-note='E4' class='key') G
+          li(data-note='F4' class='key') H
+            div.black-key(data-note="F#4") U
+          li(data-note='G4' class='key') J
+            div.black-key(data-note="G#4") I
+          li(data-note='A4' class='key') K
+            div.black-key(data-note="A#4") O
+          li(data-note='B4' class='key') L
+    
+    
+    
+    script(src='/javascripts/guitarscript.js', type="text/javascript")

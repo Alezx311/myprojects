@@ -7,38 +7,12 @@ html(lang="en")
     title Guitar Page
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css")
     script(defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js")
-    script(src='/css/style.css')
+    script(src='/stylesheets/style.css')
     script(src='/javascripts/lib/tone.js')
     script(src='/javascripts/lib/zepto.js')
     script(src='/javascripts/lib/tone-instruments.js')
     script(src='/javascripts/lib/p5.js')
-    script(src='/javascripts/lib/p5.sound.js')
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/scribbletune/3.3.2/scribbletune.js")
-    script(src='/javascripts/guitar_database.js')
-    
-  body
-    section.section
-      .container
-        .column
-          #theory
-          #playNote
-            form#playNoteForm
-              label(for="tempo") Tempo
-              input(type="number" id)
-          #playMajorScale
-          #pickEnharmonic
-          #defineScaleStructure
-          #playRhythms
-          #playMinorScales
-          #playIntervals
-            #partOne
-            #partTwo
-            #partThree
-          #playModes
-          #playChords
-          #playMelody
-          #playParts
-          #editingSynths
-          #playLiveUpdate
-    
+    script(src='/javascripts/lib/p5.sound.js')    
     script(src='/javascripts/guitarsynth.js', type="text/javascript")
+  body
+    

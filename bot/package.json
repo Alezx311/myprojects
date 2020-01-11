@@ -1,0 +1,14 @@
+{
+  "name": "music-things-bot",
+  "version": "0.0.1",
+  "description": "Bot to join music world",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "alezx311",
+  "license": "ISC",
+  "dependencies": {
+    "telegraf": "^3.35.0"
+  }
+}
