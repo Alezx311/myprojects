@@ -1,16 +1,10 @@
-const config = require('./config/config.js')
 const express = require('express')
+const config = require('./config/config.js')
+// const DATABASE = require('./config/database')
 const path = require('path')
 const PORT = config.port
 
 const indexRouter = require('./routes/index')
-const guitarRouter = require('./routes/guitar')
-const drawRouter = require('./routes/draw')
-const crudRouter = require('./routes/crud')
-const chatRouter = require('./routes/chat')
-const gamesRouter = require('./routes/games')
-const testRouter = require('./routes/test')
-const songsRouter = require('./routes/songs')
 
 const app = express()
 
@@ -22,14 +16,5 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
 app.use('/', indexRouter)
-app.use('/guitar', guitarRouter)
-app.use('/draw', drawRouter)
-app.use('/crud', crudRouter)
-app.use('/chat', chatRouter)
-app.use('/games', gamesRouter)
-app.use('/test', testRouter)
-app.use('/songs', songsRouter)
 
-app.listen(PORT)
-
-module.exports = app
+app.listen(3001)

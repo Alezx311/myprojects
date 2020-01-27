@@ -4,17 +4,54 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(http-equiv="X-UA-Compatible", content="ie=edge")
-    title Catalog
+    title Guitar Index Page
+    script(src="/js/lib/tone.js")
+    script(src="/js/lib/tone-instruments.js")
+    script(src="/js/lib/p5.js")
+    script(src="/js/lib/p5.sound.js")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css")
+    script(defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js")
+    link(rel="stylesheet", href="/css/guitar.css")
   body
-    p
-      a(href="/") Home Page
-    p
-      a(href="guitar") Guitar
-    p
-      a(href="draw") Draw
-    p
-      a(href="crud") CRUD Api
-    p
-      a(href="test") Testing Page
-    p
-      a(href="chat") Chat Page
+    .container
+      .navbar
+      .section
+        p Settings
+        #guitarFretboardSettings
+          .field
+            p Change Instrument
+            .control
+              div(class='select is-primary')
+                select#selectInstrument
+                  option(value='Guitar') Guitar
+                  option(value='Piano') Piano
+                  option(value='Drums') Drums
+          .field
+            p Change tuning
+            .control
+              div(class="select is-primary")
+                select#selectGuitarTuning
+                  option(value='eStandart') eStandart
+                  option(value='Drop') Drop D
+          .field
+            p Change type
+            .control
+              div(class="select is-primary")
+                select#selectGuitarType
+                  option(value='Electric') Electric
+                  option(value='Acoustic') Acoustic
+                  option(value='Bass') Bass
+          button.is-success#buildInstrument Build Fretboard!
+      .section
+        p Tests & Log
+      .section
+        p Guitar Fretboard
+        #guitarFretboardBlock.table-container
+      .section
+        #soundVisualizerBlock
+      .section
+        #textVisualizerBlock
+
+    script(src="/js/guitarScript.js")
+    script(src="/js/soundVisualizingScript.js")
+    script(src="/js/textVisualizingScript.js")

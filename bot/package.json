@@ -9,6 +9,10 @@
   "author": "alezx311",
   "license": "ISC",
   "dependencies": {
-    "telegraf": "^3.35.0"
+    "cheerio": "^1.0.0-rc.3",
+    "needle": "^2.4.0",
+    "q": "^1.5.1",
+    "telegraf": "^3.35.0",
+    "tress": "^1.1.4"
   }
 }
