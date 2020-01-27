@@ -9,6 +9,7 @@ html(lang="en")
     script(src="/js/lib/tone-instruments.js")
     script(src="/js/lib/p5.js")
     script(src="/js/lib/p5.sound.js")
+    script(src="/js/lib/NexusUI.js")
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css")
     script(defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js")
     link(rel="stylesheet", href="/css/guitar.css")
@@ -48,7 +49,13 @@ html(lang="en")
         p Guitar Fretboard
         #guitarFretboardBlock.table-container
       .section
-        #soundVisualizerBlock
+        #soundBlock
+          audio#audioElement(controls src='/audio/example.mp3')
+        #soundVisualizingSettings
+          button#playAndPauseButton(class='button is-success is-medium') Start
+          button#changeInput(class='button is-success is-medium') Change Input
+        #soundVisualizingBlock
+          canvas#audioCanvas
       .section
         #textVisualizerBlock
 

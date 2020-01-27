@@ -121,6 +121,7 @@ function buildGuitarFretboard() {
     fretboardBody.appendChild(stringRow)
     for (fret = 0; fret < 24; fret++) {
       let fretCell = document.createElement('td')
+      fretCell.className = 'is-hoverable'
       if (fret < 1) {
         fretCell.note = stringRow.openStringNote
         fretCell.innerHTML = stringRow.openStringNote
