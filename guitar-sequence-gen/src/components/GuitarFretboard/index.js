@@ -1,7 +1,37 @@
 import React, { Component } from 'react'
 import { TextButton, Select } from 'react-nexusui'
-import * as Tone from 'tone'
-// import * as SampleLibrary from 'tonejs-instruments'
+import { Synth } from '../Sound'
+import MusicHelpers from '../Sound/Helpers'
+
+let instrument = null
+const randSeqArray = MusicHelpers.rand.sequence([8, 12], 'C2', 'minorpentatonic')
+
+// 'major',
+//     'minor',
+//     'ionian',
+//     'dorian',
+//     'phrygian',
+//     'lydian',
+//     'mixolydian',
+//     'aeolian',
+//     'locrian',
+//     'majorpentatonic',
+//     'minorpentatonic',
+//     'chromatic',
+//     'harmonicchromatic',
+//     'blues',
+//     'doubleharmonic',
+//     'flamenco',
+//     'harmonicminor',
+//     'melodicminor',
+//     'wholetone'
+let randMelodySettings = {
+  size: [120, 120],
+  key: 'C',
+  scale: 'minor',
+  octave: 4
+}
+
 const tuningsObj = {
   'E Standart': [
     { note: 'E', octave: '2' },
@@ -30,22 +60,103 @@ const tuningsObj = {
 }
 const notesArr = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
 
-let synth = new Tone.MembraneSynth().toMaster()
+class NoteLogs extends Component {
+  constructor(props) {
+    super(props)
+    this.randNotesArray = props.randNotesArray
+  }
+
+  convertAndPlay(e) {
+    const sound = e.target.innerText.split('/')
+    if (!instrument) {
+      instrument = new Synth()
+    }
+    instrument.playSound(sound[0], '8n')
+  }
+
+  render() {
+    return (
+      <div className="notelogs">
+        <span>Sequence Note Text</span>
+        <span>
+          {this.randNotesArray.map(seqPart => {
+            return <p>{seqPart.map(p => p.note).join(' > ')}</p>
+          })}
+        </span>
+        <div>
+          <span>Sequence Note Play</span>
+          {this.randNotesArray.map((seqPart, seqIndex) => (
+            <div>
+              {seqPart.map((pData, pIndex) => {
+                const { note, duration } = pData
+                return <button onClick={this.convertAndPlay}>{note + '/' + duration}</button>
+              })}
+            </div>
+          ))}
+        </div>
+        <span className="logs"></span>
+      </div>
+    )
+  }
+}
 class SetupFretboard extends Component {
+  constructor(props) {
+    super(props)
+    this.frets = 24
+    this.strings = 6
+  }
+
   optionsStrings = ['6', '7', '8']
   optionsFrets = ['21', '24', '27']
 
-  changeStrings(value, index) {
-    console.log('changeStrings', value, index)
-  }
-  changeFrets(value, index) {
-    console.log('changeFrets', value, index)
+  onChange(e) {
+    console.log('onChange', e)
   }
   handleBuild() {
     console.log('handleBuild')
   }
   handleReset() {
     console.log('handleReset')
+  }
+
+  changeRandMelodySettingsKey(v) {
+    console.log('changeRandMelodySettingsKey', v)
+    randMelodySettings.key = v
+  }
+  changeRandMelodySettingsScale(v) {
+    console.log('changeRandMelodySettingsScale', v)
+    randMelodySettings.scale = v
+  }
+  changeRandMelodySettingsSize_1(e) {
+    console.log('changeRandMelodySettingsSize_1', e.target.value)
+    randMelodySettings.size[0] = e.target.value
+  }
+  changeRandMelodySettingsSize_2(e) {
+    console.log('changeRandMelodySettingsSize_2', e.target.value)
+    randMelodySettings.size[1] = e.target.value
+  }
+  changeRandMelodySettingsOctave(e) {
+    console.log('changeRandMelodySettingsOctave', e.target.value)
+    randMelodySettings.octave = e.target.value
+  }
+
+  randMelodyCreate(e) {
+    if (!instrument) {
+      instrument = new Synth()
+    }
+    console.log('randMelodyCreate', e)
+    console.log('randMelodySettings', randMelodySettings)
+
+    const { size, octave, key, scale } = randMelodySettings
+    const sequence = instrument.generateSequence(size, `${key}${octave}`, scale)
+
+    console.log('sequence', sequence)
+  }
+  randMelodyPlay() {
+    instrument.playSequence()
+  }
+  randMelodyPause() {
+    instrument.pauseSequence()
   }
 
   render() {
@@ -60,8 +171,86 @@ class SetupFretboard extends Component {
           <span>Frets</span>
           <Select className="selectFrets" options={this.optionsFrets} onChange={this.changeFrets} />
         </div>
+        <div className="rand_setup">
+          <div>
+            <span>Выберите размер</span>
+            <br />
+            <input
+              className="rand_size_1"
+              type="number"
+              min={2}
+              max={10}
+              step={1}
+              onChange={this.changeRandMelodySettingsSize_1}
+              defaultValue={8}
+              text={8}
+            ></input>
+            <br />
+            <input
+              className="rand_size_2"
+              type="number"
+              min={2}
+              max={10}
+              step={1}
+              onChange={this.changeRandMelodySettingsSize_2}
+              defaultValue={12}
+              text={12}
+            ></input>
+            <br />
+            <input
+              className="rand_octave"
+              type="number"
+              min={2}
+              max={10}
+              step={1}
+              onChange={this.changeRandMelodySettingsOctave}
+              defaultValue={2}
+              text={2}
+            ></input>
+          </div>
+          <div>
+            <span>Выберите тональность</span>
+            <Select
+              className="rand_key"
+              onChange={this.changeRandMelodySettingsKey}
+              options={['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']}
+            />
+          </div>
+          <div>
+            <span>Выберите палитру</span>
+            <br />
+            <Select
+              className="rand_scale"
+              onChange={this.changeRandMelodySettingsScale}
+              options={[
+                'major',
+                'minor',
+                'ionian',
+                'dorian',
+                'phrygian',
+                'lydian',
+                'mixolydian',
+                'aeolian',
+                'locrian',
+                'majorpentatonic',
+                'minorpentatonic',
+                'chromatic',
+                'harmonicchromatic',
+                'blues',
+                'doubleharmonic',
+                'flamenco',
+                'harmonicminor',
+                'melodicminor',
+                'wholetone'
+              ]}
+            />
+          </div>
+        </div>
+        <button onClick={this.randMelodyCreate}>Создать</button>
+        <button onClick={this.randMelodyPlay}>Играть</button>
+        <button onClick={this.randMelodyPause}>Пауза</button>
         <div className="setupButtons">
-          <TextButton text="Success" onChange={this.handleSuccess} mode="impulse" />
+          <TextButton text="Success" onChange={this.handleSuccess} mode="button" />
           <TextButton text="Error" onChange={this.handleError} mode="button" />
         </div>
       </div>
@@ -79,21 +268,15 @@ class Fret extends Component {
   }
 
   playSound(e) {
-    console.log(`Fret ${e.target.innerText} clicked!`)
-    console.log(e.target)
-    synth.triggerAttackRelease(e.target.innerText, '8n')
+    if (!instrument) {
+      instrument = new Synth()
+    }
+    instrument.playSound(e.target.innerText, '8n')
   }
 
   render() {
     return (
-      <button
-        className="fret"
-        name={this.name}
-        noteIndex={this.noteIndex}
-        octave={this.octave}
-        info={this.info}
-        onClick={this.playSound}
-      >
+      <button className="fret" onClick={this.playSound}>
         {this.info}
       </button>
     )
@@ -152,12 +335,23 @@ class Fretboard extends Component {
   }
 }
 
-export default function GuitarFretboard() {
-  return (
-    <div>
-      <span className="classInfo">Fretboard</span>
-      <SetupFretboard />
-      <Fretboard strings={6} frets={24} tuning="E Standart" onReady={() => synth.toMaster()} />
-    </div>
-  )
+export default class GuitarFretboard extends Component {
+  constructor(props) {
+    super(props)
+    this.notesArray = []
+  }
+  render() {
+    return (
+      <div /* onMouseOver={showElAttr} */>
+        <span className="classInfo">Fretboard</span>
+        <br />
+        <SetupFretboard />
+        <br />
+        {/* <NoteLogs /> */}
+        <br />
+        <Fretboard strings={6} frets={24} tuning="E Standart" />
+        <br />
+      </div>
+    )
+  }
 }
