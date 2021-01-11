@@ -27,9 +27,9 @@ const randSeqArray = MusicHelpers.rand.sequence([8, 12], 'C2', 'minorpentatonic'
 //     'wholetone'
 let randMelodySettings = {
   size: [120, 120],
-  key: 'C',
-  scale: 'minor',
-  octave: 4
+  key: 'B',
+  scale: 'phrygian',
+  octave: 7
 }
 
 const tuningsObj = {

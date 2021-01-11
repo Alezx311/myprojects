@@ -1,54 +1,53 @@
 import * as Tone from 'tone'
 import MusicHelpers from './Helpers'
 
-export class Synth {
-  constructor() {
-    this.instrument = new Tone.PolySynth().toDestination()
-    Tone.Transport.start()
-    this.sequences = null
-    this.sequenceOnPlay = null
-  }
+const initSynth = () => {
+  const synth = new Tone.PolySynth().toDestination()
+  Tone.Transport.start()
 
-  generateSequence(size, key, scale) {
-    const playable = MusicHelpers.rand.sequence(size, key, scale)
+  return synth
+}
+const getPattern = opt => {
+  const patternOptions = MusicHelpers.generateOptions(opt)
+  const patternArray = MusicHelpers.Pattern(patternOptions)
 
-    console.log(playable)
+  const patternObject = new Tone.Pattern((time, noteObj) => {
+    this.instrument.triggerAttackRelease(noteObj.note, noteObj.duration, time)
+  }, patternArray).humanize(true)
 
-    this.sequenceOnPlay = new Tone.Sequence((time, { note, duration }) => {
-      console.log(Tone.Transport.sampleTime)
-      this.instrument.triggerAttackRelease(note, duration, time)
-    }, playable[0])
-    this.sequenceOnPlay.humanize = true
+  return patternObject
+}
 
-    this.pattern = new Tone.Pattern(
-      (time, { note, duration }) => {
-        console.log('In pattern', playable[0], note, duration)
-        this.instrument.triggerAttackRelease(note, duration, time)
-      },
-      playable[0],
-      'upDown'
-    )
-    this.pattern.humanize = true
+const getSequence = opt => {
+  const sequenceOptions = MusicHelpers.generateOptions(opt)
+  const sequenceArray = MusicHelpers.Sequence(sequenceOptions)
+
+  const sequenceObject = new Tone.Sequence((time, noteObj) => {
+    this.instrument.triggerAttackRelease(noteObj.note, noteObj.duration, time)
+  }, sequenceArray).humanize(true)
+
+  return sequenceObject
+}
+
+export class Sound {
+  constructor(props) {
+    this.instrument = initSynth()
+    this.pattern = getPattern(props)
+    this.sequence = getSequence(props)
   }
 
   playSequence() {
-    this.sequenceOnPlay.start(0)
-    // this.pattern.start(0)
+    this.pattern.start(1)
+  }
+  playPattern() {
+    this.sequence.start(1)
+  }
+  stop() {
+    this.pattern.stop(1)
+    this.sequence.stop(1)
   }
 
-  pauseSequence() {
-    this.sequenceOnPlay.stop(0)
-  }
-
-  playSound(note = 'C4', duration = '8n') {
-    this.instrument.triggerAttackRelease(note, duration)
-  }
-
-  randDuration() {
-    return `${2 * Math.ceil(Math.random() * 10)}t`
-  }
-
-  addNoteToSequence(note, duration = this.randDuration()) {
-    this.sequences.push({ note, duration, time: Date.now() })
+  playNote(note, duration, time = 1) {
+    this.instrument.triggerAttackRelease(note, duration, time)
   }
 }

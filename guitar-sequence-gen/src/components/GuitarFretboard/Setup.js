@@ -1,117 +1,106 @@
 import React, { Component } from 'react'
-import { TextButton, RadioButton, Select } from 'react-nexusui'
+import { useSelector } from 'react-redux'
+import { TextButton, Slider, Select } from 'react-nexusui'
 
-class FretboardInstrument extends Component {
-  options = []
-
-  onChange(value, index) {}
-
-  render() {
-    return (
-      <div>
-        <Select size="3" options={this.options} selectedIndex="1" onChange={this.onChange} />
-
-        {/* <select>
-          <option value="Guitar">Guitar</option>
-          <option value="Piano">Piano</option>
-          <option value="Drums">Drums</option>
-        </select> */}
-      </div>
-    )
-  }
-}
-class FretboardType extends Component {
-  render() {
-    return (
-      <div>
-        <select>
-          <option value="Guitar">Acoustic</option>
-          <option value="Piano">Electric</option>
-        </select>
-      </div>
-    )
-  }
-}
-class FretboardTuning extends Component {
-  render() {
-    return (
-      <div>
-        <select>
-          <option value="E Standart">E Standart</option>
-          <option value="Drop D">Drop D</option>
-          <option value="Drop C">Drop C</option>
-          <option value="Drop B">Drop B</option>
-          <option value="Drop A">Drop A</option>
-        </select>
-      </div>
-    )
-  }
-}
-class RadioMinorOrMajor extends Component {
-  render() {
-    return <RadioButton numberOfButtons="2" active="1" />
-  }
-}
-class SequenceKey extends Component {
-  render() {
-    return (
-      <div>
-        <select>
-          <option value="C">C</option>
-          <option value="D">D</option>
-          <option value="E">E</option>
-          <option value="F">F</option>
-          <option value="G">G</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-        </select>
-
-        <RadioMinorOrMajor />
-      </div>
-    )
-  }
-}
-class SequenceLength extends Component {
-  render() {
-    return (
-      <div>
-        <select>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-        <select>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-    )
-  }
-}
-class BuildButton extends Component {
-  render() {
-    return <TextButton text="Build" />
-  }
+const DEFAULTS = {
+  selectSize: [10, 20],
+  sliderSize: [10, 20]
 }
 
-export default class Setup extends Component {
-  render() {
-    return (
-      <div className="setup_container">
-        <div className="setup_fretboard">
-          <FretboardInstrument />
-          <FretboardType />
-          <FretboardTuning />
-        </div>
-        <div className="setup_sequence">
-          <SequenceKey />
-          <SequenceLength />
-        </div>
-        <div className="setup_buttons">
-          <BuildButton />
-        </div>
-      </div>
-    )
-  }
+const SelectInstrument = () => {
+  const options = ['piano', 'guitar']
+  const label = 'Выберите инструмент'
+  const handleChange = (value, index) => {}
+
+  return <Select size={DEFAULTS.selectSize} value={label} options={options} onChange={handleChange} />
+}
+const SelectGuitarTuning = () => {
+  const options = ['E Standart', 'Drop D', 'Drop C', 'Drop B']
+  const label = 'Выберите тюнинг для гитары'
+
+  return <Select size={DEFAULTS.selectSize} value={label} options={options} onChange={handleChange} />
+}
+const SelectKey = () => {
+  const options = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+  const label = 'Выберите тональность'
+
+  return <Select size={DEFAULTS.selectSize} value={label} options={options} onChange={handleChange} />
+}
+const SelectStartOctave = () => {
+  const options = ['2', '3', '4', '5', '6']
+  const label = 'Выберите начальную октаву'
+
+  return <Select size={DEFAULTS.selectSize} value={label} options={options} onChange={handleChange} />
+}
+const SelectScale = () => {
+  const options = [
+    'major',
+    'minor',
+    'ionian',
+    'dorian',
+    'phrygian',
+    'lydian',
+    'mixolydian',
+    'aeolian',
+    'locrian',
+    'majorpentatonic',
+    'minorpentatonic',
+    'chromatic',
+    'harmonicchromatic',
+    'blues',
+    'doubleharmonic',
+    'flamenco',
+    'harmonicminor',
+    'melodicminor',
+    'wholetone'
+  ]
+  const label = 'Выберите гамму'
+
+  return <Select size={DEFAULTS.selectSize} value={label} options={options} onChange={handleChange} />
+}
+const InputSize = () => {
+  const defaultSize1 = 5
+  const defaultSize2 = 4
+  const label = 'Выберите размер тактов'
+
+  const handleChange1 = (value, index) => {}
+  const handleChange2 = (value, index) => {}
+
+  return (
+    <div>
+      <p>{label}</p>
+      <Slider
+        size={DEFAULTS.sliderSize}
+        value={defaultSize1}
+        min={2}
+        max={200}
+        step={1}
+        mode="relative"
+        onChange={handleChange1}
+      />
+      <Slider
+        size={DEFAULTS.sliderSize}
+        value={defaultSize2}
+        min={2}
+        max={200}
+        step={1}
+        mode="relative"
+        onChange={handleChange2}
+      />
+    </div>
+  )
+}
+const SetupButtons = () => {
+  const handleSuccess = () => {}
+  const handleReset = () => {}
+
+  return (
+    <div>
+      <TextButton text="Generate & Play" onClick={handleSuccess} />
+      <TextButton text="Reset" onClick={handleReset} />
+    </div>
+  )
+}
+const SetupForm = () => {
+  return <Select />
 }
