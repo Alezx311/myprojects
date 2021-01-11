@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bulma": "^0.8.0",
+    "classnames": "^2.2.6",
     "express": "~4.16.1",
     "mongoose": "^5.8.9",
     "note-art": "^0.1.24",
