@@ -3,48 +3,54 @@ import MusicHelpers from './Helpers'
 
 const initSynth = () => {
   const synth = new Tone.PolySynth().toDestination()
-  Tone.Transport.start()
-
   return synth
 }
 const getPattern = opt => {
-  const patternOptions = MusicHelpers.generateOptions(opt)
-  const patternArray = MusicHelpers.Pattern(patternOptions)
+  const options = MusicHelpers.generateOptions(opt)
+  const array = MusicHelpers.Pattern(options)
+  const handler = (time, { note, duration }) => {
+    this.instrument.triggerAttackRelease(note, duration, time)
+  }
 
-  const patternObject = new Tone.Pattern((time, noteObj) => {
-    this.instrument.triggerAttackRelease(noteObj.note, noteObj.duration, time)
-  }, patternArray).humanize(true)
+  const sound = new Tone.Pattern(handler, array).humanize(true)
 
-  return patternObject
+  return { sound, array }
 }
 
 const getSequence = opt => {
-  const sequenceOptions = MusicHelpers.generateOptions(opt)
-  const sequenceArray = MusicHelpers.Sequence(sequenceOptions)
+  const options = MusicHelpers.generateOptions(opt)
+  const array = MusicHelpers.Sequence(options)
+  const handler = (time, { note, duration }) => {
+    this.instrument.triggerAttackRelease(note, duration, time)
+  }
 
-  const sequenceObject = new Tone.Sequence((time, noteObj) => {
-    this.instrument.triggerAttackRelease(noteObj.note, noteObj.duration, time)
-  }, sequenceArray).humanize(true)
+  const sound = new Tone.Sequence(handler, array).humanize(true)
 
-  return sequenceObject
+  return { sound, array }
 }
 
 export class Sound {
-  constructor(props) {
+  constructor() {
     this.instrument = initSynth()
-    this.pattern = getPattern(props)
-    this.sequence = getSequence(props)
+    this.pattern = getPattern()
+    this.sequence = getSequence()
+
+    Tone.Transport.start()
+  }
+
+  showStat() {
+    console.log(this.pattern.array.toString())
+    console.log(this.sequence.array.toString())
   }
 
   playSequence() {
-    this.pattern.start(1)
+    this.pattern.sound.start(1)
   }
   playPattern() {
-    this.sequence.start(1)
+    this.sequence.sound.start(1)
   }
   stop() {
-    this.pattern.stop(1)
-    this.sequence.stop(1)
+    Tone.Transport.start()
   }
 
   playNote(note, duration, time = 1) {

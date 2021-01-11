@@ -1,7 +1,8 @@
+// const Teoria = require('teoria')
 import * as Teoria from 'teoria'
 
 // Немного музыкальных констант
-export const VALUES = {
+const VALUES = {
   // Гитарные строи
   TUNINGS: [
     { name: 'E Standart', value: ['E2', 'A2', 'D3', 'G3', 'B4', 'E4'] },
@@ -37,10 +38,10 @@ export const VALUES = {
   FRETBOARD_STEP_LENGTH: 3
 }
 // Настройки по умолчанию
-export const DEFAULTS = {
+const DEFAULTS = {
   KEY: 'C',
   START_OCTAVE: 2,
-  SCALES: 'minorpentatonic',
+  SCALES: 'minor',
   PATTERN_LENGTH: 20,
   SIZE1: 4,
   SIZE2: 4,
@@ -52,51 +53,51 @@ export const DEFAULTS = {
 
 //* Генераторы и часто используемые функции
 // Случайное число
-export const randNumber = (max = 100) => Math.ceil(Math.random() * max)
+const randNumber = (max = 100) => Math.ceil(Math.random() * max)
 // Случайная степень двойки, для длительности нот, например
-export const randPowerOfTwo = (max_power = 7) => parseInt(2 ** max_power)
+const randPowerOfTwo = (max_power = 7) => parseInt(2 ** randNumber(max_power))
 // Случайный елемент массива
-export const randArrayElement = array => array[Math.floor(Math.random() * array.length)]
+const randArrayElement = array => array[Math.floor(Math.random() * array.length)]
 // True или False c указанной вероятностью
-export const randChance = percents => parseInt(percents) > randNumber(100)
+const randChance = percents => parseInt(percents) > randNumber(100)
 // Случайная нота, если дать массив с гаммой, выберет из неё
-export const randNote = (arr = VALUES.NOTES) => randArrayElement(arr)
+const randNote = (arr = VALUES.NOTES) => randArrayElement(arr)
 // Случайная октава
-export const randOctave = (max = DEFAULTS.OCTAVE_MAX) => 2 + randNumber(max)
+const randOctave = (max = DEFAULTS.OCTAVE_MAX) => 2 + randNumber(max)
 // То же что и randNote но добавляет значение октавы
-export const randNoteAndOctave = (arr = VALUES.NOTES) => randNote(arr) + randOctave()
+const randNoteAndOctave = (arr = VALUES.NOTES) => randNote(arr) + randOctave()
 // Случайный строй гитары
-export const randTuning = () => randArrayElement(VALUES.TUNINGS)
+const randTuning = () => randArrayElement(VALUES.TUNINGS)
 // Случайное название строя гитары
-export const randTuningName = () => randArrayElement(VALUES.TUNINGS).name
+const randTuningName = () => randArrayElement(VALUES.TUNINGS).name
 // Случайное название гаммы
-export const randScaleName = () => randArrayElement(VALUES.SCALES)
+const randScaleName = () => randArrayElement(VALUES.SCALES)
 // Случайная метка длительности
-export const randDurationSymbol = () => randArrayElement(['n', 'm', 't', 's'])
+const randDurationSymbol = () => randArrayElement(['n', 'm', 't', 's'])
 // Случайная относительная длительность
-export const randDurationRelative = (max_power = 7) => `${randPowerOfTwo(max_power)}${randDurationSymbol()}`
+const randDurationRelative = (max_power = 5) => `${randPowerOfTwo(max_power)}${randDurationSymbol()}`
 // Случайное абсолютная длительность в мс
-export const randDurationAbsolute = (max_ms = 5000) => Math.floor(Math.random() * max_ms)
+const randDurationAbsolute = (max_ms = 5000) => randNumber(max_ms)
 // Конвертер мс в секунды
-export const msToSec = ms => parseInt(ms / 1000)
+const msToSec = ms => parseInt(ms / 1000)
 // Конвертер секунд в мс
-export const secToMs = sec => parseInt(sec * 1000)
+const secToMs = sec => parseInt(sec * 1000)
 // Соединяет ноту и октаву в строку
-export const joinNoteAndOctave = (note, octave) => `${note}${octave}`
+const joinNoteAndOctave = (note, octave) => `${note}${octave}`
 // Берёт ноту из строки
-export const noteFromStr = str => str.match(/[a-z#]+/i)?.[1]
+const noteFromStr = str => str.match(/[a-z#]+/i)?.[1]
 // Берёт октаву из строки
-export const octaveFromStr = str => str.match(/\d/i)?.[1]
+const octaveFromStr = str => str.match(/\d/i)?.[1]
 // Обьект с пустыми значениями, для инициализаций в будущем
-export const musicEventObject = () => ({ note: null, duration: null, octave: null, index: null })
+const musicEventObject = () => ({ note: null, duration: null, octave: null, index: null })
 // Музыкальная фраза в виде текста
-export const patternToText = arr => arr.map(val => `${val.note}`).join(' -> ')
+const patternToText = arr => arr.map(val => `${val.note}`).join(' -> ')
 // Разделитель для текста
-export const textDivider = `\n${'-'.repeats(50)}\n`
+const textDivider = `\n${'-'.repeat(50)}\n`
 // Обьект в текст
-export const objectToText = obj => Object.entries(obj)
+const objectToText = obj => Object.entries(obj)
 // Настройки для генерации, обьединяет полученные с настройками по умолчанию
-export const getGenerateOptions = optObj => {
+const getGenerateOptions = optObj => {
   const generateOptions = {
     createdAt: Date.now(),
     key: optObj?.key ?? DEFAULTS.KEY,
@@ -115,24 +116,28 @@ export const getGenerateOptions = optObj => {
 //? @scale - Гамма
 //? @size - Длина фразы
 //? @repeatTonicalNote - Повторять тонику каждую n ноту
-export const Pattern = optionsObject => {
+const Pattern = optionsObject => {
   const options = getGenerateOptions(optionsObject)
   const { key, start_octave, scale, size, repeatEvery } = options
 
   const mainNote = joinNoteAndOctave(key, start_octave)
   const mainDuration = randDurationRelative()
   const mainNoteObj = { note: mainNote, duration: mainDuration }
-  const MusicNote = Teoria.note(mainNote)
 
+  const MusicNote = Teoria.note(mainNote)
   const notesArray = MusicNote.scale(scale).simple()
   const durationsArray = Array(4)
     .fill(1)
     .map(val => randDurationRelative())
 
+  // TODO Для играбельной версии, будет создавать мелодию, проверяя играбельность на грифе.
+  // Каждая след нота должна быть не дальше 3 ладов, должна не выбиватся из композиции и быть уместной.
+  const stepsVersion = Array(size).fill(mainNoteObj)
+
   // Версия со случайными значениями
   const randomizedVersion = Array(size)
     .fill(1)
-    .map(patternValue => ({
+    .map(obj => ({
       note: randArrayElement(notesArray),
       duration: randArrayElement(durationsArray)
     }))
@@ -162,13 +167,13 @@ ${textDivider}
 ${patternToText(repeatsVersion)}
 ${textDivider}`.trim()
 
-  console.log(patternInfo)
+  // console.log(patternInfo)
 
-  //! return { randomizedVersion, repeatsVersion, patternInfo }
+  //? return { randomizedVersion, repeatsVersion, patternInfo }
   return repeatsVersion
 }
 // Генерация последовательности уникальных фраз
-export const Sequence = optionsObject => {
+const Sequence = optionsObject => {
   const options = getGenerateOptions(optionsObject)
 
   const patterns = Array(100)
@@ -189,9 +194,12 @@ const getExamples = (examples_size = 4) => {
       const pattern = Pattern(pattOptions)
       const sequence = Sequence(pattOptions)
 
+      console.dir(pattern)
+      console.dir(sequence)
+
       return { pattern, sequence }
     })
 
   return examples
 }
-console.dir(getExamples(4))
+getExamples(1)
