@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { randNumber } from './Helpers'
-import classNames from 'classnames'
 
 const randCellCoordinate = () => [randNumber(initialState.POLE_SIZE), randNumber(initialState.POLE_SIZE)]
 const initialState = {
@@ -26,9 +25,6 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'GAME_START': {
-      const snake_body_coordinates = Array(initialState.snake_body_length)
-        .fill(initialState.snake_body_coordinates)
-        .map((val, ind) => val[0] + ind)
       return { ...state }
     }
     case 'GAME_PAUSE': {
@@ -45,16 +41,11 @@ const reducer = (state, action) => {
     }
   }
 }
-const checkCell = (x, y) => {}
 
 const SnakeGameSettings = () => {
-  const handleChangeSpeed = event => {}
-  const handleStart = event => {}
-  const handleReset = event => {}
-
   return (
     <div className="settingsBlock">
-      <p className="blockTitle">SnakeGameSettings</p>
+      <p className="blockTitle">Game Settings</p>
       <input
         label="Game Speed"
         min={1}
@@ -79,78 +70,66 @@ const SnakeGameStat = () => {
 }
 const SnakeGameFruit = () => {
   return (
-    <div>
-      <p className="blockTitle">SnakeGameFruit</p>
+    <div className="statBlock">
+      <p className="blockTitle">SnakeGameStat</p>
+      <p className="points_stat">SnakeGameStat</p>
+      <p className="fruit_stat">SnakeGameStat</p>
     </div>
   )
 }
-const SnakeGameHead = () => {
-  return (
-    <div>
-      <p className="blockTitle">SnakeGameHead</p>
-    </div>
-  )
-}
-const SnakeGameBody = () => {
-  return (
-    <div>
-      <p className="blockTitle">SnakeGameBody</p>
-    </div>
-  )
-}
-const SnakeGameCell = () => {
-  return <div className="cell"></div>
-}
+
 const SnakeGamePole = () => {
-  const arr = Array(initialState.pole.size).fill(1)
+
+  constructor(props) {
+    this.state = { ...initialState }
+  }
+
+  const rows = Array(initialState.pole.size).fill(1)
+  const Cell = (x, y) => <div className={`cell_${x}_${y}`} cell_type="empty"></div>
+  const getCellType = (x, y) => document.querySelector(`cell_${x}_${y}`)?.getAttribute('cell_type') ?? false
+
+  const eatFruit = () => {
+    ++this.state.game.fruits_counter
+    this.state.fruit = randCellCoordinate()
+  }
+  const gameOver = () => {}
+
+  const checkMove = (x, y) => {
+    const cellType = getCellType(x, y)
+    if (cellType === 'empty') {
+      return true
+    }
+    if (cellType === 'fruit') {
+      eatFruit()
+      return true
+    }
+    if (cellType === 'snake') {
+      gameOver()
+      return true
+    } else {
+      throw new Error(`Invalid cell coordinate ${(x, y)}`)
+    }
+  }
 
   return (
     <div>
-      <p className="game_pole">
-        {arr.map((val, ind) => {
-          return (
-            <div className="row">
-              {arr.map((val, ind) => {
-                return <div className="cell"></div>
-              })}
-            </div>
-          )
-        })}
-      </p>
+      <p className="game_pole">Game Pole</p>
+      {rows.map((row, x) => rows.map((cell, y) => Cell(x, y)))}
     </div>
   )
 }
 const SnakeGame = () => {
   const [state, dispatch] = useState(reducer, initialState)
   const onKeyPressed = event => {
-    // Пауза
-    // if(event.keyCode ===)
-    // Вверх
-    if (event.keyCode === '38') {
-      dispatch({
-        type: 'SNAKE_MOVE',
-        direction: 'UP'
-      })
+    const buttonNames = {
+      38: 'SNAKE_MOVE_UP',
+      40: 'SNAKE_MOVE_DOWN',
+      37: 'SNAKE_MOVE_LEFT',
+      39: 'SNAKE_MOVE_RIGHT'
     }
-    // Вниз
-    if (event.keyCode === '40') {
+    if (buttonNames[event.keyCode]) {
       dispatch({
-        type: 'SNAKE_MOVE',
-        direction: 'DOWN'
-      })
-    }
-    // Влево
-    if (event.keyCode === '37') {
-      dispatch({
-        type: 'SNAKE_MOVE',
-        direction: 'LEFT'
-      })
-    }
-    // Вправо
-    if (event.keyCode === '39') {
-      dispatch({
-        type: 'SNAKE_MOVE',
-        direction: 'RIGht'
+        type: buttonNames[event.keyCode]
       })
     }
   }
@@ -161,7 +140,14 @@ const SnakeGame = () => {
 
   return (
     <div>
-      <p className="blockTitle">SnakeGame</p>
+      <p className="blockTitle">Snake Game</p>
+      <div>
+        <SnakeGameSettings />
+        <SnakeGameStat />
+        <SnakeGamePole />
+      </div>
     </div>
   )
 }
+
+export default SnakeGame

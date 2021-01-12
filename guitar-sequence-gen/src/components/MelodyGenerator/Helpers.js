@@ -2,7 +2,7 @@
 import * as Teoria from 'teoria'
 
 // Немного музыкальных констант
-const VALUES = {
+export const MUSIC_VALUES = {
   // Гитарные строи
   TUNINGS: [
     { name: 'E Standart', value: ['E2', 'A2', 'D3', 'G3', 'B4', 'E4'] },
@@ -61,17 +61,17 @@ const randArrayElement = array => array[Math.floor(Math.random() * array.length)
 // True или False c указанной вероятностью
 const randChance = percents => parseInt(percents) > randNumber(100)
 // Случайная нота, если дать массив с гаммой, выберет из неё
-const randNote = (arr = VALUES.NOTES) => randArrayElement(arr)
+const randNote = (arr = MUSIC_VALUES.NOTES) => randArrayElement(arr)
 // Случайная октава
 const randOctave = (max = DEFAULTS.OCTAVE_MAX) => 2 + randNumber(max)
 // То же что и randNote но добавляет значение октавы
-const randNoteAndOctave = (arr = VALUES.NOTES) => randNote(arr) + randOctave()
+const randNoteAndOctave = (arr = MUSIC_VALUES.NOTES) => randNote(arr) + randOctave()
 // Случайный строй гитары
-const randTuning = () => randArrayElement(VALUES.TUNINGS)
+const randTuning = () => randArrayElement(MUSIC_VALUES.TUNINGS)
 // Случайное название строя гитары
-const randTuningName = () => randArrayElement(VALUES.TUNINGS).name
+const randTuningName = () => randArrayElement(MUSIC_VALUES.TUNINGS).name
 // Случайное название гаммы
-const randScaleName = () => randArrayElement(VALUES.SCALES)
+const randScaleName = () => randArrayElement(MUSIC_VALUES.SCALES)
 // Случайная метка длительности
 const randDurationSymbol = () => randArrayElement(['n', 'm', 't', 's'])
 // Случайная относительная длительность

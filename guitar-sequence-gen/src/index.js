@@ -1,15 +1,20 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-
+import { render } from 'react-dom'
+import { compose, createStore } from 'redux'
 import { Provider } from 'react-redux'
-import store from './store/store'
+import { combinedReducer } from './store/reducers'
 
-import './index.css'
 import App from './App'
 
-ReactDOM.render(
+const store = createStore(
+  combinedReducer,
+  compose(window.__REDUX_DEVTOOLS_EXTENSION__ / window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__)
+)
+
+const app = (
   <Provider store={store}>
     <App />
-  </Provider>,
-  document.getElementById('root')
+  </Provider>
 )
+
+render(app, document.getElementById('root'))
