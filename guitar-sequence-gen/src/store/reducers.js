@@ -1,57 +1,31 @@
-import { combineReducers } from 'redux'
-import { CHANGE_PATTERN_SIZE, CHANGE_PATTERN_PARTS } from './types'
+import { CHANGE_PATTERN_SIZE, CHANGE_PATTERN_PARTS, LIST_BUTTON_CLICK } from './types'
+import { Pattern } from '../components/MelodyGenerator/Helpers'
 
-const initialStates = {
-  setup: {
-    size: 4,
-    parts: 4,
-    key: 'C',
-    start_octave: 2,
-    scale: 'minor'
-  },
-  player: {},
-  list: {},
-  view: {}
+const initialState = {
+  size: 4,
+  parts: 4,
+  note: 'C',
+  octave_min: 2,
+  octave_max: 6,
+  scale: 'minor',
+  patterns: {},
+  sequence: [],
+  isPlaying: false,
+  text: '',
+  symbol: ''
 }
 
-const setupReducer = (state = initialStates.setup, action) => {
+export const reducers = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_PATTERN_SIZE:
       return { ...state, size: action.payload }
     case CHANGE_PATTERN_PARTS:
       return { ...state, parts: action.payload }
-    default:
-      return state
-  }
-}
-const playerReducer = (state = initialStates.player, action) => {
-  switch (action.type) {
-    // case CHANGE_PATTERN_SIZE
-    // case CHANGE_PATTERN_PARTS
-    default:
-      return state
-  }
-}
-const listReducer = (state = initialStates.list, action) => {
-  switch (action.type) {
-    // case CHANGE_PATTERN_SIZE
-    // case CHANGE_PATTERN_PARTS
-    default:
-      return state
-  }
-}
-const viewReducer = (state = initialStates.view, action) => {
-  switch (action.type) {
-    // case CHANGE_PATTERN_SIZE
-    // case CHANGE_PATTERN_PARTS
-    default:
-      return state
-  }
-}
+    case LIST_BUTTON_CLICK:
+      const patterns = Pattern({ ...state, ...action.payload })
 
-export const combinedReducer = combineReducers({
-  setup: setupReducer,
-  player: playerReducer,
-  list: listReducer,
-  view: viewReducer
-})
+      return { ...state, ...action.payload, patterns }
+    default:
+      return state
+  }
+}

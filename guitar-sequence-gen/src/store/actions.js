@@ -1,16 +1,20 @@
-import { CHANGE_PATTERN_SIZE, CHANGE_PATTERN_PARTS } from './types'
+import { CHANGE_PATTERN_SIZE, CHANGE_PATTERN_PARTS, LIST_BUTTON_CLICK } from './types'
 
-export function setupChangeSize(size) {
-  console.log(`Action setupChangeSize(size)`, size)
+export function setupChangeSize(Size) {
   return {
     type: CHANGE_PATTERN_SIZE,
-    payload: size
+    payload: Size
   }
 }
-export function setupChangeParts(parts) {
-  console.log(`Action setupChangeParts(parts)`, parts)
+export function setupChangeParts(Parts) {
   return {
     type: CHANGE_PATTERN_PARTS,
-    payload: parts
+    payload: Parts
+  }
+}
+export function listButtonClick(buttonData) {
+  return {
+    type: LIST_BUTTON_CLICK,
+    payload: buttonData
   }
 }

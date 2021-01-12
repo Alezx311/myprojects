@@ -38,17 +38,18 @@ export const MUSIC_VALUES = {
   FRETBOARD_STEP_LENGTH: 3
 }
 // Настройки по умолчанию
-const DEFAULTS = {
-  KEY: 'C',
-  START_OCTAVE: 2,
-  SCALES: 'minor',
-  PATTERN_LENGTH: 20,
-  SIZE1: 4,
-  SIZE2: 4,
-  OCTAVE_MIN: 2,
-  OCTAVE_MAX: 6,
-  PATTERN_REPEAT_TONICAL_NOTE_EVERY: 8,
-  PATTERN_EXAMPLE_SIZE: 8
+export const DEFAULTS = {
+  size: 4,
+  parts: 4,
+  note: 'C',
+  octave_min: 2,
+  octave_max: 6,
+  scale: 'minor',
+  pattern: {},
+  sequence: [],
+  isPlaying: false,
+  text: '',
+  symbol: ''
 }
 
 //* Генераторы и часто используемые функции
@@ -59,13 +60,13 @@ const randPowerOfTwo = (max_power = 7) => parseInt(2 ** randNumber(max_power))
 // Случайный елемент массива
 const randArrayElement = array => array[Math.floor(Math.random() * array.length)]
 // True или False c указанной вероятностью
-const randChance = percents => parseInt(percents) > randNumber(100)
+const randChance = (percents = 50) => parseInt(percents) > randNumber(100)
 // Случайная нота, если дать массив с гаммой, выберет из неё
 const randNote = (arr = MUSIC_VALUES.NOTES) => randArrayElement(arr)
 // Случайная октава
-const randOctave = (max = DEFAULTS.OCTAVE_MAX) => 2 + randNumber(max)
+const randOctave = (min = DEFAULTS.octave_min, max = DEFAULTS.octave_max) => min + randNumber(max - min)
 // То же что и randNote но добавляет значение октавы
-const randNoteAndOctave = (arr = MUSIC_VALUES.NOTES) => randNote(arr) + randOctave()
+const randNoteAndOctave = (arr = MUSIC_VALUES.NOTES) => `${randNote(arr)}${randOctave()}`
 // Случайный строй гитары
 const randTuning = () => randArrayElement(MUSIC_VALUES.TUNINGS)
 // Случайное название строя гитары
@@ -77,7 +78,7 @@ const randDurationSymbol = () => randArrayElement(['n', 'm', 't', 's'])
 // Случайная относительная длительность
 const randDurationRelative = (max_power = 5) => `${randPowerOfTwo(max_power)}${randDurationSymbol()}`
 // Случайное абсолютная длительность в мс
-const randDurationAbsolute = (max_ms = 5000) => randNumber(max_ms)
+const randDurationAbsolute = (max_ms = 1000) => randNumber(max_ms)
 // Конвертер мс в секунды
 const msToSec = ms => parseInt(ms / 1000)
 // Конвертер секунд в мс
@@ -85,11 +86,9 @@ const secToMs = sec => parseInt(sec * 1000)
 // Соединяет ноту и октаву в строку
 const joinNoteAndOctave = (note, octave) => `${note}${octave}`
 // Берёт ноту из строки
-const noteFromStr = str => str.match(/[a-z#]+/i)?.[1]
+const getNoteFromString = str => str.match(/[a-z#]+/i)?.[1]
 // Берёт октаву из строки
-const octaveFromStr = str => str.match(/\d/i)?.[1]
-// Обьект с пустыми значениями, для инициализаций в будущем
-const musicEventObject = () => ({ note: null, duration: null, octave: null, index: null })
+const getOctaveFromString = str => str.match(/\d/i)?.[1]
 // Музыкальная фраза в виде текста
 const patternToText = arr => arr.map(val => `${val.note}`).join(' -> ')
 // Разделитель для текста
@@ -97,42 +96,31 @@ const textDivider = `\n${'-'.repeat(50)}\n`
 // Обьект в текст
 const objectToText = obj => Object.entries(obj)
 // Настройки для генерации, обьединяет полученные с настройками по умолчанию
-const getGenerateOptions = optObj => {
-  const generateOptions = {
-    createdAt: Date.now(),
-    key: optObj?.key ?? DEFAULTS.KEY,
-    start_octave: parseInt(optObj?.start_octave ?? DEFAULTS.START_OCTAVE),
-    scale: optObj?.scale ?? DEFAULTS.SCALES,
-    size: parseInt(optObj?.size ?? DEFAULTS.PATTERN_LENGTH),
-    repeatEvery: parseInt(optObj?.repeatEvery ?? DEFAULTS.PATTERN_REPEAT_TONICAL_NOTE_EVERY)
-  }
-
-  return generateOptions
-}
+const getGenerateOptions = optObj => ({ ...optObj, ...DEFAULTS })
 
 // Генерация музыкальных фраз
-//? @key - Тональность
-//? @start_octave - Начальная октава
+//? @note - Тональность
+//? @octave_min - Начальная октава
+//? @octave_max - Начальная октава
 //? @scale - Гамма
 //? @size - Длина фразы
 //? @repeatTonicalNote - Повторять тонику каждую n ноту
-const Pattern = optionsObject => {
+export const Pattern = optionsObject => {
   const options = getGenerateOptions(optionsObject)
-  const { key, start_octave, scale, size, repeatEvery } = options
+  const { note, octave_min, scale, size, repeatEvery } = options
 
-  const mainNote = joinNoteAndOctave(key, start_octave)
+  const mainNote = joinNoteAndOctave(note, octave_min)
   const mainDuration = randDurationRelative()
-  const mainNoteObj = { note: mainNote, duration: mainDuration }
 
   const MusicNote = Teoria.note(mainNote)
   const notesArray = MusicNote.scale(scale).simple()
-  const durationsArray = Array(4)
+  const durationsArray = Array(size)
     .fill(1)
     .map(val => randDurationRelative())
 
   // TODO Для играбельной версии, будет создавать мелодию, проверяя играбельность на грифе.
   // Каждая след нота должна быть не дальше 3 ладов, должна не выбиватся из композиции и быть уместной.
-  const stepsVersion = Array(size).fill(mainNoteObj)
+  // const stepsVersion = Array(size).fill(mainNoteObj)
 
   // Версия со случайными значениями
   const randomizedVersion = Array(size)
@@ -153,7 +141,7 @@ const Pattern = optionsObject => {
   })
 
   // Информационное сообщение для быстрого просмотра фраз и тд
-  const patternInfo = `Patterns generated successfully!
+  const text = `Patterns generated successfully!
 Created on ${Date.now() - options.createdAt} ms
 Received Values: ${objectToText(optionsObject)}
 Default Values: ${objectToText(DEFAULTS)}
@@ -167,13 +155,10 @@ ${textDivider}
 ${patternToText(repeatsVersion)}
 ${textDivider}`.trim()
 
-  // console.log(patternInfo)
-
-  //? return { randomizedVersion, repeatsVersion, patternInfo }
-  return repeatsVersion
+  return { randomizedVersion, repeatsVersion, text }
 }
 // Генерация последовательности уникальных фраз
-const Sequence = optionsObject => {
+export const Sequence = optionsObject => {
   const options = getGenerateOptions(optionsObject)
 
   const patterns = Array(100)
@@ -183,23 +168,18 @@ const Sequence = optionsObject => {
   return new Set([...patterns])
 }
 // Генерация указанного количества примеров
-const getExamples = (examples_size = 4) => {
-  const pattOptions = {
-    size: DEFAULTS.PATTERN_EXAMPLE_SIZE
-  }
+export const getExamples = opt => {
+  const options = getGenerateOptions(opt)
 
-  const examples = Array(examples_size)
+  const examples = Array(options.size)
     .fill(1)
     .map(val => {
-      const pattern = Pattern(pattOptions)
-      const sequence = Sequence(pattOptions)
-
-      console.dir(pattern)
-      console.dir(sequence)
+      const pattern = Pattern(options)
+      const sequence = Sequence(options)
 
       return { pattern, sequence }
     })
 
   return examples
 }
-getExamples(1)
+// getExamples(1)
