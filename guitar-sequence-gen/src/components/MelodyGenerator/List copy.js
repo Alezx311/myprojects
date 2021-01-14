@@ -1,5 +1,6 @@
 import React from 'react'
-import { ListHead, ListRows } from './ListElements'
+import ListHead from './ListHead'
+import ListRow from './ListRow'
 
 
 const List = () => {

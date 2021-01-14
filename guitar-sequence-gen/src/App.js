@@ -1,4 +1,5 @@
-import MelodyGenerator from './components/MelodyGenerator'
+// import MelodyGenerator from './components/MelodyGenerator'
+import List from './components/MelodyGenerator/List'
 
 function App() {
   return (
@@ -7,13 +8,12 @@ function App() {
         <h1>Header</h1>
       </div>
       <div className="row">
-        <MelodyGenerator />
+        {/* <MelodyGenerator /> */}
+        <List />
       </div>
       <div className="row">
-        <h1>Footer</h1>
+        a<h1>Footer</h1>
       </div>
-      {/* <div className="row"></div> */}
-      {/* <div className="row"></div> */}
     </div>
   )
 }

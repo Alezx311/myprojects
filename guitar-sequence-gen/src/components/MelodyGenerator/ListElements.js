@@ -1,6 +1,5 @@
-import { MUSIC_VALUES } from './Helpers'
-import { useDispatch } from 'react-redux'
-import { listButtonClick } from '../../store/actions'
+import { notes, scales } from './MusicValues'
+import ListElementButton from './ListElementButton'
 
 export const ListButtons = ({ scale }) => {
   const dispatch = useDispatch()
@@ -9,37 +8,56 @@ export const ListButtons = ({ scale }) => {
     dispatch(listButtonClick({ note, scale }))
   }
 
-  return (
-    <li className="list-group-item">
-      {MUSIC_VALUES.NOTES.map((note, key) => (
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-primary"
-          onClick={() => clickHandler({ note, scale })}
-          key={key}
-        >
-          {`${note} ${scale}`}
-        </button>
-      ))}
-    </li>
-  )
+  return MUSIC_VALUES.NOTES.map((note, key) => (
+    
+  ))
 }
 export const ListHead = () => {
   return (
-    <ul className="list-group list-group-horizontal">
+    <ul className="list-group list-group-horizontal-sm">
+      <div className="list-group-item flex-fill">SCALE / NOTE</div>
       {MUSIC_VALUES.NOTES.map((note, key) => (
-        <div className="list-group-item" key={key}>
+        <div className="list-group-item flex-fill" key={key}>
           {note}
         </div>
       ))}
     </ul>
   )
 }
-export const ListRows = () => {
+export const ListRow = ({ scale }) => {
   return (
-    <div className="list-group-item">
+    <ul></ul>
+  )
+}
+export const List = () => {
+  return (
+    <div><
+  )
+}
+export const ListRows = () => {
+  const dispatch = useDispatch()
+
+  const clickHandler = ({ note, scale }) => {
+    dispatch(listButtonClick({ note, scale }))
+    dispatch(playPattern({ note, scale }))
+  }
+
+  return (
+    <div className="col">
       {MUSIC_VALUES.SCALES.map((scale, key) => (
-        <ListButtons scale={scale} key={key} />
+        <ul className="list-group list-group-horizontal-sm">
+          <li className="list-group-item flex-fill">{scale}</li>
+          {MUSIC_VALUES.NOTES.map((note, noteKey) => (
+            <li
+              type="button"
+              className="list-group-item flex-fill btn btn-sm btn-outline-primary "
+              onClick={() => clickHandler({ note, scale })}
+              key={noteKey}
+            >
+              Play
+            </li>
+          ))}
+        </ul>
       ))}
     </div>
   )

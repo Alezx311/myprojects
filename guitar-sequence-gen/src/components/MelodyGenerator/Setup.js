@@ -19,10 +19,12 @@ const Setup = () => {
         <div>
           <p className="label">Pattern Size</p>
           <input type="range" min={min} max={max} step={1} value={size} onChange={changeHandlerSize} />
+          <p>{size}</p>
         </div>
         <div>
           <p className="label">Pattern Parts</p>
           <input type="range" min={min} max={max} step={1} value={parts} onChange={changeHandlerParts} />
+          <p>{parts}</p>
         </div>
       </div>
     </div>
