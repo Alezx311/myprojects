@@ -1,30 +1,27 @@
 import React from 'react'
-// import { MUSIC_VALUES, DEFAULTS } from './Helpers'
-
-// import { useDispatch, useSelector } from 'react-redux'
-// import { listButtonClick, setupChangeParts, setupChangeSize } from '../../store/actions'
 
 const Player = () => {
-  // const stateValues = useSelector(state => state)
-
-  const playButtonHandler = event => {
-    console.log('playButtonHandler')
+  const buttonRefreshHandler = () => {
+    console.log('Button Refresh pressed')
   }
-  const refreshButtonHandler = event => {
-    console.log('refreshButtonHandler')
+  const buttonPlayHandler = () => {
+    console.log('Button Play pressed')
+  }
+  const buttonPauseHandler = () => {
+    console.log('Button Pause pressed')
   }
 
   return (
-    <div className="card">
-      <div className="card-body">
-        <h5 className="card-title">Player Controls</h5>
-        <button type="button" className="btn btn-success btn-sm" onClick={playButtonHandler}>
-          Play\Pause
-        </button>
-        <button type="button" className="btn btn-success btn-sm" onClick={refreshButtonHandler}>
-          Refresh Pattern
-        </button>
-      </div>
+    <div>
+      <button onClick={buttonPlayHandler} className="btn btn-outline-success">
+        <i className="fas fa-play"> Play</i>
+      </button>
+      <button onClick={buttonPauseHandler} className="btn btn-outline-success">
+        <i className="fas fa-pause"> Pause</i>
+      </button>
+      <button onClick={buttonRefreshHandler} className="btn btn-outline-success">
+        <i className="fas fa-refresh"> Refresh</i>
+      </button>
     </div>
   )
 }

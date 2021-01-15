@@ -1,30 +1,56 @@
-import { CHANGE_PATTERN_SIZE, CHANGE_PATTERN_PARTS, LIST_BUTTON_CLICK } from './types'
-import { Pattern } from '../components/MelodyGenerator/Helpers'
+import * as TYPES from './types'
+import * as Tone from 'tone'
+import * as Helpers from '../components/MelodyGenerator/Helpers'
 
-const initialState = {
-  size: 4,
-  parts: 4,
-  note: 'C',
-  octave_min: 2,
-  octave_max: 6,
-  scale: 'minor',
-  patterns: {},
-  sequence: [],
-  isPlaying: false,
-  text: '',
-  symbol: ''
-}
-
-export const reducers = (state = initialState, action) => {
+export const reducers = (state = Helpers.initialState, action) => {
   switch (action.type) {
-    case CHANGE_PATTERN_SIZE:
-      return { ...state, size: action.payload }
-    case CHANGE_PATTERN_PARTS:
-      return { ...state, parts: action.payload }
-    case LIST_BUTTON_CLICK:
-      const patterns = Pattern({ ...state, ...action.payload })
+    case TYPES.CHANGE_PATTERN_SIZE:
+      return { ...state, size: parseInt(action.payload) }
+    case TYPES.CHANGE_PATTERN_PARTS:
+      return { ...state, parts: parseInt(action.payload) }
+    case TYPES.CHANGE_INSTRUMENT:
+      state.instrument = Helpers.getInstrument(action.payload)
 
-      return { ...state, ...action.payload, patterns }
+      return state
+    case TYPES.GENERATE_PATTERN:
+      const updated = Helpers.generateNotesObject({ ...state, ...action.payload })
+
+      if (!updated.instrument) {
+        updated.instrument = Helpers.getInstrument()
+      }
+      if (updated.track) {
+        updated.track.stop()
+        updated.track.dispose()
+      }
+
+      updated.track = Helpers.getSequence(updated)
+      updated.track_dublicate = updated.track
+      // updated.track_dublicate = Helpers.getSequence(updated)
+      // updated.track_dublicate = Helpers.getPattern(updated)
+      // updated.track = Helpers.getPattern(updated)
+
+      return updated
+    case TYPES.PLAY:
+      state.track.start(0.1)
+      state.track_dublicate.start(0.1)
+      Tone.Transport.start(0.1)
+
+      console.log('state.track', state.track.playbackRate)
+
+      state.isPlaying = true
+
+      return state
+    case TYPES.PAUSE:
+      Tone.Transport.stop()
+      state.track.stop()
+      state.track_dublicate.stop()
+
+      state.isPlaying = false
+
+      return state
+    case TYPES.REFRESH:
+      return state
+
     default:
       return state
   }

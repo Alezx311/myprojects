@@ -3,31 +3,30 @@ import { useSelector } from 'react-redux'
 // import { MUSIC_VALUES, DEFAULTS } from './Helpers'
 
 const ViewAsText = () => {
-  const stateValues = useSelector(state => state)
+  const state = useSelector(state => state)
 
   return (
     <div className="col">
       <p>ViewAsText</p>
       <ul className="list-unstyled">
-        <li>Size: {stateValues.size}</li>
-        <li>Parts: {stateValues.parts}</li>
-        <li>Note: {stateValues.note}</li>
-        <li>Octave_min: {stateValues.octave_min}</li>
-        <li>Octave_max: {stateValues.octave_max}</li>
-        <li>Scale: {stateValues.scale}</li>
-        <li>IsPlaying: {stateValues.isPlaying}</li>
-        <li>Text: {stateValues.text}</li>
-        <li>Symbol: {stateValues.symbol}</li>
+        <li>size: {state?.size ?? 'Unknown'}</li>
+        <li>parts: {state?.parts ?? 'Unknown'}</li>
+        <li>note: {state?.note ?? 'Unknown'}</li>
+        <li>octave: {state?.octave ?? 'Unknown'}</li>
+        <li>instrument: {state?.instrument?.toString() ?? 'Unknown'}</li>
+        <li>scale: {state?.scale ?? 'Unknown'}</li>
+        <li>text: {state.text ?? 'Unknown'}</li>
+        <li>pattern: {state?.pattern?.length ?? 'Unknown'}</li>
+        <li>patterns: {state?.patterns?.length ?? 'Unknown'}</li>
+        <li>track: {state?.track?.toString()}</li>
       </ul>
     </div>
   )
 }
 const ViewAsSymbols = () => {
-  return (
-    <div className="col">
-      <div>ViewAsSymbols</div>
-    </div>
-  )
+  const { text } = useSelector(state => state)
+
+  return <span className="text">{text}</span>
 }
 
 const View = () => {

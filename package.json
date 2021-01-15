@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "watch": "nodemon server.js",
+    "melody": "cd guitar-sequence-gen && npm run start",
     "start": "node server.js"
   },
   "dependencies": {
@@ -18,7 +19,7 @@
     "scribbletune": "^3.4.3",
     "socket.io": "^2.3.0",
     "tabwriter": "^1.0.2",
-    "tone": "^13.8.25",
+    "tone": "^14.8.2",
     "vexflow": "^1.2.89",
     "webaudiofont": "^2.5.48"
   }

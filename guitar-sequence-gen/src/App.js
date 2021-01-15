@@ -1,5 +1,7 @@
 import MelodyGenerator from './components/MelodyGenerator'
 
+
+
 function App() {
   return (
     <div className="container pt-5">
@@ -12,8 +14,6 @@ function App() {
       <div className="row">
         <h1>Footer</h1>
       </div>
-      {/* <div className="row"></div> */}
-      {/* <div className="row"></div> */}
     </div>
   )
 }
