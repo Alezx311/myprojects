@@ -1,13 +1,15 @@
 import * as Teoria from 'teoria'
 import * as Tone from 'tone'
+import { useDispatch } from 'react-redux'
+import * as actions from '../../store/actions'
 
 export const initialState = {
-  size: 32,
+  size: 120,
   parts: 8,
   note: 'C',
-  octave: 3,
-  scale: 'minor',
-  instrument: null
+  octave: 2,
+  scale: 'blues',
+  text: ''
 }
 
 // Немного музыкальных констант
@@ -72,8 +74,8 @@ export const randScaleName = () => randArrayElement(MUSIC_VALUES.SCALES)
 export const randDurationSymbol = () => randArrayElement(['n', 't'])
 // export const randDurationSymbol = () => randArrayElement(['n', 'm', 't', 's'])
 // Случайная относительная длительность
-export const randDurationRelative = (max_power = 4) => `${2 ** randNumber(max_power)}t`
-// export const randDurationRelative = (max_power = 4) => `${randPowerOfTwo(max_power)}${randDurationSymbol()}`
+// export const randDurationRelative = (max_power = 3) => `${2 ** randNumber(max_power)}n`
+export const randDurationRelative = (max_power = 4) => `${randPowerOfTwo(max_power)}${randDurationSymbol()}`
 // export const randDurationRelative = (max_power = 2) => `${2 * Math.ceil(Math.random() * 5)}n`
 // Случайное абсолютная длительность в мс
 export const randDurationAbsolute = (max_ms = 1000) => randNumber(max_ms)
@@ -97,91 +99,63 @@ export const objectToText = obj => Object.entries(obj)
 export const getGenerateOptions = optObj => ({ ...optObj, ...initialState })
 
 // Генерация последовательности уникальных фраз
-export const Notes = opt => {
-  const MusicNote = Teoria.note(joinNoteAndOctave(opt.note, opt.octave))
-  const scaleNotes = MusicNote.scale(opt.scale).simple()
+export const Notes = state => {
+  const MusicNote = Teoria.note(joinNoteAndOctave(state.note, state.octave))
+  const scaleNotes = MusicNote.scale(state.scale).simple()
 
-  opt.MusicNote = MusicNote
-  opt.mainNote = joinNoteAndOctave(opt.note, opt.octave)
-  opt.scaleNotes = scaleNotes
-  opt.patternNotes = scaleNotes.map(n => ({
-    note: joinNoteAndOctave(n, randOctave()),
-    duration: randDurationRelative()
-  }))
-
-  const pattern = Array(opt.size)
+  return Array(state.size)
     .fill(1)
     .map((v, i) => ({ note: randNoteAndOctave(scaleNotes), duration: randDurationRelative() }))
-
-  console.log('opt', opt)
-  return pattern
 }
 
-export const generateNotesObject = opt => {
-  const pattern = Notes(opt)
-
-  opt.text = pattern.map(el => el.note).join(' -> ')
-
-  return { ...opt, pattern }
-}
-
-export const getInstrument = (name = 'PolySynth') => {
-  let instrument
-
-  if (name === 'Synth') {
-    instrument = new Tone.Synth()
-  } else if (name === 'MetalSynth') {
-    instrument = new Tone.MetalSynth()
+export const getInstrument = state => {
+  if (state.instrument === 'Synth') {
+    state.instrument = new Tone.Synth().toDestination()
+  } else if (state.instrument === 'MetalSynth') {
+    state.instrument = new Tone.MetalSynth().toDestination()
   } else {
-    console.log('getInstrument set PolySynth', name)
-    instrument = new Tone.PolySynth(Tone.Synth, Tone.Synth)
-    // instrument = new Tone.PolySynth()
+    state.instrument = new Tone.PolySynth(Tone.Synth, Tone.Synth).toDestination()
   }
+  state.transport = Tone.Transport
+  state.transport.set({ swing: Math.random() })
 
-  instrument.toDestination()
-
-  return instrument
+  return state
 }
 
 export const getSequence = state => {
-  const { instrument, pattern } = state
-  // const Pattern = getPattern(state)
+  if (!state.instrument) state = getInstrument(state)
+  state.pattern = Notes(state)
+  state.values = []
 
-  const playNoteHandlerForSequence = (time, { note, duration }) => {
-    state.text = note
-    console.log(`seq play note
-    .progress: ${Sequencer.progress}
-    .state: ${Sequencer.state}
-    .length: ${Sequencer.length}
-    .blockTime : ${Sequencer.blockTime}
-    .sampleTime : ${Sequencer.sampleTime}
-    note: ${note}
-    duration: ${duration}
-    time: ${time}
-    `)
-    instrument.triggerAttackRelease(note, duration, time, Math.random())
-    // instrument.triggerRelease(note, `+${duration}`)
-    // instrument.triggerAttack(note, 0.1)
-  }
+  const track = new Tone.Sequence((time, { note, duration }) => {
+    state.instrument.triggerAttackRelease(note, duration, time, Math.random())
+    state.instrument.triggerAttackRelease(note, `+${duration}`, time, Math.random())
 
-  const Sequencer = new Tone.Sequence(playNoteHandlerForSequence, pattern)
-  Sequencer.humanize = true
-  Sequencer.probability = 1
-  Sequencer.playbackRate = 1.5
+    state.instrument.triggerRelease(note, `+${duration}`)
+  }, state.pattern)
 
-  return Sequencer
+  track.humanize = true
+  track.probability = 0.95
+  track.playbackRate = 1
+
+  state.transport = Tone.Transport
+  state.transport.set({ swing: Math.random(), swingSubdivision: randDurationRelative() })
+
+  state.transport.start()
+
+  return { ...state, track }
 }
 export const getPattern = state => {
-  const Pattern = new Tone.Pattern(
+  const track = new Tone.Pattern(
     (time, { note, duration }) => {
       state.instrument.triggerAttackRelease(note, duration, time, Math.random())
     },
     state.pattern,
     'upDown'
   )
-  Pattern.humanize = true
-  Pattern.probability = 1
-  Pattern.playbackRate = 1.5
+  track.humanize = true
+  track.probability = 1
+  track.playbackRate = 1.5
 
-  return Pattern
+  return { ...state, track }
 }

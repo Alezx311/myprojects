@@ -42,3 +42,9 @@ export function changeInstrument(instrument) {
     payload: instrument
   }
 }
+export function changeState(message) {
+  return {
+    type: TYPES.CHANGE_STATE,
+    payload: message
+  }
+}

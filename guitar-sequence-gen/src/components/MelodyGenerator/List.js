@@ -3,9 +3,11 @@ import { ListHead, ListRows } from './ListElements'
 
 const List = () => {
   return (
-    <div className="container text-center">
-      <ListHead />
-      <ListRows />
+    <div className="container  mt-3 text-center align-middle ">
+   
+        <ListHead />
+        <ListRows />
+  
     </div>
   )
 }

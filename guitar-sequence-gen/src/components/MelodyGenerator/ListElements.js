@@ -2,6 +2,7 @@ import React from 'react'
 import { MUSIC_VALUES } from './Helpers'
 import { useDispatch, useSelector } from 'react-redux'
 import * as actions from '../../store/actions'
+import * as Helpers from './Helpers'
 
 const styles = {
   first: {
@@ -18,7 +19,7 @@ const styles = {
 
 export const ListHead = () => {
   return (
-    <div className="list-group list-group-horizontal">
+    <div className="list-group list-group-horizontal mx-auto">
       <div className="list-group-item" style={styles.first}>
         NOTES / SCALES
       </div>
@@ -32,29 +33,21 @@ export const ListHead = () => {
 }
 export const ListRows = () => {
   const dispatch = useDispatch()
-  const state = useSelector(state => state)
 
   const clickHandler = data => {
+    dispatch(actions.playerPause())
     dispatch(actions.generatePattern(data))
-
-    if (state.isPlaying) {
-      dispatch(actions.playerPause())
-      if (state.note === data.note && state.scale === data.scale) {
-        return true
-      }
-    }
-
     dispatch(actions.playerPlay())
   }
 
   return MUSIC_VALUES.SCALES.map((scale, key) => (
-    <div className="list-group list-group-horizontal" key={key}>
+    <div className="list-group list-group-horizontal mx-auto" key={key}>
       <div className="list-group-item " style={styles.first}>
         {scale}
       </div>
       {MUSIC_VALUES.NOTES.map((note, notekey) => (
         <button
-          className="list-group-item fas fa-play btn btn-success"
+          className="list-group-item fas btn btn-success fas fa-play"
           style={styles.element}
           onClick={() => clickHandler({ note, scale })}
           key={notekey}
