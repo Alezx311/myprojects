@@ -1,0 +1,70 @@
+const SoundGenerator = () => {
+  return (
+    <div>
+      <div className="GeneratorSettings">
+        {/* Настройки для генератора последовательности */}
+        <div className="PatternSettings">
+          {/* Муз размер такта */}
+          <div className="PatternPartSize"></div>
+          {/* КОличество тактов */}
+          <div className="PatternLength"></div>
+          {/* Тональность */}
+          <div className="PatternKey"></div>
+          {/* Гамма */}
+          <div className="PatternScale"></div>
+        </div>
+        {/* Плеер последовательности */}
+        <div className="PatternPlayer">
+          {/* Отображение инфо в виде текста (последовательность, тональность, гамма...) */}
+          <div className="PatternPlayerViewText"></div>
+
+          {/* Отображение инфо в виде блисс символа */}
+          <div className="PatternPlayerViewBliss"></div>
+
+          {/* Управление воспроизведением (play/pause/repeat generate ) */}
+          <div className="PatternPlayerControls"></div>
+        </div>
+        <div className="Patterns">
+          {/* Таблица 12 (ноты) * 10 (гаммы) с кнопками для генерации и воспроизвдения нужной фразы */}
+          <div className="PatternsTable">
+            {/* Список нот */}
+            <ul className="notesList">
+              {/* Каждый елемент - кнопки для каждой гаммы */}
+              <li className="notesListElement">
+                {/* При нажатии отправляет данные о ноте и гамме. Настройки генератора указываются в store через Redux при изменении */}
+                <button
+                  className="notesListElementButton"
+                  onClick={() => createAndPlayPattern({ note, scale })}
+                ></button>
+                <div className="notesListElementButton"></div>
+                <div className="notesListElementButton"></div>
+                <div className="notesListElementButton"></div>
+                <div className="notesListElementButton"></div>
+                <div className="notesListElementButton"></div>
+                <div className="notesListElementButton"></div>
+              </li>
+              <li className="notesListElement">
+                <div className="notesListElementButton"></div>
+              </li>
+              <li className="notesListElement">
+                <div className="notesListElementButton"></div>
+              </li>
+              <li className="notesListElement">
+                <div className="notesListElementButton"></div>
+              </li>
+              <li className="notesListElement">
+                <div className="notesListElementButton"></div>
+              </li>
+              <li className="notesListElement">
+                <div className="notesListElementButton"></div>
+              </li>
+              <li className="notesListElement">
+                <div className="notesListElementButton"></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
