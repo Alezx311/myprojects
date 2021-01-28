@@ -3,9 +3,9 @@ import * as Helpers from '../components/MelodyGenerator/Helpers'
 
 const initialState = {
   sound: {
-    size: 20,
-    parts: 4,
-    key: 'D',
+    size: 13,
+    parts: 5,
+    key: 'C',
     octave: 2,
     scale: 'minorpentatonic',
     instrument: 'PolySynth'
@@ -57,7 +57,7 @@ const playTrack = state => {
 
   if (updated.player.isPlaying === false) {
     updated.player?.track?.start()
-    updated.player?.transport?.start()
+    updated.player?.transport?.start(0.1)
     updated.player.isPlaying = true
   }
 

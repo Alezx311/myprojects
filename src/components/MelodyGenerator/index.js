@@ -13,9 +13,7 @@ const MelodyGenerator = () => (
     <div className="row">
       <Player />
     </div>
-    <div className="row">
-      <View />
-    </div>
+    <div className="row">{/* <View /> */}</div>
     <div className="row">
       <List />
     </div>

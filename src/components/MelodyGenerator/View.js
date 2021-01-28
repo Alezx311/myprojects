@@ -3,65 +3,62 @@ import ReactJson from 'react-json-view'
 import Sketch from 'react-p5'
 import { useSelector } from 'react-redux'
 
+const CanvasValues = {
+  width: 500,
+  height: 500,
+  // notesExample: ['c', 'f', 'bb', 'g', 'f', 'c', 'bb', 'c', 'f', 'f'],
+  notesExample: ['a', 'ab', 'b', 'bb', 'c', 'd', 'db', 'e', 'eb', 'f', 'g', 'gb'],
+  notesColors: {
+    a: '#00ff00',
+    ab: '#8000ff',
+    b: '#00ffff',
+    bb: '#ff80c0',
+    c: '#ff0000',
+    d: '#ffff00',
+    db: '#ff00ff',
+    e: '#0080c0',
+    eb: '#808080',
+    f: '#800000',
+    g: '#ff8000',
+    gb: '#8080c0'
+  }
+}
+const noteToColor = note => CanvasValues.notesColors?.[note] ?? '#808000'
+
 const ViewSketch = ({ size = 300 }) => {
-  let x = 10
-  let y = 10
-  let w = 10
-  let h = 10
-  let speed = 10
-
-  const DrawFigure = (p5, type) => {
-    switch (type) {
-      case 'Rectangle':
-        return p5.rect(x, y, w, h)
-      default:
-        return p5.ellipse(x, y, w, h)
-    }
-  }
-  const MoveFigure = () => {
-    w = ~~((Math.random() * size) / 10)
-    h = ~~((Math.random() * size) / 10)
-
-    if (x > size) {
-      y += speed
-      x = 10
-    } else if (y > size) y = 10
-    else x += ~~(Math.random() * speed)
-  }
-  const DrawBackground = (p5, color = 'gray') => {
-    if (color === 'random') {
-      const colors = ['green', 'red', 'blue', 'gray', 'black']
-      color = colors[~~(Math.random() * colors.length)]
-    }
-    return p5.background(color)
-  }
-
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(size, size).parent(canvasParentRef)
   }
 
   const draw = p5 => {
-    DrawBackground(p5)
-    // DrawFigure(p5)
-    DrawFigure(p5, 'Rectangle')
-    MoveFigure()
+    const { width, height, figureWidth, figureHeight, notesExample, notesColors } = CanvasValues
+    const noteElementSize = width / notesExample.length
+
+    p5.background(0)
+
+    notesExample.map((v, i) => {
+      let posX = noteElementSize * i + noteElementSize / 2
+      let posY = height / 2
+      const color = noteToColor(v)
+
+      // posY = Math.random() > 0.5 ? posY + ~~(Math.random() * 10) : posY - ~~(Math.random() * 10)
+      p5.ellipse(posX, posY, noteElementSize, noteElementSize).fill(color)
+    })
   }
 
-  return <Sketch setup={setup} draw={draw} />
+  return (
+    <div className="text-center align-middle">
+      <Sketch setup={setup} draw={draw} />
+    </div>
+  )
 }
 
 const ViewPlayer = () => {
   const { player } = useSelector(state => state)
-  // const melodyStat = player.melody?.map(val => `${val.note}/${val.duration}`).join(' -> ')
   return (
-    // <div className="row">
-    //   <label>Melody</label>
-    //   <div>{melodyStat}</div>
-    //   <ReactJson displayObjectSize={true} src={player.melody} />
-    // </div>
     <div className="col">
       <label>Player</label>
-      <ReactJson src={player.melody} />
+      <ReactJson src={player.melody?.mainNotes} />
     </div>
   )
 }
@@ -90,7 +87,7 @@ const View = () => (
       <ViewPlayer />
       <ViewSound />
       <ViewFretboard />
-      {/* <ViewSketch /> */}
+      <ViewSketch />
     </div>
   </div>
 )
