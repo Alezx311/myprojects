@@ -1,7 +1,7 @@
 import React from 'react'
-import { MUSIC_VALUES } from './Helpers'
+import { NOTES, SCALES } from '../constants'
+import { updateSound } from '../../store/actions'
 import { useDispatch } from 'react-redux'
-import * as actions from '../../store/actions'
 
 const styles = {
   first: {
@@ -13,18 +13,25 @@ const styles = {
     width: '50px',
     min_height: '50px',
     height: '50px'
+  },
+  classNames: {
+    first: 'list-group-item',
+    element: 'list-group-item',
+    container: 'list-group-horizontal mx-auto'
   }
 }
 
-export const ListHead = () => {
+const ListHead = () => {
   return (
     <div className="list-group list-group-horizontal mx-auto">
-      <div className="list-group-item" style={styles.first}>
-        NOTES / SCALES
+      <div className="list-group-item text-center" style={styles.first}>
+        <strong>
+          <em>NOTES / SCALES</em>
+        </strong>
       </div>
-      {MUSIC_VALUES.NOTES.map((note, key) => (
-        <div className="list-group-item" key={key} style={styles.element}>
-          {note}
+      {NOTES.map((note, key) => (
+        <div className="list-group-item text-center" key={key} style={styles.element}>
+          <strong>{note}</strong>
         </div>
       ))}
     </div>
@@ -33,24 +40,22 @@ export const ListHead = () => {
 export const ListRows = () => {
   const dispatch = useDispatch()
 
-  const clickHandler = data => {
-    dispatch(actions.playerPause())
-    dispatch(actions.generatePattern(data))
-    dispatch(actions.playerPlay())
-  }
+  const onClick = ({ note, scale }) => dispatch(updateSound({ key: note, scale }))
 
-  return MUSIC_VALUES.SCALES.map((scale, key) => (
-    <div className="list-group list-group-horizontal mx-auto" key={key}>
-      <div className="list-group-item " style={styles.first}>
-        {scale}
+  return SCALES.map((scale, key) => (
+    <div className="list-group list-group-horizontal mx-auto">
+      <div className="list-group-item text-center" key={key} style={styles.element}>
+        <strong>{scale}</strong>
       </div>
-      {MUSIC_VALUES.NOTES.map((note, notekey) => (
+      {NOTES.map((note, noteKey) => (
         <button
+          key={noteKey}
           className="list-group-item fas btn btn-success fas fa-play"
           style={styles.element}
-          onClick={() => clickHandler({ note, scale })}
-          key={notekey}
-        ></button>
+          onClick={() => onClick({ note, scale })}
+        >
+          {(note, scale)}
+        </button>
       ))}
     </div>
   ))

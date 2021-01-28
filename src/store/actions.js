@@ -1,50 +1,26 @@
 import * as TYPES from './types'
 
-export function setupChangeSize(Size) {
+export function updateSound(data) {
   return {
-    type: TYPES.CHANGE_PATTERN_SIZE,
-    payload: Size
+    type: TYPES.UPDATE_SOUND,
+    payload: data
   }
 }
-export function setupChangeParts(Parts) {
+export function updateFretboard(data) {
   return {
-    type: TYPES.CHANGE_PATTERN_PARTS,
-    payload: Parts
+    type: TYPES.UPDATE_FRETBOARD,
+    payload: data
   }
 }
-export function generatePattern(buttonData) {
+export function updatePlayer(data) {
   return {
-    type: TYPES.GENERATE_PATTERN,
-    payload: { ...buttonData }
+    type: TYPES.UPDATE_PLAYER,
+    payload: data
   }
 }
-export function playerPlay() {
+export function updateState(data) {
   return {
-    type: TYPES.PLAY,
-    payload: {}
-  }
-}
-export function playerPause() {
-  return {
-    type: TYPES.PAUSE,
-    payload: {}
-  }
-}
-export function playerRefresh() {
-  return {
-    type: TYPES.REFRESH,
-    payload: {}
-  }
-}
-export function changeInstrument(instrument) {
-  return {
-    type: TYPES.CHANGE_INSTRUMENT,
-    payload: instrument
-  }
-}
-export function changeState(message) {
-  return {
-    type: TYPES.CHANGE_STATE,
-    payload: message
+    type: TYPES.UPDATE_STATE,
+    payload: data
   }
 }

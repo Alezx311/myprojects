@@ -1,64 +1,84 @@
 import * as TYPES from './types'
 import * as Helpers from '../components/MelodyGenerator/Helpers'
 
-const generateTrack = state => {
-  const update = Helpers.getSequence({ ...state })
-
-  return { ...update }
+const initialState = {
+  sound: {
+    size: 20,
+    parts: 4,
+    key: 'D',
+    octave: 2,
+    scale: 'minorpentatonic',
+    instrument: 'PolySynth'
+  },
+  fretboard: {
+    strings: 6,
+    frets: 24,
+    tuning: 'E Standart'
+  },
+  player: {
+    isPlaying: false,
+    transport: null,
+    track: null,
+    instrument: null,
+    melody: null,
+    melodyView: {}
+  }
 }
+
 const stopTrack = state => {
-  if (state.isPlaying === true && state.track) {
-    state.transport.stop()
-    state.track.stop()
+  let updated = { ...state }
+
+  if (updated.player?.isPlaying === true) {
+    updated.player?.track?.stop()
+    updated.player?.transport?.stop()
+    updated.player.isPlaying = false
   }
 
-  state.isPlaying = false
-
-  return { ...state }
+  return updated
 }
 const playTrack = state => {
-  if (!state.track) {
-    state = Helpers.getSequence({ ...state })
+  let updated = { ...state }
+
+  if (updated.player.transport === null) {
+    updated.player.transport = Helpers.getTransport()
   }
 
-  state.transport.start()
-  state.track.start()
+  if (updated.player.instrument === null) {
+    updated.player.instrument = Helpers.getInstrument(updated.sound)
+  }
 
-  state.isPlaying = true
+  if (updated.player.melody === null) {
+    updated.player.melody = Helpers.randomMelody(updated.sound)
+  }
 
-  return { ...state }
+  if (updated.player.track === null) {
+    updated.player.track = Helpers.getTrack(updated.player)
+  }
+
+  if (updated.player.isPlaying === false) {
+    updated.player?.track?.start()
+    updated.player?.transport?.start()
+    updated.player.isPlaying = true
+  }
+
+  return updated
 }
 
-export const reducers = (state = Helpers.initialState, action) => {
-  switch (action.type) {
-    case TYPES.CHANGE_PATTERN_SIZE:
-      return { ...state, size: parseInt(action.payload) }
-    case TYPES.CHANGE_PATTERN_PARTS:
-      return { ...state, parts: parseInt(action.payload) }
-    case TYPES.CHANGE_INSTRUMENT: {
-      const update = Helpers.getInstrument({ ...state, instrument: action.payload })
-      return update
+export const reducers = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case TYPES.UPDATE_SOUND: {
+      return { ...state, sound: { ...state.sound, ...payload } }
     }
-    case TYPES.GENERATE_PATTERN: {
-      const update = Helpers.getSequence({ ...state, ...action.payload })
-      return update
+    case TYPES.UPDATE_FRETBOARD: {
+      return { ...state, fretboard: { ...state.fretboard, ...payload } }
     }
-    case TYPES.PLAY: {
-      const update = playTrack(state)
-      return update
+    case TYPES.UPDATE_PLAYER: {
+      const updated = payload === 'Play' ? playTrack(state) : stopTrack(state)
+      return { ...state, ...updated }
     }
-    case TYPES.PAUSE: {
-      const update = stopTrack(state)
-      return update
-    }
-    case TYPES.REFRESH: {
-      const update = Helpers.getSequence(state)
-      return update
-    }
-    case TYPES.CHANGE_STATE: {
-      return { ...state, ...action.payload }
-    }
+    case TYPES.UPDATE_STATE:
+      return { ...state, ...payload }
     default:
-      return state
+      return { ...state }
   }
 }

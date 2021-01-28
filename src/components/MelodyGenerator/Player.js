@@ -1,73 +1,35 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import * as actions from '../../store/actions'
-import * as Helpers from './Helpers'
+import { useDispatch, useSelector } from 'react-redux'
 
-const Player = () => {
+const PlayerButton = ({
+  text = 'Button',
+  onClick = e => console.log('Pressed', e?.target),
+  className = 'btn btn-success'
+}) => (
+  <button className={`${className} m-1`} onClick={onClick}>
+    {text}
+  </button>
+)
+
+const PlayerControlPlayPause = () => {
   const dispatch = useDispatch()
-  const state = useSelector(state => state)
+  const { player } = useSelector(state => state)
 
-  const buttonRefreshHandler = () => {
-    dispatch(actions.generatePattern())
+  let iconPlay = <i className="fa fa-play text-center"> Generate & Play</i>
+  let iconPause = <i className="fa fa-pause text-center"> Pause</i>
+
+  if (player.isPlaying === true) {
+    return <PlayerButton onClick={() => dispatch(actions.updatePlayer('Pause'))} text={iconPause} />
+  } else {
+    return <PlayerButton onClick={() => dispatch(actions.updatePlayer('Play'))} text={iconPlay} />
   }
-  const buttonPlayHandler = e => {
-    if (!state.track) {
-      const updatedState = Helpers.getSequence(state)
-      dispatch(actions.changeState(updatedState))
-
-      // dispatch(actions.generatePattern())
-    }
-
-    dispatch(actions.playerPlay())
-  }
-  const buttonPauseHandler = () => {
-    if (!state.track) {
-      return true
-    }
-
-    dispatch(actions.playerPause())
-  }
-
-  return (
-    <div className="container mt-3">
-      <div className="row">
-        <div className="btn-group btn-group-lg" role="group">
-          <button
-            onClick={buttonPlayHandler}
-            className={`btn btn-outline-success btn-lg fas fa-play ${state.track ? '' : 'disabled'}`}
-          >
-            Play
-          </button>
-          <button onClick={buttonPauseHandler} className="btn btn-outline-success btn-md fas fa-pause">
-            Pause
-          </button>
-          <button onClick={buttonRefreshHandler} className="btn btn-outline-success btn-md fas fa-refresh">
-            Refresh
-          </button>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col text-center">
-          {Object.entries(state.track?.get() ?? {}).map((ent, key) => {
-            return (
-              <span key={key}>
-                <em>{ent.join(' : ').substring(0, 50) + '...'}</em>
-                <br />
-              </span>
-            )
-          })}
-          <span>value: {state?.track?.value ?? 'Undefined'}</span>
-          <br />
-          <span>progress: {state?.track?.progress ?? 'Undefined'}</span>
-          <br />
-          <span>state: {state?.track?.state ?? 'Undefined'}</span>
-          <br />
-          <span>nowPlayingNote: {state?.track?.nowPlayingNote ?? 'Undefined'}</span>
-          {/* <span>Value: {state.track?.get('value') ?? 'Unknown'}</span> */}
-        </div>
-      </div>
-    </div>
-  )
 }
+
+const Player = () => (
+  <div className="container">
+    <PlayerControlPlayPause />
+  </div>
+)
 
 export default Player

@@ -1,156 +1,237 @@
 import * as Teoria from 'teoria'
 import * as Tone from 'tone'
+import * as TotalSerializm from 'total-serialism'
 
-export const initialState = {
-  size: 120,
-  parts: 8,
-  note: 'C',
-  octave: 2,
-  scale: 'blues',
-  text: ''
+export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
+export const SCALES = [
+  'major',
+  'minor',
+  'ionian',
+  'dorian',
+  'phrygian',
+  'lydian',
+  'mixolydian',
+  'aeolian',
+  'locrian',
+  'majorpentatonic',
+  'minorpentatonic',
+  'chromatic',
+  'harmonicchromatic',
+  'blues',
+  'doubleharmonic',
+  'flamenco',
+  'harmonicminor',
+  'melodicminor',
+  'wholetone'
+]
+export const SCALES_SHORT = [
+  'major',
+  'minor',
+  'majorpentatonic',
+  'minorpentatonic',
+  'blues',
+  'harmonicminor',
+  'melodicminor'
+]
+
+export const randomRange = () => Math.random()
+export const randomNumber = (max = 100, min = 0) => ~~(min + randomRange() * (max - min))
+export const randomPowerOfTwo = (max = 5) => 2 ** randomNumber(max, 2)
+export const randomArrayElement = arr => (arr.length ? arr[randomNumber(arr.length)] : null)
+export const randomBoolean = () => randomNumber() > 50
+export const randomArrayShuffle = arr => arr.sort((a, b) => (randomBoolean() ? 1 : -1))
+export const randomArrayElementChange = arr => {
+  const el = randomArrayElement(arr)
+  const ind = randomNumber(arr.length)
+  arr[ind] = el
+  return arr
 }
-
-// Немного музыкальных констант
-export const MUSIC_VALUES = {
-  // Гитарные строи
-  TUNINGS: [
-    { name: 'E Standart', value: ['E2', 'A2', 'D3', 'G3', 'B4', 'E4'] },
-    { name: 'Drop D', value: ['D2', 'A2', 'D3', 'G3', 'B4', 'E4'] },
-    { name: 'Drop C', value: ['C2', 'G2', 'C3', 'F3', 'A4', 'D4'] },
-    { name: 'Drop B', value: ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4'] }
-  ],
-  // Названия нот
-  NOTES: ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#'],
-  // Названия гамм
-  SCALES: [
-    'major',
-    'minor',
-    /*  'ionian',
-    'dorian',
-    'phrygian',
-    'lydian',
-    'mixolydian',
-    'aeolian',
-    'locrian', */
-    'majorpentatonic',
-    'minorpentatonic',
-    'chromatic',
-    'harmonicchromatic',
-    'blues',
-    'doubleharmonic',
-    'flamenco',
-    'harmonicminor',
-    'melodicminor',
-    'wholetone'
-  ],
-  // Максимальный отступ на грифе для генератора играбельных риффов
-  FRETBOARD_STEP_LENGTH: 3
+export const randomArrayElementDoubled = arr => {
+  const { note, velocity } = randomArrayElement(arr) ?? { note: 'c2', duration: '4n' }
+  const ind = randomNumber(arr.length)
+  arr[ind] = [[{ note, velocity, duration: '16n' }], [{ note, velocity, duration: '16n' }]]
+  return arr
 }
+export const randomDurationSymbol = (durations = ['n', 'n']) => randomArrayElement(durations)
 
-//* Генераторы и часто используемые функции
-// Случайное число
-export const randNumber = (max = 100) => Math.ceil(Math.random() * max)
-// Случайная степень двойки, для длительности нот, например
-export const randPowerOfTwo = (max_power = 7) => parseInt(2 ** randNumber(max_power))
-// Случайный елемент массива
-export const randArrayElement = array => array[Math.floor(Math.random() * array.length)]
-// True или False c указанной вероятностью
-export const randChance = (percents = 15) => parseInt(percents) > randNumber(100)
-// Случайная нота, если дать массив с гаммой, выберет из неё
-export const randNote = (arr = MUSIC_VALUES.NOTES) => randArrayElement(arr)
-// Случайная октава
-export const randOctave = (min = initialState.octave) => 1 + randNumber(3)
-// То же что и randNote но добавляет значение октавы
-export const randNoteAndOctave = (arr = MUSIC_VALUES.NOTES) => `${randNote(arr)}${randOctave()}`
-// Случайный строй гитары
-export const randTuning = () => randArrayElement(MUSIC_VALUES.TUNINGS)
-// Случайное название строя гитары
-export const randTuningName = () => randArrayElement(MUSIC_VALUES.TUNINGS).name
-// Случайное название гаммы
-export const randScaleName = () => randArrayElement(MUSIC_VALUES.SCALES)
-// Случайная метка длительности
-export const randDurationSymbol = () => randArrayElement(['n', 't'])
-// export const randDurationSymbol = () => randArrayElement(['n', 'm', 't', 's'])
-// Случайная относительная длительность
-// export const randDurationRelative = (max_power = 3) => `${2 ** randNumber(max_power)}n`
-export const randDurationRelative = (max_power = 4) => `${randPowerOfTwo(max_power)}${randDurationSymbol()}`
-// export const randDurationRelative = (max_power = 2) => `${2 * Math.ceil(Math.random() * 5)}n`
-// Случайное абсолютная длительность в мс
-export const randDurationAbsolute = (max_ms = 1000) => randNumber(max_ms)
-// Конвертер мс в секунды
-export const msToSec = ms => parseInt(ms / 1000)
-// Конвертер секунд в мс
-export const secToMs = sec => parseInt(sec * 1000)
-// Соединяет ноту и октаву в строку
-export const joinNoteAndOctave = (note, octave) => `${note}${octave}`
-// Берёт ноту из строки
-export const getNoteFromString = str => str.match(/[a-z#]+/i)?.[1]
-// Берёт октаву из строки
-export const getOctaveFromString = str => str.match(/\d/i)?.[1]
-// Музыкальная фраза в виде текста
-export const patternToText = arr => arr.map(val => `${val.note}`).join(' -> ')
-// Разделитель для текста
-export const textDivider = `\n${'-'.repeat(50)}\n`
-// Обьект в текст
-export const objectToText = obj => Object.entries(obj)
-// Настройки для генерации, обьединяет полученные с настройками по умолчанию
-export const getGenerateOptions = optObj => ({ ...optObj, ...initialState })
+export const randomScale = () => randomArrayElement(SCALES)
 
-// Генерация последовательности уникальных фраз
-export const Notes = state => {
-  const MusicNote = Teoria.note(joinNoteAndOctave(state.note, state.octave))
-  const scaleNotes = MusicNote.scale(state.scale).simple()
+export const randomBpm = () => randomNumber(200, 150)
 
-  return Array(state.size)
-    .fill(1)
-    .map((v, i) => ({ note: randNoteAndOctave(scaleNotes), duration: randDurationRelative() }))
-}
+export const randomDuration = () => `${randomPowerOfTwo(4)}${randomDurationSymbol()}`
 
-export const getInstrument = state => {
-  if (state.instrument === 'Synth') {
-    state.instrument = new Tone.Synth().toDestination()
-  } else if (state.instrument === 'MetalSynth') {
-    state.instrument = new Tone.MetalSynth().toDestination()
-  } else {
-    state.instrument = new Tone.PolySynth(Tone.Synth, Tone.Synth).toDestination()
+export const randomNoteAndOctave = (notesArray = NOTES, octave = 2) =>
+  `${randomArrayElement(notesArray)}${randomNumber(octave + 2, octave)}`
+
+export const randomNoteObject = (notesArray = NOTES, octave = 2) => {
+  const note = randomArrayElement(notesArray)
+  return {
+    note,
+    noteBass: `${note}2`,
+    noteDrum: `${note}1`,
+    noteSynth: `${note}${randomNumber(5, octave)}`,
+    duration: randomDuration(),
+    velocity: randomRange()
   }
-  state.transport = Tone.Transport
-  state.transport.set({ swing: Math.random() })
-
-  return state
 }
 
-export const getSequence = state => {
-  if (!state.instrument) state = getInstrument(state)
-  state.pattern = Notes(state)
-  state.values = []
+export const objStat = obj => Object.entries(obj).reduce((acc, val) => (acc += `\n${val.join(' -> ')}`), '')
 
-  const track = new Tone.Sequence((time, { note, duration }) => {
-    state.instrument.triggerAttackRelease(note, duration, time, Math.random())
-  }, state.pattern)
+export const randomNumbers = (max = 100) =>
+  Array(100)
+    .fill(1)
+    .map(v => randomNumber(max))
 
-  track.humanize = true
-  track.probability = 0.95
-  track.playbackRate = 1
+export const randomMelody = ({ key, scale, octave, size, parts }) => {
+  const mainNote = `${key}${octave}`
+  const Note = Teoria.note(mainNote)
+  const Scale = Note.scale(scale).simple()
 
-  state.transport = Tone.Transport
-  state.transport.set({ swing: Math.random(), swingSubdivision: randDurationRelative() })
+  const mainNotes = Array(size)
+    .fill(1)
+    .map(v => randomNoteObject(Scale, octave))
+    .map(v => {
+      if (randomRange() > 0.7) {
+        return [v, v]
+      } else {
+        return v
+      }
+    })
 
-  state.transport.start()
+  const melodyBass = mainNotes.map(v => {
+    const range = randomRange()
+    if (range > 0.8) {
+      return randomNoteObject(Scale, octave)
+    } else if (range > 0.6) {
+      return randomArrayElement(mainNotes)
+    } else {
+      return v
+    }
+  })
+  const melodyDrum = mainNotes.map(v => {
+    const range = randomRange()
+    if (range > 0.8) {
+      return randomNoteObject(Scale, octave)
+    } else if (range > 0.4) {
+      return randomArrayElement(mainNotes)
+    } else {
+      return v
+    }
+  })
+  const melodyPart = mainNotes.map(v => {
+    const range = randomRange()
+    if (range > 0.8) {
+      return randomNoteObject(Scale, octave)
+    } else if (range > 0.6) {
+      return randomArrayElement(mainNotes)
+    } else {
+      return v
+    }
+  })
+  const melodyBassFull = Array(parts)
+    .fill(melodyBass)
+    .reduce((acc, val) => [...acc, ...val], [])
+  const melodyDrumFull = Array(parts)
+    .fill(melodyDrum)
+    .reduce((acc, val) => [...acc, ...val], [])
+  const melodyPartFull = Array(parts)
+    .fill(melodyPart)
+    .reduce((acc, val) => [...acc, ...val], [])
 
-  return { ...state, track }
+  // const melodyPart = Array(size)
+  //   .fill(1)
+  //   .map(v => randomNoteObject(Scale, octave))
+  const melodyShuffled = Array(parts)
+    .fill(1)
+    .map(val => randomArrayShuffle(melodyPart))
+    .reduce((acc, val) => [...acc, ...randomArrayShuffle(melodyPart)], [])
+  const melodyDoubled = Array(parts)
+    .fill(1)
+    .reduce((acc, val) => [...acc, ...randomArrayElementDoubled(melodyPart)], [])
+
+  return {
+    mainNotes,
+    melodyBass: melodyBassFull,
+    melodyDrum: melodyDrumFull,
+    melodyPart: melodyPartFull
+  }
+  // return {
+  //   melodyBass,
+  //   melodyDrum,
+  //   melodyPart
+  // }
+  // return melodyPart
+  // return melodyShuffled
+  // return melodyDoubled
 }
-export const getPattern = state => {
-  const track = new Tone.Pattern(
-    (time, { note, duration }) => {
-      state.instrument.triggerAttackRelease(note, duration, time, Math.random())
+export const getInstrument = ({ instrument }) => {
+  const synth = new Tone.PolySynth(Tone.Synth, {
+    oscillator: {
+      type: 'custom',
+      partials: [2, 1, 2, 2]
     },
-    state.pattern,
-    'upDown'
-  )
-  track.humanize = true
-  track.probability = 1
-  track.playbackRate = 1.5
-
-  return { ...state, track }
+    envelope: {
+      attack: 0.005,
+      decay: 0.3,
+      sustain: 0.2,
+      release: 1
+    },
+    volume: 10
+  }).toDestination()
+  const drum = new Tone.PluckSynth({ volume: -10 }).toDestination()
+  const bass = new Tone.DuoSynth({ volume: -10 }).toDestination()
+  return { synth, bass, drum }
 }
+export const getTrack = ({ instrument, melody, transport }) => {
+  console.log('melody', melody)
+  const trackBass = new Tone.Sequence(
+    (time, { noteBass, duration, velocity }) => {
+      instrument.bass.triggerAttackRelease(noteBass, duration, time, velocity)
+    },
+    melody.melodyBass,
+    '4n'
+  ).set({ humanize: true, probability: 0.95, playbackRate: 1 })
+  const trackDrum = new Tone.Sequence(
+    (time, { noteDrum, duration, velocity }) => {
+      instrument.drum.triggerAttackRelease(noteDrum, duration, time, velocity)
+    },
+    melody.melodyDrum,
+    '4n'
+  ).set({ humanize: true, probability: 0.95, playbackRate: 1 })
+  const trackPart = new Tone.Sequence(
+    (time, { noteSynth, duration, velocity }) => {
+      instrument.synth.triggerAttackRelease(noteSynth, duration, time, velocity)
+    },
+    melody.melodyPart,
+    '4n'
+  ).set({ humanize: true, probability: 0.95, playbackRate: 1 })
+  const track = {
+    stop: (time = 0) => {
+      trackPart.stop(time)
+      trackBass.stop(time)
+      trackDrum.stop(time)
+    },
+    start: (time = 0) => {
+      trackPart.start(time)
+      trackBass.start(time)
+      trackDrum.start(time)
+    }
+  }
+  // const track = new Tone.Sequence(
+  //   (time, { note, duration, velocity, index }) => {
+  //     if (velocity > 0.5) {
+  //       instrument.bass.triggerAttackRelease(note, duration, `+${time}`, velocity)
+  //       instrument.drum.triggerAttackRelease(note, duration, time, velocity)
+  //     }
+  //     instrument.synth.triggerAttackRelease(note, duration, time, velocity)
+  //   },
+  //   melody,
+  //   '4n'
+  // )
+  // track.set({ humanize: true, probability: 1, playbackRate: 1 })
+
+  transport.set({ bpm: randomBpm() })
+
+  return track
+}
+export const getTransport = () => Tone.Transport

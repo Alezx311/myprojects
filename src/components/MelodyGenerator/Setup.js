@@ -1,82 +1,80 @@
 import React from 'react'
+import Select from 'react-select'
 import { useDispatch, useSelector } from 'react-redux'
-import * as actions from '../../store/actions'
+import { updateSound } from '../../store/actions'
+import { NOTES, SCALES, randomArrayElement } from './Helpers'
 
-const SetupChooseSize = () => {
+const getOptions = arr => arr.map(v => ({ value: v, label: v }))
+
+const optionsKey = NOTES
+const optionsScale = SCALES
+const optionsSize = [3, 4, 5, 7, 9, 11, 13, 17, 20, 100]
+const optionsParts = [3, 4, 5, 7, 9, 11, 13, 17, 20, 100]
+const optionsOctave = [1, 2, 3, 4]
+const optionsInstrument = ['Synth', 'PolySynth']
+// const optionsInstrument = ['Synth', 'PolySynth', 'Guitar']
+const randomSoundSetup = () => ({
+  size: randomArrayElement(optionsSize),
+  parts: randomArrayElement(optionsParts),
+  key: randomArrayElement(optionsKey),
+  // octave: randomArrayElement(optionsOctave),
+  scale: randomArrayElement(optionsScale)
+  // instrument: randomArrayElement(optionsInstrument)
+})
+
+const SetupSelectLabel = ({ text }) => <div className="text-center align-middle m-1">{text}</div>
+
+const SetupSelect = ({ text, options }) => {
   const dispatch = useDispatch()
-  const size = useSelector(state => state.size)
-
-  const changeHandler = e => dispatch(actions.setupChangeSize(e.target.value))
+  const name = text.toLowerCase()
+  const value = useSelector(state => state.sound[name])
+  const onChange = option => dispatch(updateSound(Object.fromEntries([[name, option.value]])))
 
   return (
-    <>
-      <label for="inputRangeSize" className="form-label">
-        Size
-      </label>
-      <input
-        id="inputRangeSize"
-        className="form-range"
-        type="range"
-        min={3}
-        max={16}
-        value={size}
-        step={1}
-        onChange={changeHandler}
-      />
-    </>
-  )
-}
-const SetupChooseParts = () => {
-  const dispatch = useDispatch()
-  const parts = useSelector(state => state.parts)
-
-  const changeHandler = e => dispatch(actions.setupChangeParts(e.target.value))
-
-  return (
-    <>
-      <label for="inputRangeParts" className="form-label">
-        Parts
-      </label>
-      <input
-        id="inputRangeParts"
-        className="form-range"
-        type="range"
-        min={3}
-        max={16}
-        value={parts}
-        step={1}
-        onChange={changeHandler}
-      />
-    </>
-  )
-}
-
-const SetupChooseInstrument = () => {
-  const dispatch = useDispatch()
-
-  const changeHandler = e => {
-    dispatch(actions.changeInstrument(e.target.value))
-  }
-
-  return (
-    <div>
-      <label for="inputSelectInstrument">Select instrument</label>
-      <select className="form-select" id="inputSelectInstrument" onChange={changeHandler}>
-        <option>PolySynth</option>
-        <option>Synth</option>
-        <option>MetalSynth</option>
-        <option>Guitar</option>
-      </select>
+    <div className="col">
+      <SetupSelectLabel text={text} />
+      <Select value={{ value, label: value }} onChange={onChange} options={getOptions(options)} />
     </div>
   )
 }
 
-const SetupForm = () => (
-  <div className="input-group mb-3">
-    <SetupChooseInstrument />
-    <SetupChooseSize />
-    <SetupChooseParts />
-  </div>
+const SetupButton = ({
+  text = 'Button',
+  onClick = ({ target }) => console.log('Pressed', target),
+  className = 'btn btn-primary'
+}) => (
+  <button className={`${className} m-1`} onClick={onClick}>
+    {text}
+  </button>
 )
 
-export default SetupForm
+const SetupRandomize = () => {
+  const dispatch = useDispatch()
+  const onClick = () => dispatch(updateSound(randomSoundSetup()))
+
+  return (
+    <div className="col">
+      <SetupButton text="Randomize" onClick={onClick} />
+    </div>
+  )
+}
+
+const Setup = () => {
+  return (
+    <div className="container">
+      <div className="row">
+        <SetupSelect text="Key" options={optionsKey} />
+        <SetupSelect text="Scale" options={optionsScale} />
+        <SetupSelect text="Size" options={optionsSize} />
+        <SetupSelect text="Parts" options={optionsParts} />
+        <SetupSelect text="Octave" options={optionsOctave} />
+        <SetupSelect text="Instrument" options={optionsInstrument} />
+      </div>
+      <div className="row">
+        <SetupRandomize />
+      </div>
+    </div>
+  )
+}
+
+export default Setup

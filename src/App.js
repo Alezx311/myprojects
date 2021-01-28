@@ -1,6 +1,5 @@
 import MelodyGenerator from './components/MelodyGenerator'
-
-
+// import GuitarFretboard from './components/GuitarFretboard'
 
 function App() {
   return (
@@ -11,6 +10,7 @@ function App() {
       <div className="row">
         <MelodyGenerator />
       </div>
+      <div className="row">{/* <GuitarFretboard /> */}</div>
       <div className="row">
         <h1>Footer</h1>
       </div>
