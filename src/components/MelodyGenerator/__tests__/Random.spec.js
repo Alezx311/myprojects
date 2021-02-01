@@ -1,15 +1,16 @@
 const { Random, CONSTANTS } = require('../Classes')
 
-const getArray = ({ size = 100 }) => Array(size).fill(1)
-const getUnicalNumbers = ({ size = 100 }) => getUnicals(getArray(size).map(v => Random.Number()))
+const getArray = (size = 20) => Array(size).fill(1)
+const getUnicals = (arr = getArray()) => [...new Set([...arr])]
+const getUnicalNumbers = (size = 20) => getUnicals(getArray(size).map(Random.Number))
+
 const RANGE_MIN = 0.001
 const RANGE_MAX = 0.999
 const NUMBER_MIN = 1
 const NUMBER_MAX = 9999
 const OCTAVE_MIN = 1
 const OCTAVE_MAX = 6
-const NUMBERS = getUnicalNumbers()
-const getUnicals = getArray => getArray && [...new Set([...getArray])]
+const UNICAL_NUMBERS = getUnicalNumbers()
 
 describe('Random', () => {
   it('Range', () => {
@@ -22,7 +23,7 @@ describe('Random', () => {
     const result = Random.Number()
 
     expect(result).toBeGreaterThanOrEqual(NUMBER_MIN)
-    expect(result).toBeLessThanOrEqual(NUMBER_MIN)
+    expect(result).toBeLessThanOrEqual(NUMBER_MAX)
   })
   it('PowerOfTwo', () => {
     const result = Random.PowerOfTwo()
@@ -30,24 +31,24 @@ describe('Random', () => {
     expect(result % 2).toBeEqual(0)
   })
   it('Values', () => {
-    const result = Random.Values(13)
+    const result = Random.Values(7)
 
-    expect(result).toHaveLength(13)
+    expect(result).toHaveLength(7)
   })
   it('ArrayIndex', () => {
-    const result = Random.Values(NUMBERS)
+    const result = Random.ArrayIndex(UNICAL_NUMBERS)
 
-    expect(result).toBeLessThanOrEqual(NUMBERS.length)
+    expect(result).toBeLessThanOrEqual(UNICAL_NUMBERS.length)
   })
   it('ArrayElement', () => {
-    const result = Random.Values(NUMBERS)
+    const result = Random.ArrayElement(UNICAL_NUMBERS)
 
-    expect(NUMBERS).toContain(result)
+    expect(UNICAL_NUMBERS).toContain(result)
   })
   it('Chance', () => {
     const result = Random.Chance()
 
-    expect(result).toBeBoolean()
+    expect(result).toBeDefined()
   })
   it('Octave', () => {
     const result = Random.Octave()
@@ -57,8 +58,9 @@ describe('Random', () => {
   })
   it('Note', () => {
     const result = Random.Note()
+    const { NOTES } = CONSTANTS
 
-    expect(CONSTANTS.NOTES).toContain(result)
+    expect(NOTES).toContain(result)
   })
   it('NoteAndOctave', () => {
     const result = Random.NoteAndOctave()
@@ -68,18 +70,21 @@ describe('Random', () => {
   })
   it('TuningName', () => {
     const result = Random.TuningName()
+    const { TUNINGS } = CONSTANTS
 
-    expect(Object.keys(CONSTANTS.TUNINGS)).toContain(result)
+    expect(TUNINGS).toContain(result)
   })
   it('ScaleName', () => {
     const result = Random.ScaleName()
+    const { SCALES } = CONSTANTS
 
-    expect(CONSTANTS.SCALES).toContain(result)
+    expect(SCALES).toContain(result)
   })
   it('DurationSymbol', () => {
     const result = Random.DurationSymbol()
+    const { DURATION_SYMBOLS } = CONSTANTS
 
-    expect(CONSTANTS.DURATION_SYMBOLS).toContain(result)
+    expect(DURATION_SYMBOLS).toContain(result)
   })
   it('DurationRelative', () => {
     const result = Random.DurationRelative()
@@ -94,29 +99,35 @@ describe('Random', () => {
   })
   it('InstrumentName', () => {
     const result = Random.InstrumentName()
+    const { INSTRUMENT_NAMES } = CONSTANTS
 
-    expect(CONSTANTS.INSTRUMENT_NAMES).toContain(result)
+    expect(INSTRUMENT_NAMES).toContain(result)
   })
   it('SynthName', () => {
     const result = Random.SynthName()
+    const { SYNTH_NAMES } = CONSTANTS
 
-    expect(CONSTANTS.SYNTH_NAMES).toContain(result)
+    expect(SYNTH_NAMES).toContain(result)
   })
   it('SampleName', () => {
     const result = Random.SampleName()
+    const { SAMPLE_NAMES } = CONSTANTS
 
-    expect(Object.keys(CONSTANTS.SAMPLE_NAMES)).toContain(result)
+    expect(SAMPLE_NAMES).toContain(result)
   })
   it('SampleNoteNames', () => {
     const result = Random.SampleNoteNames({ c4: 's', D2: 'ss' })
 
     expect(result).toContain('c4')
-    expect(result).toContain('D4')
+    expect(result).toContain('D2')
   })
   it('Sorting', () => {
-    const result = Random.Sorting(NUMBERS)
+    const numbersSorted = UNICAL_NUMBERS.sort((a, b) => a - b)
+    const result = Random.Sorting(UNICAL_NUMBERS)
+    const resultSorted = result.sort((a, b) => a - b)
 
-    expect(result).not.toBeEqual(NUMBERS)
+    expect(resultSorted).toEqual(numbersSorted)
+    expect(result).not.toBe(UNICAL_NUMBERS)
   })
   it('Phrase', () => {
     const result = Random.Phrase()

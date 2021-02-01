@@ -19,7 +19,7 @@ const values = {
   null: null
 }
 
-describe('Random', () => {
+describe('Validate', () => {
   it('Boolean', () => {
     const result = Validate.Boolean(values.boolean)
     const resultFalse = Validate.Boolean(values.null)

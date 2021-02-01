@@ -23,6 +23,6 @@ describe('Matchers Test', () => {
   it('durationSymbol', () => {
     const result = Matchers.durationSymbol(DURATION)
 
-    expect(result).toBeEqual('n')
+    expect(result).toBe('n')
   })
 })
