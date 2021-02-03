@@ -2,20 +2,16 @@ import CONSTANTS from './Constants'
 import Joi from 'joi'
 
 const schemaCheck = s => Joi.isSchema(s) && s.validate()
-
-export default class Validate {
+class Validate {
   static Boolean = v => schemaCheck(Joi.boolean(v))
-  static True = v => v === true
-  static Truthy = v => v ?? false
   static String = v => schemaCheck(Joi.string(v))
   static Array = v => schemaCheck(Joi.string(v))
   static Object = v => schemaCheck(Joi.string(v))
-  static Range = v => v > 0.0001 && v < 0.9999
-  static Number = v => v > 0
-  static PowerOfTwo = v => v % 2 === 0
-  static Chance = v => v > 0 && v < 100
-  static Octave = v => v > 0
-  // static Note = v => CONSTANTS.NOTES.includes(v)
+  static Range = v => schemaCheck(Joi.number(v).min(0.01).max(0.09))
+  static Number = v => schemaCheck(Joi.number(v).min(1).max(100))
+  static PowerOfTwo = v => schemaCheck(Joi.number(v).min(1).max(64))
+  static Octave = v => schemaCheck(Joi.number(v).min(1).max(6))
+
   static Note = v => schemaCheck(Joi.string(v).pattern(/^[a-g#]+$/i))
   static NoteAndOctave = v => schemaCheck(Joi.string(v).pattern(/^[a-g#]+[0-9]$/i))
   static NotesArray = v => schemaCheck(Joi.array(v).items(this.Note))
@@ -32,3 +28,5 @@ export default class Validate {
   static Phrase = v => this.NotesArray(v)
   static PhrasesArray = v => schemaCheck(Joi.array(v).items(this.NotesArray))
 }
+
+export default Validate

@@ -1,205 +1,149 @@
-const { Validate } = require('../Classes')
+const Joi = require('joi')
+const { floor, random } = Math
 
-const values = {
-  boolean: true,
-  truthy: 'true',
-  range: 0.1,
-  number: 8,
-  note: 'C',
-  octave: '2',
-  noteAndOctave: 'D4',
-  durationSymbol: 'n',
-  durationRelative: '4n',
-  tuningName: 'Drop D',
-  scaleName: 'minor',
-  instrumentName: 'flute',
-  synthName: 'DuoSynth',
-  sampleName: 'bassoon',
-  notesArray: ['C2', 'E2', 'D2'],
-  null: null
+const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
+const DURATION_SYMBOLS = ['n', 't', 'm', 'n']
+class Random {
+  //* generate random range -> range > 0.01 && range < 0.99
+  static Range = () => +random().toFixed(2)
+  //* generate random number -> number > min && number < max
+  static Number = (min = 1, max = 100) => floor(random() * (max - min + 1)) + min
+  //* generate random power of 2 number -> 2,4,8,16,32,64...
+  static PowerOfTwo = (maxPower = 5) => 2 ** this.Number(1, maxPower)
+  //* generate random array with given length
+  static Array = (arrayLength = 10) => Array(arrayLength).fill(1)
+  //* get random element from given array
+  static ArrayElement = (arr = ['invalid array']) => [...arr, ...arr][this.Number(0, arr.length)]
+  //* get random note char like: 'c', 'd#', 'bb' with possible '#' and 'b' symbols
+  static NoteChar = (notesArray = NOTES) => this.ArrayElement(notesArray)
+  //* get random octave in given range (min is 1 and max is 6 for default)
+  static Octave = (minOctave = 1, maxOctave = 6) => this.Number(minOctave, maxOctave)
+  //* get random note char and join it with octave like: 'c2', 'd3', 'bb5'...
+  static NoteCharAndOctave = (chars = NOTES, maxOctave = 6) => `${this.ArrayElement(chars)}${this.Octave(maxOctave)}`
+  //* get random music note duration symbol
+  static DurationSymbol = () => this.ArrayElement(DURATION_SYMBOLS)
+  //* get random music note duration value and symbol. for example, '1n' is full note, '4n' is fourth
+  static DurationRelative = () => `${this.PowerOfTwo()}${this.DurationSymbol()}`
+  //* get absolute duration value. 1 is one second, for example
+  static DurationAbsolute = () => this.Range()
+}
+
+class Validate {
+  static Boolean = v => Joi.boolean().validate(v)
+  static String = v => Joi.string().validate(v)
+  static Array = v => Joi.array().validate(v)
+  static Object = v => Joi.object().validate(v)
+  static Range = v => Joi.number().min(0.01).max(0.99).validate(v)
+  static Number = v => Joi.number().min(1).max(100).validate(v)
+  static PowerOfTwo = v => Joi.number().min(1).max(64).validate(v)
+  static Octave = v => Joi.number().min(1).max(6).validate(v)
+  static NoteChar = v =>
+    Joi.string()
+      .min(1)
+      .max(2)
+      .pattern(/^[a-g#]+$/i)
+      .validate(v)
+  static NoteCharAndOctave = v =>
+    Joi.string()
+      .min(2)
+      .max(3)
+      .pattern(/^[a-g#]+[1-6]$/i)
+      .validate(v)
+  static NotesArray = v => Joi.array().items(this.NoteChar).validate(v)
+  static DurationSymbol = v =>
+    Joi.string()
+      .pattern(/^[ntms]$/i)
+      .validate(v)
+  static DurationRelative = v =>
+    Joi.string()
+      .pattern(/^1|2|4|8|16|32|64[nmts]$/i)
+      .validate(v)
+  static DurationAbsolute = v => Joi.number().min(0.001).max(10000).validate(v)
 }
 
 describe('Validate', () => {
   it('Boolean', () => {
-    const result = Validate.Boolean(values.boolean)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.Boolean(true)
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('Truthy', () => {
-    const result = Validate.Truthy(values.truthy)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('True', () => {
-    const result = Validate.True(values.boolean)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('String', () => {
-    const result = Validate.String(values.truthy)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.String('Random.String()')
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
+  })
+  it('Array', () => {
+    const result = Validate.Array(Random.Array())
+
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
+  })
+  it('Object', () => {
+    const result = Validate.Object({ range: Random.Range() })
+
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('Range', () => {
-    const result = Validate.Range(values.range)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.Range(Random.Range())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('Number', () => {
-    const result = Validate.Number(values.number)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.Number(Random.Number())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('PowerOfTwo', () => {
-    const result = Validate.PowerOfTwo(values.number)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.PowerOfTwo(Random.PowerOfTwo())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('Values', () => {
-    const result = Validate.Values([values.number, values.number, values.number])
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('ArrayIndex', () => {
-    const result = Validate.ArrayIndex(values.number)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('ArrayElement', () => {
-    const result = Validate.ArrayElement(values.number)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('Chance', () => {
-    const result = Validate.Chance(values.number)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('Octave', () => {
-    const result = Validate.Octave(values.octave)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.Octave(Random.Octave())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
-  it('Note', () => {
-    const result = Validate.Note(values.note)
-    const resultFalse = Validate.Boolean(values.null)
+  it('NoteChar', () => {
+    const result = Validate.NoteChar(Random.NoteChar())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
-  it('NoteAndOctave', () => {
-    const result = Validate.NoteAndOctave(values.noteAndOctave)
-    const resultFalse = Validate.Boolean(values.null)
+  it('NoteCharAndOctave', () => {
+    const result = Validate.NoteCharAndOctave(Random.NoteCharAndOctave())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('NotesArray', () => {
-    const result = Validate.NotesArray(values.notesArray)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.NotesArray(Random.Array(10).map(v => Random.NoteChar()))
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('TuningName', () => {
-    const result = Validate.TuningName(values.tuningName)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('ScaleName', () => {
-    const result = Validate.ScaleName(values.scaleName)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('DurationSymbol', () => {
-    const result = Validate.DurationSymbol(true)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.DurationSymbol(Random.DurationSymbol())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('DurationRelative', () => {
-    const result = Validate.DurationRelative(values.durationRelative)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.DurationRelative(Random.DurationRelative())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
   it('DurationAbsolute', () => {
-    const result = Validate.DurationAbsolute(values.range)
-    const resultFalse = Validate.Boolean(values.null)
+    const result = Validate.DurationAbsolute(Random.DurationAbsolute())
 
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('InstrumentName', () => {
-    const result = Validate.InstrumentName(values.instrumentName)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('SynthName', () => {
-    const result = Validate.SynthName(values.synthName)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('SampleName', () => {
-    const result = Validate.SampleName(values.sampleName)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('SampleNoteNames', () => {
-    const result = Validate.SampleNoteNames(values.notesArray)
-    const resultFalse = Validate.Boolean(values.null)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('Phrase', () => {
-    const result = Validate.Phrase(true)
-    const resultFalse = Validate.Boolean(values.notesArray)
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
-  })
-  it('PhrasesArray', () => {
-    const result = Validate.PhrasesArray(true)
-    const resultFalse = Validate.Boolean([values.notesArray])
-
-    expect(result).toBe(true)
-    expect(resultFalse).not.toBeTruthy()
+    expect(result.value).toBeDefined()
+    expect(result.error).not.toBeDefined()
   })
 })

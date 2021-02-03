@@ -1,27 +1,28 @@
-const { Matchers } = require('../Classes')
-
-const NOTE_AND_OCTAVE = 'C2'
-const DURATION = '4n'
+class Matchers {
+  static noteChar = str => new RegExp('^[a-g#]+', 'i').exec(str).join()
+  static octave = str => new RegExp('\\d$', 'i').exec(str).join()
+  static durationValue = str => new RegExp('^\\d+', 'i').exec(str).join()
+  static durationSymbol = str => new RegExp('[ntms]$', 'i').exec(str).join()
+}
 
 describe('Matchers Test', () => {
   it('noteChar', () => {
-    const result = Matchers.noteChar(NOTE_AND_OCTAVE)
+    const result = Matchers.noteChar('C4')
 
-    expect(result).toBeEqual('C')
+    expect(result).toBe('C')
   })
   it('octave', () => {
-    const result = Matchers.octave(NOTE_AND_OCTAVE)
+    const result = Matchers.octave('C4')
 
-    expect(result).toBeEqual('2')
+    expect(result).toBe('4')
   })
-  it('noteCharAndOctave', () => {
-    const result = Matchers.noteCharAndOctave(NOTE_AND_OCTAVE)
+  it('durationValue', () => {
+    const result = Matchers.durationValue('16n')
 
-    expect(result.noteChar).toBeDefined().toBeEqual('C')
-    expect(result.octave).toBeDefined().toBeEqual('2')
+    expect(result).toBe('16')
   })
   it('durationSymbol', () => {
-    const result = Matchers.durationSymbol(DURATION)
+    const result = Matchers.durationSymbol('16n')
 
     expect(result).toBe('n')
   })

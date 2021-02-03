@@ -1,6 +1,6 @@
-// Notes Symbols Array
+// Notes Symbols
 export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
-// Scale Names Array
+// Scale Names
 export const SCALES = [
   'major',
   'minor',
@@ -22,7 +22,7 @@ export const SCALES = [
   'melodicminor',
   'wholetone'
 ]
-// Scale Names Array (Shorted)
+// Scale Names Shorted
 export const SCALES_SHORT = [
   'major',
   'minor',
@@ -39,6 +39,7 @@ export const TUNINGS = {
   'Drop C': ['C2', 'G2', 'C3', 'F3', 'A4', 'D4'],
   'Drop B': ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4']
 }
+export const TUNING_NAMES = Object.keys(TUNINGS)
 export const INSTRUMENT_NAMES = [
   'bass-electric',
   'bassoon',
@@ -74,7 +75,7 @@ export const SYNTH_NAMES = [
   'PolySynth',
   'Synth'
 ]
-export const SAMPLE_NAMES = {
+export const SAMPLES = {
   'bass-electric': {
     'A#2': 'As2.[mp3|ogg]',
     'A#3': 'As3.[mp3|ogg]',
@@ -559,6 +560,7 @@ export const SAMPLE_NAMES = {
     C6: 'C6.[mp3|ogg]'
   }
 }
+export const SAMPLE_NAMES = INSTRUMENT_NAMES
 export const DURATION_SYMBOLS = ['n', 't', 'm', 'n']
 // For Easy export/import
 const CONSTANTS = {
