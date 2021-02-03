@@ -4,60 +4,60 @@ import SAMPLE_NOTES from '../samples/'
 
 //! class Random is generate functions, for easy work, test, processing, etc...
 export class Random {
-  //* generate random range -> range > 0.01 && range < 0.99
+  // generate random range -> range > 0.01 && range < 0.99
   static Range = () => +(0.5 + Math.random() / 5).toFixed(2)
-  //* generate random number -> number > min && number < max
+  // generate random number -> number > min && number < max
   static Number = (min = 1, max = 100) => Math.floor(Math.random() * (max - min + 1)) + min
-  //* generate random power of 2 number -> 2,4,8,16,32,64...
+  // generate random power of 2 number -> 2,4,8,16,32,64...
   static PowerOfTwo = (maxPower = 5) => 2 ** this.Number(1, maxPower)
-  //* generate random array with given length
+  // generate random array with given length
   static Array = (arrayLength = 10) => Array(arrayLength).fill(1)
-  //* generate random array with given length and random range values
+  // generate random array with given length and random range values
   static Values = (arrayLength = 10) => this.Array(arrayLength).map(this.Range)
-  //* get random element from given array
+  // get random element from given array
   static ArrayElement = (arr = ['invalid array']) => [...arr, ...arr][this.Number(0, arr.length)]
-  //* shuffle given array
+  // shuffle given array
   static ArrayShuffle = (arr = []) => [...new Set([...arr, ...arr, ...arr].sort((a, b) => Math.random() - 0.5))]
-  //* get random note char like: 'c', 'd#', 'bb' with possible '#' and 'b' symbols
+  // get random note char like: 'c', 'd#', 'bb' with possible '#' and 'b' symbols
   static NoteChar = (notesArray = NOTES) => this.ArrayElement(notesArray).toUpperCase()
-  //* get random octave in given range (min is 1 and max is 6 for default)
+  // get random octave in given range (min is 1 and max is 6 for default)
   static Octave = (min = 1, max = 6) => this.Number(min, max)
-  //* get random note char and join it with octave like: 'c2', 'd3', 'bb5'...
-  static NoteCharAndOctave = (noteChar = NOTES, minOctave = 2) =>
-    `${this.ArrayElement(noteChar)}${this.Octave(minOctave, minOctave + 1)}`
-  //* get random guitar tuning name
+  // get random note char and join it with octave like: 'c2', 'd3', 'bb5'...
+  static NoteCharAndOctave = (notesArray = NOTES, min = 2) =>
+    `${this.ArrayElement(notesArray)}${this.Octave(min, min + 1)}`
+  // get random guitar tuning name
   static TuningName = () => this.ArrayElement(TUNING_NAMES)
-  //* get random musical scale name
+  // get random musical scale name
   static ScaleName = () => this.ArrayElement(SCALES)
-  //* get random music note duration symbol
+  // get random music note duration symbol
   static DurationSymbol = () => this.ArrayElement(DURATION_SYMBOLS)
-  //* get random music note duration value and symbol. for example, '1n' is full note, '4n' is fourth
+  // get random music note duration value and symbol. for example, '1n' is full note, '4n' is fourth
   static DurationRelative = () => `${this.PowerOfTwo()}${this.DurationSymbol()}`
-  //* get array with durations
+  // get array with durations
   static DurationRelativesArray = (arrayLength = 10) => this.Array(arrayLength).map(v => this.DurationRelative())
-  //* get absolute duration value. 1 is one second, for example
+  // get absolute duration value. 1 is one second, for example
   static DurationAbsolute = () => this.Range()
-  //* get array with absolute durations
+  // get array with absolute durations
   static DurationAbsolutesArray = (arrayLength = 10) => this.Array(arrayLength).map(v => this.DurationAbsolute())
-  //* get random instrument name, like: 'cello', 'violin', ...
+  // get random instrument name, like: 'cello', 'violin', ...
   static InstrumentName = () => this.ArrayElement(INSTRUMENT_NAMES)
-  //* get random synth name, like: 'polysynth', 'fmsynth', ...
+  // get random synth name, like: 'polysynth', 'fmsynth', ...
   static SynthName = () => this.ArrayElement(SYNTH_NAMES)
-  //* get random sample name, match with instrument name, but can be changed in future
+  // get random sample name, match with instrument name, but can be changed in future
   static SampleName = () => this.ArrayElement(SAMPLE_NAMES)
-  //* get possible note samples for random sample instrument
+  // get possible note samples for random sample instrument
   static SampleNoteNames = () => Object.keys(SAMPLES[this.SampleName()])
-  //* Random Bpm, in given range
+  // Random Bpm, in given range
   static Bpm = (min = 60, max = 120) => this.Number(min, max)
-  //* Random Color, from given array, or HEX note colors
+  // Random Color, from given array, or HEX note colors
   static Color = (colorsArray = COLORS) => this.ArrayElement(colorsArray)
-  //* Random Size, in given range, as square side length
+  // Random Size, in given range, as square side length
   static Size = (min = 1, max = 100) => this.Number(min, max)
-  //* Random Position, in given range, as { x, y}
+  // Random Position, in given range, as { x, y}
   static Position = (min = 0, max = 100) => ({ x: this.Number(min, max), y: this.Number(min, max) })
-  //* Random Velocity, in given range
+  // Random Velocity, in given range
   static Velocity = (min = 0.5) => 1 - (Math.random() * min).toFixed(2)
-  //* Random Note Object with all values for play sound. Generated from given values
+  // Random Note Object with all values for play sound. Generated from given values
   static NoteObject = (notesArray = NOTES, minOctave = 2) => {
     const noteChar = this.NoteChar(notesArray)
     const octave = this.Octave(minOctave, minOctave + 2)
@@ -68,7 +68,13 @@ export class Random {
 
     return { noteChar, octave, noteAndOctave, duration, velocity, color }
   }
-  //* Phrases
+  // Change some given array elements for random array element with given chance
+  static ArrayChangeSome = (array, chance = 10) =>
+    array.map((v, i, a) => {
+      if (this.Number() > chance) return this.ArrayElement(a)
+      else return v
+    })
+  // Generate Music Phrases of note objects
   static Phrases = (noteChar, scaleName, minOctave = 2, phrasesLength = 20) => {
     if (!noteChar || !SCALES.includes(scaleName)) {
       throw new Error({
@@ -119,26 +125,104 @@ fromIntervalsSteps randomElement:\n${Object.entries(fromIntervalsSteps[1]).join(
       generateInfo
     }
   }
-  //* BassMelody
-  // static BassMelody = (noteChar, scaleName, minOctave) => {}
-  //* DrumMelody
-  // static DrumMelody = (noteChar, scaleName, minOctave) => {}
-  //* LeadMelody
-  // static LeadMelody = (noteChar, scaleName, minOctave) => {}
-  //* GuitarPhrases
-  // static GuitarPhrases = (fretNotesArray, phrasesDuration) => {}
+  // Generate simple melody with note objects
+  static SimpleMelody = (noteChar, scaleName, minOctave = 2, melodyLength = 16) => {
+    const { Note, Scale, Chord, Intervals, Roots, Notes } = Helpers.TeoriaValues(noteChar, scaleName)
+    const scaleNotes = Scale.simple()
+    const chordNotes = Chord.notes().toString().split(',')
+
+    const getPatternMelody = () => this.Array(melodyLength).map(v => this.NoteObject(scaleNotes, 2))
+    const patternMelody = getPatternMelody()
+
+    const getScaleMelody = () => patternMelody.map(v => this.NoteObject(scaleNotes, 2))
+    const getChordsMelody = () => patternMelody.map(v => this.NoteObject(chordNotes, 2))
+    const getRootsMelody = () => patternMelody.map(v => this.NoteObject(Roots, 2))
+    const getIntervalsMelody = () => patternMelody.map(v => this.NoteObject(Notes, 2))
+
+    const generate = (pattern = patternMelody, chance = this.Number()) => {
+      const scale = this.ArrayChangeSome(getScaleMelody(), chance)
+      const chords = this.ArrayChangeSome(getChordsMelody(), chance)
+      const roots = this.ArrayChangeSome(getRootsMelody(), chance)
+      const intervals = this.ArrayChangeSome(getIntervalsMelody(), chance)
+
+      const merged = Helpers.ArrayMerge(pattern, scale, chords, roots, intervals)
+      const flatted = this.ArrayChangeSome(merged, chance).flat('Infinite')
+
+      return Helpers.ArrayMerge(pattern, scale, chords, roots, intervals, merged, flatted)
+    }
+
+    const simple = generate()
+
+    console.log(`Simple Melody created.
+    Length: ${simple.length}
+    Unical Notes: ${this.ArrayUnicals(simple.map(v => v.noteAndOctave))}
+    Interval Moves: ${simple.reduce(
+      (acc, val, ind) => {
+        const [diff1, diff2] = [ind, acc.ind].sort((a, b) => a - b)
+        const step = Helpers.IntervalBetween(acc.noteChar, val.noteChar)
+        const diff = diff1 - diff2
+        const message = `Move interval: ${step}\nDifference: ${diff}\nAccumulator: ${acc}\nValue: ${val}`
+        const move = { step, diff, message, ind, val }
+        const state = { ...acc, ...move }
+
+        console.log('step', step)
+        console.log('diff', diff)
+        console.log('message', message)
+        console.log('move', move)
+        console.log('state', state)
+
+        return state
+      },
+      { step: '', ind: -1, noteChar: 'some...' }
+    )}
+    `)
+
+    return simple
+  }
+  //TODO Generate Bass Instrument Melody, to match sound with exists melody
+  static BassMelody = (melody, bpm = 60) => {
+    const melodyNotes = Helpers.ArrayUnicals(melody.reduce((a, v) => a.push(v.noteAndOctave), []))
+    const phrases = Helpers.ArrayUnicals(this.Array(100).map(v => this.ArrayShuffle(melodyNotes)))
+
+    console.log(melodyNotes)
+    console.log(phrases)
+  }
+  //TODO Generate Drum Instrument Melody, to match sound with exists melody
+  static DrumMelody = (melody, bpm = 60) => {
+    const melodyNotes = Helpers.ArrayUnicals(melody.reduce((a, v) => a.push(v.noteAndOctave), []))
+    const phrases = Helpers.ArrayUnicals(this.Array(100).map(v => this.ArrayShuffle(melodyNotes)))
+
+    console.log(melodyNotes)
+    console.log(phrases)
+  }
+  //TODO Generate Lead Instrument Melody, to match sound with exists melody
+  static LeadMelody = (melody, bpm = 60) => {
+    const melodyNotes = Helpers.ArrayUnicals(melody.reduce((a, v) => a.push(v.noteAndOctave), []))
+    const phrases = Helpers.ArrayUnicals(this.Array(100).map(v => this.ArrayShuffle(melodyNotes)))
+
+    console.log(melodyNotes)
+    console.log(phrases)
+  }
+  //TODO Generate Guitar Melody, to match sound with exists melody
+  static GuitarMelody = (melody = 2, bpm = 60) => {
+    const melodyNotes = Helpers.ArrayUnicals(melody.reduce((a, v) => a.push(v.noteAndOctave), []))
+    const phrases = Helpers.ArrayUnicals(this.Array(100).map(v => this.ArrayShuffle(melodyNotes)))
+
+    console.log(melodyNotes)
+    console.log(phrases)
+  }
 }
 //! Helpers is class with very useful methods, for easy use in any place
 export default class Helpers {
-  //* ArrayUnicals
+  // Unical Array Elements
   static ArrayUnicals = arr => [...new Set([...arr])]
-  //* ArrayMerge
+  // Can work with any number of arrays, always return one merged array, with unical values of all given arrays
   static ArrayMerge = (arr, ...rest) => [...new Set([...arr, ...rest.flat()])]
-  //* NoteToColor
+  // Convert Note Char to HEX Color
   static NoteToColor = str => NOTE_COLORS?.[str] ?? false
-  //* ColorToNote
+  // Convert HEX Color to Note Char
   static ColorToNote = str => Object.entries(NOTE_COLORS).find(([key, value]) => value === str)?.[0] ?? false
-  //* SomeArrayElementDouble
+  // Doubled random array element, useful on melody generate. For example, [1,2,3] -> [1,[2,2],3]
   static SomeArrayElementDouble = array => {
     const elementIndex = Random.Number(0, array.length)
     const doubled = [array[elementIndex], array[elementIndex]]
@@ -146,107 +230,148 @@ export default class Helpers {
 
     return array
   }
-  //* SomeArrayElementChange
+  // Change random array element, useful on melody generate. For example, [1,2,3] -> [1,3,3]
   static SomeArrayElementChange = array => {
     array[Random.Number(0, array.length)] = array[Random.Number(0, array.length)]
 
     return array
   }
-  //* SplitNoteAndOctave
+  // Split Note And Octave from String, and return an object { noteChar, octave }
   static SplitNoteAndOctave = str => {
     const noteChar = str.match(/^[a-g#]+/i)?.[0] ?? false
     const octave = str.match(/[1-6]$/i)?.[0] ?? false
 
     return { noteChar, octave }
   }
-  //* ScaleNotes
+  // Getter for Teoria intervals for note and scale
+  static TeoriaIntervals = (noteChar, scaleName) =>
+    noteChar?.scale(scaleName).simple() ?? Teoria.note(noteChar).scale(scaleName)
+  // Getter for all Teoria values fro note and scale { note, scale, chord tonical and elements, all interval roots and elements}
+  static TeoriaValues = (noteChar, scaleName) => {
+    const Note = Teoria.note(noteChar)
+    const Chord = Note.chord()
+    const Scale = Note.scale(scaleName)
+    const Intervals = Scale.scale
+    const Roots = Intervals.map(v => Note.interval(v).chord().tonic())
+    const Notes = Roots.map(v => Teoria.note(v).chord().notes().toString().split(','))
+
+    return { Note, Scale, Chord, Intervals, Roots, Notes }
+  }
+  // Return musical scale for any given note and valid scale name. ('C', 'blues') -> ['A', 'C#',...]
   static ScaleNotes = (noteChar, scaleName) => Teoria.note(noteChar).scale(scaleName).simple()
-  //* ChordNotes
+  // Transform any note char or chord name to array of notes, which play in this chord
   static ChordNotes = noteChar => Teoria.note(noteChar).chord().notes().toString().split(',')
-  //* IntervalNotes
+  // Return next interval note, for any note char and interval value. Work with 'third' or 'second' interval names too
   static IntervalNotes = (noteChar, step) => Teoria.note(noteChar).interval(step).chord().notes().toString().split(',')
-  //* NoteValues
+  // Return many of Teoria.js data and methods about music note char and scale name.
   static NoteValues = (noteChar, scaleName) => {
     const Note = Teoria.note(noteChar)
     const Scale = Note.scale(scaleName)
-    const Chord = Note.chord()
+    const Chord = Note.chord().notes().toString().split(',')
     const Interval = Note.interval(Teoria.note('a'))
-
     const Intervals = {
-      scale: Scale.scale.map(v => Note.interval(v).chord().notes().toString().split(',')),
-      steps: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'].map(v => Note.interval(v).chord().notes().toString().split(','))
+      scale: Scale.scale.map(v => this.ChordNotes(Note.interval(v))),
+      steps: INTERVAL_SYMBOLS.map(v => this.ChordNotes(Note.interval(v)))
     }
 
     const Info = `Note from Note: ${scaleName}
-Note: ${Note.toString()}
-Note.octave: ${Note.octave()}
-Note.duration: ${Note.duration.toString()}
-Note.accidental: ${Note.accidental()}
-Note.accidentalValue: ${Note.accidentalValue()}
-Note.key: ${Note.key()}
-Note.midi: ${Note.midi()}
-Note.fq: ${Note.fq()}
-Note.chroma: ${Note.chroma()}
-Note.interval1: ${Note.interval('P1').chord().notes().toString()}
-Note.interval2: ${Note.interval('M2').chord().notes().toString()}
-Note.interval3: ${Note.interval('M3').chord().notes().toString()}
-Note.interval4: ${Note.interval('P4').chord().notes().toString()}
-Note.interval5: ${Note.interval('P5').chord().notes().toString()}
-Note.interval6: ${Note.interval('M6').chord().notes().toString()}
-Note.interval7: ${Note.interval('M7').chord().notes().toString()}
-Note.chord: ${Note.chord().notes().toString()}
-Note.helmholtz: ${Note.helmholtz()}
-Note.scientific: ${Note.scientific()}
-Note.enharmonics: ${Note.enharmonics()}
-Note.durationInSeconds: ${Note.durationInSeconds()}
-Note.durationName: ${Note.durationName()}
-Note.scaleDegree: ${Note.scaleDegree(Note.scale(scaleName))}
-Note.solfege: ${Note.solfege(Note.scale(scaleName))}
-Note.toString: ${Note.toString()}
-
-Scale from Note: ${scaleName} and Scale: ${scaleName}:
-Scale:  ${Scale.simple().toString()}
-Scale.name:  ${Scale.name.toString()}
-Scale.tonic:  ${Scale.tonic.toString()}
-Scale.notes:  ${Scale.notes().toString()}
-Scale.simple:  ${Scale.simple().toString()}
-Scale.type:  ${Scale.type().toString()}
-
-Chord from Note: ${noteChar}
-Chord: ${Chord.toString()}
-Chord.root: ${Chord.root.toString()}
-Chord.name: ${Chord.name}
-Chord.notes: ${Chord.notes().toString()}
-Chord.simple: ${Chord.simple()}
-Chord.bass: ${Chord.bass().toString()}
-Chord.voicing: ${Chord.voicing().toString()}
-Chord.get: ${Chord.get('third').toString()}
-Chord.quality: ${Chord.quality()}
-Chord.dominant: ${Chord.dominant().toString()}
-Chord.subdominant: ${Chord.subdominant().toString()}
-Chord.parallel: ${Chord.parallel().toString()}
-Chord.interval: ${Chord.interval('P5').toString()}
-Chord.chordType: ${Chord.chordType()}
-Chord.toString: ${Chord.toString()}
-
-Interval from Note: ${noteChar} and Scale: ${scaleName}:
-Interval: ${Interval.toString()}
-Interval.coord: ${Interval.coord.toString()}
-Interval.number: ${Interval.number().toString()}
-Interval.value: ${Interval.value().toString()}
-Interval.base: ${Interval.base().toString()}
-Interval.type: ${Interval.type().toString()}
-Interval.quality: ${Interval.quality().toString()}
-Interval.qualityValue: ${Interval.qualityValue().toString()}
-Interval.direction: ${Interval.direction().toString()}
-Interval.semitones: ${Interval.semitones().toString()}
-Interval.simple: ${Interval.simple().toString()}
-Interval.octaves: ${Interval.octaves().toString()}
-Interval.isCompound: ${Interval.isCompound().toString()}`
+  Note: ${Note.toString()}
+  Note.octave: ${Note.octave()}
+  Note.duration: ${Note.duration.toString()}
+  Note.accidental: ${Note.accidental()}
+  Note.accidentalValue: ${Note.accidentalValue()}
+  Note.key: ${Note.key()}
+  Note.midi: ${Note.midi()}
+  Note.fq: ${Note.fq()}
+  Note.chroma: ${Note.chroma()}
+  Note.interval1: ${Note.interval('P1').chord().notes().toString()}
+  Note.interval2: ${Note.interval('M2').chord().notes().toString()}
+  Note.interval3: ${Note.interval('M3').chord().notes().toString()}
+  Note.interval4: ${Note.interval('P4').chord().notes().toString()}
+  Note.interval5: ${Note.interval('P5').chord().notes().toString()}
+  Note.interval6: ${Note.interval('M6').chord().notes().toString()}
+  Note.interval7: ${Note.interval('M7').chord().notes().toString()}
+  Note.chord: ${Note.chord().notes().toString()}
+  Note.helmholtz: ${Note.helmholtz()}
+  Note.scientific: ${Note.scientific()}
+  Note.enharmonics: ${Note.enharmonics()}
+  Note.durationInSeconds: ${Note.durationInSeconds()}
+  Note.durationName: ${Note.durationName()}
+  Note.scaleDegree: ${Note.scaleDegree(Note.scale(scaleName))}
+  Note.solfege: ${Note.solfege(Note.scale(scaleName))}
+  Note.toString: ${Note.toString()}
+  
+  Scale from Note: ${scaleName} and Scale: ${scaleName}:
+  Scale:  ${Scale.simple().toString()}
+  Scale.name:  ${Scale.name.toString()}
+  Scale.tonic:  ${Scale.tonic.toString()}
+  Scale.notes:  ${Scale.notes().toString()}
+  Scale.simple:  ${Scale.simple().toString()}
+  Scale.type:  ${Scale.type().toString()}
+  
+  Chord from Note: ${noteChar}
+  Chord: ${Chord.toString()}
+  Chord.root: ${Chord.root.toString()}
+  Chord.name: ${Chord.name}
+  Chord.notes: ${Chord.notes().toString()}
+  Chord.simple: ${Chord.simple()}
+  Chord.bass: ${Chord.bass().toString()}
+  Chord.voicing: ${Chord.voicing().toString()}
+  Chord.get: ${Chord.get('third').toString()}
+  Chord.quality: ${Chord.quality()}
+  Chord.dominant: ${Chord.dominant().toString()}
+  Chord.subdominant: ${Chord.subdominant().toString()}
+  Chord.parallel: ${Chord.parallel().toString()}
+  Chord.interval: ${Chord.interval('P5').toString()}
+  Chord.chordType: ${Chord.chordType()}
+  Chord.toString: ${Chord.toString()}
+  
+  Interval from Note: ${noteChar} and Scale: ${scaleName}:
+  Interval: ${Interval.toString()}
+  Interval.coord: ${Interval.coord.toString()}
+  Interval.number: ${Interval.number().toString()}
+  Interval.value: ${Interval.value().toString()}
+  Interval.base: ${Interval.base().toString()}
+  Interval.type: ${Interval.type().toString()}
+  Interval.quality: ${Interval.quality().toString()}
+  Interval.qualityValue: ${Interval.qualityValue().toString()}
+  Interval.direction: ${Interval.direction().toString()}
+  Interval.semitones: ${Interval.semitones().toString()}
+  Interval.simple: ${Interval.simple().toString()}
+  Interval.octaves: ${Interval.octaves().toString()}
+  Interval.isCompound: ${Interval.isCompound().toString()}`
 
     return { Note, Scale, Chord, Interval, Intervals, Info }
   }
-  //* ObjStat}
+  // Multiply Array by given value. For Generate Long and unical phrases
+  static ArrayExtend = (array = [1], times = 10) =>
+    this.Array(times)
+      .map(v => array.flat())
+      .flat()
+  // Note step Interval chord notes
+  static stepInterval = (noteChar, step) => Teoria.note(noteChar).interval(step).chord().notes().toString().split(',')
+  // Note Interval Notes in lot of variations
+  static NoteIntervalNotes = noteChar => {
+    const intervalNotes = INTERVAL_SYMBOLS.map(step => this.stepInterval(noteChar, step)).join()
+    const chordNotes = intervalNotes.map(this.ChordNotes)
+    const chordPhrases = chordNotes.map(chordNotes => this.ArrayShuffle(chordNotes))
+    const shuffled = chordPhrases.map(v => this.ArrayShuffle([...v, ...v, ...v, ...v, ...v]))
+
+    const sources = { intervalNotes, chordNotes, chordPhrases, shuffled }
+    const merged = this.ArrayMerge(intervalNotes, chordNotes, chordPhrases, shuffled)
+
+    const short = merged.filter(v => v.length < 10)
+    const long = merged.filter(v => v.length > 10)
+    const onStart = merged.filter(v => v[0] === noteChar)
+    const onEnd = merged.filter(v => v[v.length] === noteChar)
+    const many = merged.filter(v => [...v].filter(char => char === noteChar).length > 1)
+    const once = merged.filter(v => [...v].filter(char => char === noteChar).length === 1)
+
+    const phrases = { short, long, onStart, onEnd, many, once }
+
+    return { noteChar, sources, phrases, merged }
+  }
+  // Return text message with given object statistics. For React, and strange bugs
   static ObjStat = obj => {
     const keys = Object.keys(obj)
     const values = Object.values(obj)
@@ -297,7 +422,6 @@ export class Validate {
     )
   static DurationAbsolute = v => this.isValid(Joi.number().min(0.001).max(10000).validate(v))
 }
-
 //! Matchers for easy extract values from strings
 export class Matchers {
   static noteChar = str => new RegExp('^[a-g#]+', 'i').exec(str).join()
@@ -305,7 +429,6 @@ export class Matchers {
   static durationValue = str => new RegExp('^\\d+', 'i').exec(str).join()
   static durationSymbol = str => new RegExp('[ntms]$', 'i').exec(str).join()
 }
-
 //! Constant Values for using in generate values, validate, etc...
 export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
 export const SCALES = [
@@ -381,11 +504,12 @@ export const NOTE_COLORS = {
   'G#': '#8080c0',
   GB: '#8080c0'
 }
+export const INTERVAL_SYMBOLS = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7']
 export const TUNING_NAMES = Object.keys(TUNINGS)
 export const COLORS = Object.values(NOTE_COLORS)
 export const SAMPLES = SAMPLE_NOTES
 
-//! Old Functions, for for faq
+//! Old Functions, for faq
 // const randNumber = (max = 6) => Math.ceil(Math.random() * max)
 
 // const randomArrayElement = array => array[Math.floor(Math.random() * array.length)]
