@@ -29,121 +29,135 @@ class Random {
 }
 
 class Validate {
-  static Boolean = v => Joi.boolean().validate(v)
-  static String = v => Joi.string().validate(v)
-  static Array = v => Joi.array().validate(v)
-  static Object = v => Joi.object().validate(v)
-  static Range = v => Joi.number().min(0.01).max(0.99).validate(v)
-  static Number = v => Joi.number().min(1).max(100).validate(v)
-  static PowerOfTwo = v => Joi.number().min(1).max(64).validate(v)
-  static Octave = v => Joi.number().min(1).max(6).validate(v)
+  static Boolean = v => Joi.boolean().validate(v)?.error ?? true
+  static String = v => Joi.string().validate(v)?.error ?? true
+  static Array = v => Joi.array().validate(v)?.error ?? true
+  static Object = v => Joi.object().validate(v)?.error ?? true
+  static Range = v => Joi.number().min(0.01).max(0.99).validate(v)?.error ?? true
+  static Number = v => Joi.number().min(1).max(100).validate(v)?.error ?? true
+  static PowerOfTwo = v => Joi.number().min(1).max(64).validate(v)?.error ?? true
+  static Octave = v => Joi.number().min(1).max(6).validate(v)?.error ?? true
   static NoteChar = v =>
     Joi.string()
       .min(1)
       .max(2)
       .pattern(/^[a-g#]+$/i)
-      .validate(v)
+      .validate(v)?.error ?? true
   static NoteCharAndOctave = v =>
     Joi.string()
       .min(2)
       .max(3)
       .pattern(/^[a-g#]+[1-6]$/i)
-      .validate(v)
-  static NotesArray = v => Joi.array().items(this.NoteChar).validate(v)
+      .validate(v)?.error ?? true
+  static NotesArray = v => Joi.array().items(this.NoteChar).validate(v)?.error ?? true
   static DurationSymbol = v =>
     Joi.string()
       .pattern(/^[ntms]$/i)
-      .validate(v)
+      .validate(v)?.error ?? true
   static DurationRelative = v =>
     Joi.string()
       .pattern(/^1|2|4|8|16|32|64[nmts]$/i)
-      .validate(v)
-  static DurationAbsolute = v => Joi.number().min(0.001).max(10000).validate(v)
+      .validate(v)?.error ?? true
+  static DurationAbsolute = v => Joi.number().min(0.001).max(10000).validate(v)?.error ?? true
 }
 
 describe('Validate', () => {
   it('Boolean', () => {
     const result = Validate.Boolean(true)
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('String', () => {
     const result = Validate.String('Random.String()')
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('Array', () => {
     const result = Validate.Array(Random.Array())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('Object', () => {
     const result = Validate.Object({ range: Random.Range() })
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('Range', () => {
     const result = Validate.Range(Random.Range())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('Number', () => {
     const result = Validate.Number(Random.Number())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('PowerOfTwo', () => {
     const result = Validate.PowerOfTwo(Random.PowerOfTwo())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('Octave', () => {
     const result = Validate.Octave(Random.Octave())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('NoteChar', () => {
     const result = Validate.NoteChar(Random.NoteChar())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('NoteCharAndOctave', () => {
     const result = Validate.NoteCharAndOctave(Random.NoteCharAndOctave())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('NotesArray', () => {
     const result = Validate.NotesArray(Random.Array(10).map(v => Random.NoteChar()))
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('DurationSymbol', () => {
     const result = Validate.DurationSymbol(Random.DurationSymbol())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('DurationRelative', () => {
     const result = Validate.DurationRelative(Random.DurationRelative())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
   it('DurationAbsolute', () => {
     const result = Validate.DurationAbsolute(Random.DurationAbsolute())
 
-    expect(result.value).toBeDefined()
-    expect(result.error).not.toBeDefined()
+    expect(result).toBe(true)
+    // expect(result.value).toBeDefined()
+    // expect(result.error).not.toBeDefined()
   })
 })

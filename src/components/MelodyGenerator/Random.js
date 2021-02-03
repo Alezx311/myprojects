@@ -8,12 +8,12 @@ import {
   SAMPLE_NAMES,
   DURATION_SYMBOLS
 } from './Constants'
-const { floor, random } = Math
-export default class Random {
+
+export class Random {
   //* generate random range -> range > 0.01 && range < 0.99
-  static Range = () => +random().toFixed(2)
+  static Range = () => +(0.5 + Math.random() / 5).toFixed(2)
   //* generate random number -> number > min && number < max
-  static Number = (min = 1, max = 100) => floor(random() * (max - min + 1)) + min
+  static Number = (min = 1, max = 100) => Math.floor(Math.random() * (max - min + 1)) + min
   //* generate random power of 2 number -> 2,4,8,16,32,64...
   static PowerOfTwo = (maxPower = 5) => 2 ** this.Number(1, maxPower)
   //* generate random array with given length
@@ -23,7 +23,7 @@ export default class Random {
   //* get random element from given array
   static ArrayElement = (arr = ['invalid array']) => [...arr, ...arr][this.Number(0, arr.length)]
   //* shuffle given array
-  static ArrayShuffle = (arr = []) => [...new Set([...arr, ...arr, ...arr].sort(() => random() - 0.5))]
+  static ArrayShuffle = (arr = []) => [...new Set([...arr, ...arr, ...arr].sort((a, b) => Math.random() - 0.5))]
   //* get random note char like: 'c', 'd#', 'bb' with possible '#' and 'b' symbols
   static NoteChar = (notesArray = NOTES) => this.ArrayElement(notesArray)
   //* get random octave in given range (min is 1 and max is 6 for default)

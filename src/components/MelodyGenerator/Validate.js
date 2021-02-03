@@ -1,32 +1,33 @@
-import CONSTANTS from './Constants'
 import Joi from 'joi'
-
-const schemaCheck = s => Joi.isSchema(s) && s.validate()
-class Validate {
-  static Boolean = v => schemaCheck(Joi.boolean(v))
-  static String = v => schemaCheck(Joi.string(v))
-  static Array = v => schemaCheck(Joi.string(v))
-  static Object = v => schemaCheck(Joi.string(v))
-  static Range = v => schemaCheck(Joi.number(v).min(0.01).max(0.09))
-  static Number = v => schemaCheck(Joi.number(v).min(1).max(100))
-  static PowerOfTwo = v => schemaCheck(Joi.number(v).min(1).max(64))
-  static Octave = v => schemaCheck(Joi.number(v).min(1).max(6))
-
-  static Note = v => schemaCheck(Joi.string(v).pattern(/^[a-g#]+$/i))
-  static NoteAndOctave = v => schemaCheck(Joi.string(v).pattern(/^[a-g#]+[0-9]$/i))
-  static NotesArray = v => schemaCheck(Joi.array(v).items(this.Note))
-  static TuningName = v => Object.keys(CONSTANTS.TUNINGS).includes(v)
-  static ScaleName = v => CONSTANTS.SCALES.includes(v)
-  // static DurationSymbol = v => CONSTANTS.DURATION_SYMBOLS.includes(v)
-  static DurationSymbol = v => schemaCheck(Joi.string(v).pattern(/^[ntms]$/i))
-  static DurationRelative = v => schemaCheck(Joi.string(v).pattern(/^1|2|4|8|16|32|64[nmts]$/i))
-  static DurationAbsolute = v => v > 0 && v < 9999
-  static InstrumentName = v => CONSTANTS.INSTRUMENT_NAMES.includes(v)
-  static SynthName = v => CONSTANTS.SYNTH_NAMES.includes(v)
-  static SampleName = v => CONSTANTS.SAMPLE_NAMES.includes(v)
-  static SampleNoteNames = v => schemaCheck(Joi.array(v).items(this.Note))
-  static Phrase = v => this.NotesArray(v)
-  static PhrasesArray = v => schemaCheck(Joi.array(v).items(this.NotesArray))
+export default class Validate {
+  static Boolean = v => Joi.boolean().validate(v)?.error ?? true
+  static String = v => Joi.string().validate(v)?.error ?? true
+  static Array = v => Joi.array().validate(v)?.error ?? true
+  static Object = v => Joi.object().validate(v)?.error ?? true
+  static Range = v => Joi.number().min(0.01).max(0.99).validate(v)?.error ?? true
+  static Number = v => Joi.number().min(1).max(100).validate(v)?.error ?? true
+  static PowerOfTwo = v => Joi.number().min(1).max(64).validate(v)?.error ?? true
+  static Octave = v => Joi.number().min(1).max(6).validate(v)?.error ?? true
+  static NoteChar = v =>
+    Joi.string()
+      .min(1)
+      .max(2)
+      .pattern(/^[a-g#]+$/i)
+      .validate(v)?.error ?? true
+  static NoteCharAndOctave = v =>
+    Joi.string()
+      .min(2)
+      .max(3)
+      .pattern(/^[a-g#]+[1-6]$/i)
+      .validate(v)?.error ?? true
+  static NotesArray = v => Joi.array().items(this.NoteChar).validate(v)?.error ?? true
+  static DurationSymbol = v =>
+    Joi.string()
+      .pattern(/^[ntms]$/i)
+      .validate(v)?.error ?? true
+  static DurationRelative = v =>
+    Joi.string()
+      .pattern(/^1|2|4|8|16|32|64[nmts]$/i)
+      .validate(v)?.error ?? true
+  static DurationAbsolute = v => Joi.number().min(0.001).max(10000).validate(v)?.error ?? true
 }
-
-export default Validate

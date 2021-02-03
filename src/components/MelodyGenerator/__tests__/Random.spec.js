@@ -1,3 +1,19 @@
+const NOTE_COLORS = {
+  A: '#00ff00',
+  Ab: '#8000ff',
+  B: '#00ffff',
+  Bb: '#ff80c0',
+  C: '#ff0000',
+  D: '#ffff00',
+  Db: '#ff00ff',
+  E: '#0080c0',
+  Eb: '#808080',
+  F: '#800000',
+  G: '#ff8000',
+  Gb: '#8080c0'
+}
+const COLORS = Object.values(NOTE_COLORS)
+
 class Random {
   //* generate random range -> range > 0.01 && range < 0.99
   static Range = () => +(0.5 + Math.random() / 5).toFixed(2)
@@ -41,9 +57,73 @@ class Random {
   static SampleName = () => this.ArrayElement(SAMPLE_NAMES)
   //* get possible note samples for random sample instrument
   static SampleNoteNames = () => Object.keys(SAMPLES[this.SampleName()])
+  //* Random Bpm, in given range
+  static Bpm = (min = 60, max = 120) => this.Number(min, max)
+  //* Random Color, from given array, or HEX note colors
+  static Color = (colorsArray = COLORS) => this.ArrayElement(colorsArray)
+  //* Random Size, in given range, as square side length
+  static Size = (min = 1, max = 100) => this.Number(min, max)
+  //* Random Position, in given range, as { x, y}
+  static Position = (min = 0, max = 100) => ({ x: this.Number(min, max), y: this.Number(min, max) })
+  //* Random Velocity, in given range
+  static Velocity = (min = 0.5) => min + (Math.random() / 3).toFixed(2)
+  //* Random NoteObject, from given values.
+  // @param noteChar -> music note character ('a', 'c#', ...)
+  // @param octave -> music octave (3, 2, ...)
+  // @param noteAndOctave -> joined, for easy sound synthesis ('a3', 'c#2', ...)
+  // @param duration -> music note duration, in relative ('4n', '3n', ...)
+  // @param velocity -> music note character (0.7, 0.67, ...)
+  static NoteObject = (notesArray = NOTES, minOctave = 2) => {
+    const noteChar = this.NoteChar(notesArray)
+    const octave = this.Octave(1, minOctave)
+    const noteAndOctave = `${noteChar}${octave}`
+    const duration = this.DurationRelative()
+    const velocity = this.Velocity()
+
+    return { noteChar, octave, noteAndOctave, duration, velocity }
+  }
+  //TODO randomPhrases
+  static Phrases = (tonicalNote, scaleName, minOctave) => {
+    const { Note, Scale, Intervals } = Helpers.NoteValues({ tonicalNote, scaleName, minOctave })
+    const phrases = this.Array(100).map(v => this.ArrayShuffle(v))
+  }
+  //TODO randomBassMelody
+  static BassMelody = (tonicalNote, scaleName, minOctave) => {
+    const { Note, Scale, Intervals } = Helpers.NoteValues({ tonicalNote, scaleName, minOctave })
+    const phrases = this.Array(100).map(v => this.ArrayShuffle(v))
+  }
+  //TODO randomDrumMelody
+  static DrumMelody = (tonicalNote, scaleName, minOctave) => {
+    const { Note, Scale, Intervals } = Helpers.NoteValues({ tonicalNote, scaleName, minOctave })
+    const phrases = this.Array(100).map(v => this.ArrayShuffle(v))
+  }
+  //TODO randomLeadMelody
+  static LeadMelody = (tonicalNote, scaleName, minOctave) => {
+    const { Note, Scale, Intervals } = Helpers.NoteValues({ tonicalNote, scaleName, minOctave })
+    const phrases = this.Array(100).map(v => this.ArrayShuffle(v))
+  }
+  //TODO randomGuitarPhrases
+  static GuitarPhrases = (fretNotesArray, phrasesDuration) => {
+    const phrases = Array(100)
+      .fill(fretNotesArray, phrasesDuration)
+      .map(v => this.ArrayShuffle(v))
+  }
+}
+class Helpers {
+
 }
 
 const getArray = (arrayLength = 10) => Array(arrayLength).fill(1)
+
+describe('Helpers', () => {
+  //TODO someArrayElementDouble
+  //TODO someArrayElementChange
+  //TODO splitNoteAndOctave
+  //TODO objStat
+  //TODO getInstrument
+  //TODO getTrack
+  //TODO getTransport
+})
 
 describe('Random', () => {
   it('Random Range -> ()', () => {
