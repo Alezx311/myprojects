@@ -3,10 +3,10 @@ import * as Helpers from '../components/MelodyGenerator/Helpers'
 
 const initialState = {
   sound: {
-    size: 13,
-    parts: 5,
+    size: 100,
+    parts: 20,
     key: 'C',
-    octave: 2,
+    octave: 4,
     scale: 'minorpentatonic',
     instrument: 'PolySynth'
   },
