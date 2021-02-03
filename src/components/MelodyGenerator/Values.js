@@ -1,8 +1,8 @@
-import * as Teoria from 'teoria'
-import { Joi } from 'joi'
+const Teoria = require('teoria')
+const Joi = require('joi')
 
 //! class Random is generate functions, for easy work, test, processing, etc...
-export class Random {
+class Random {
   //* generate random range -> range > 0.01 && range < 0.99
   static Range = () => +(0.5 + Math.random() / 5).toFixed(2)
   //* generate random number -> number > min && number < max
@@ -128,7 +128,7 @@ fromIntervalsSteps randomElement:\n${Object.entries(fromIntervalsSteps[1]).join(
   // static GuitarPhrases = (fretNotesArray, phrasesDuration) => {}
 }
 //! Helpers is class with very useful methods, for easy use in any place
-export default class Helpers {
+class Helpers {
   //* ArrayUnicals
   static ArrayUnicals = arr => [...new Set([...arr])]
   //* ArrayMerge
@@ -255,7 +255,7 @@ Interval.isCompound: ${Interval.isCompound().toString()}`
   }
 }
 //! Validators for fast check values
-export class Validate {
+class Validate {
   static isValid = result => !result.error && result.value && true
   static Boolean = v => this.isValid(Joi.boolean().validate(v))
   static String = v => this.isValid(Joi.string().validate(v))
@@ -296,18 +296,16 @@ export class Validate {
     )
   static DurationAbsolute = v => this.isValid(Joi.number().min(0.001).max(10000).validate(v))
 }
-
 //! Matchers for easy extract values from strings
-export class Matchers {
+class Matchers {
   static noteChar = str => new RegExp('^[a-g#]+', 'i').exec(str).join()
   static octave = str => new RegExp('\\d$', 'i').exec(str).join()
   static durationValue = str => new RegExp('^\\d+', 'i').exec(str).join()
   static durationSymbol = str => new RegExp('[ntms]$', 'i').exec(str).join()
 }
-
 //! Constant Values for using in generate values, validate, etc...
-export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
-export const SCALES = [
+const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
+const SCALES = [
   'major',
   'minor',
   'ionian',
@@ -328,13 +326,13 @@ export const SCALES = [
   'melodicminor',
   'wholetone'
 ]
-export const TUNINGS = {
+const TUNINGS = {
   'E Standart': ['E2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop D': ['D2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop C': ['C2', 'G2', 'C3', 'F3', 'A4', 'D4'],
   'Drop B': ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4']
 }
-export const INSTRUMENT_NAMES = [
+const INSTRUMENT_NAMES = [
   'bass-electric',
   'bassoon',
   'cello',
@@ -347,7 +345,7 @@ export const INSTRUMENT_NAMES = [
   'saxophone',
   'violin'
 ]
-export const SYNTH_NAMES = [
+const SYNTH_NAMES = [
   'AMSynth',
   'FMSynth',
   'DuoSynth',
@@ -359,9 +357,9 @@ export const SYNTH_NAMES = [
   'PolySynth',
   'Synth'
 ]
-export const SAMPLE_NAMES = INSTRUMENT_NAMES
-export const DURATION_SYMBOLS = ['n', 't', 'm', 'n']
-export const NOTE_COLORS = {
+const SAMPLE_NAMES = INSTRUMENT_NAMES
+const DURATION_SYMBOLS = ['n', 't', 'm', 'n']
+const NOTE_COLORS = {
   A: '#00ff00',
   'A#': '#8000ff',
   AB: '#8000ff',
@@ -380,7 +378,7 @@ export const NOTE_COLORS = {
   'G#': '#8080c0',
   GB: '#8080c0'
 }
-export const SAMPLES = {
+const SAMPLES = {
   'bass-electric': {
     'A#2': 'As2.[mp3|ogg]',
     'A#3': 'As3.[mp3|ogg]',
@@ -713,237 +711,23 @@ export const SAMPLES = {
     G6: 'G6.[mp3|ogg]'
   }
 }
-export const TUNING_NAMES = Object.keys(TUNINGS)
-export const COLORS = Object.values(NOTE_COLORS)
+const TUNING_NAMES = Object.keys(TUNINGS)
+const COLORS = Object.values(NOTE_COLORS)
 
-//! Old Functions, for for faq
-// const randNumber = (max = 6) => Math.ceil(Math.random() * max)
-
-// const randomArrayElement = array => array[Math.floor(Math.random() * array.length)]
-
-// const MusicHelpers = {
-//   rand: {
-//     note: () => {
-//       const note = `${randomArrayElement(values.note)}${1 + Math.ceil(Math.random() * 8)}`
-//       return { note, helper: Teoria.note(note) }
-//     },
-//     scale: () => {
-//       const Note = Teoria.note(`${randomArrayElement(values.note)}${1 + Math.ceil(Math.random() * 8)}`)
-//       return Note.scale(randomArrayElement(values.scale)).simple()
-//     },
-//     tuning: () => randomArrayElement(values.tuning),
-//     duration: () => `${2 * Math.ceil(Math.random() * 5)}n`,
-//     octave: () => 1 + Math.ceil(Math.random() * 5),
-//     sequence: (size = [8, 12], key = 'C3', scale = 'minorpentatonic') => {
-//       const Note = Teoria.note(key)
-//       const Scale = Note.scale(scale).simple()
-
-//       console.log(Note)
-//       console.log(Scale)
-
-//       console.log(size, key, scale)
-
-//       const shortSeq = Array(size[0])
-//         .fill(1)
-//         .map(el => ({ note: `${randomArrayElement(Scale)}${randNumber(4)}`, duration: `${2 ** randNumber(5)}n` }))
-//       const playable = Array(size[1]).fill(shortSeq)
-
-//       console.log(playable)
-
-//       return playable
-//     }
-//   },
-//   getScale: (key, name) => Teoria.note(`${key}4`).scale(name),
-//   getKey: (key, octave = this.rand.octave) => `${key}${octave}`
-// }
-
-// export const randomRange = () => Math.random()
-// export const randomNumber = (max = 100, min = 0) => ~~(min + randomRange() * (max - min))
-// export const randomPowerOfTwo = (max = 5) => 2 ** randomNumber(max, 2)
-// export const randomArrayElement = arr => (arr.length ? arr[randomNumber(arr.length)] : null)
-// export const randomBoolean = () => randomNumber() > 50
-// export const randomArrayShuffle = arr => arr.sort((a, b) => (randomBoolean() ? 1 : -1))
-// export const randomArrayElementChange = arr => {
-//   const el = randomArrayElement(arr)
-//   const ind = randomNumber(arr.length)
-//   arr[ind] = el
-//   return arr
-// }
-// export const randomArrayElementDoubled = arr => {
-//   const { note, velocity } = randomArrayElement(arr) ?? { note: 'c2', duration: '4n' }
-//   const ind = randomNumber(arr.length)
-//   arr[ind] = [[{ note, velocity, duration: '16n' }], [{ note, velocity, duration: '16n' }]]
-//   return arr
-// }
-// export const randomDurationSymbol = (durations = ['n', 't']) => randomArrayElement(durations)
-// export const randomScale = () => randomArrayElement(SCALES)
-// export const randomBpm = () => randomNumber(170, 130)
-// export const randomDuration = () => `${randomPowerOfTwo(4)}${randomDurationSymbol()}`
-// export const randomNote = (arr = NOTES) => randomArrayElement(arr)
-// export const randomNoteAndOctave = (arr = NOTES, octave = 2) => `${randomArrayElement(arr)}${octave}`
-// export const noteScale = (noteChar, scaleName) => {
-//   if (!noteChar || !scaleName) {
-//     throw new Error(`Invalid noteChar: ${noteChar} or scaleName: ${scaleName} at Helpers.noteScale()`)
-//   }
-
-//   const Note = Teoria.note(noteChar)
-//   const Scale = Note.scale(scaleName).simple()
-
-//   return { Note, Scale }
-// }
-// export const randomPatterns = (arr = NOTES, len = 4) => {
-//   const pattern = Array(len)
-//     .fill(1)
-//     .map(v => randomArrayElement(arr))
-//   const patternsVariations = Array(len ** 2)
-//     .fill(pattern)
-//     .map(v => v.sort(() => Math.random() - 0.5))
-//   const unicalsPatterns = [...new Set([...patternsVariations])]
-
-//   return unicalsPatterns
-// }
-// export const randomNoteObject = (notesArray = NOTES, octave = 2) => {
-//   const note = randomArrayElement(notesArray)
-//   return {
-//     note,
-//     noteBass: `${note}2`,
-//     noteDrum: `${note}1`,
-//     noteSynth: `${note}${randomNumber(5, octave)}`,
-//     duration: randomDuration(),
-//     velocity: randomRange()
-//   }
-// }
-// export const splitNoteAndOctave = str => {
-//   const note = str.match(/[a-g]+/i)?.[1] ?? null
-//   const octave = str.match(/[0-9]+/i)?.[1] ?? null
-//   return { note, octave }
-// }
-// export const objStat = obj => Object.entries(obj).reduce((acc, val) => (acc += `\n${val.join(' -> ')}`), '')
-// export const randomNumbers = (max = 100) =>
-//   Array(100)
-//     .fill(1)
-//     .map(v => randomNumber(max))
-// export const randomMelody = ({ key, scale, octave, size, parts }) => {
-//   const mainNote = `${key}${octave}`
-//   const Note = Teoria.note(mainNote)
-//   const Scale = Note.scale(scale).simple()
-
-//   const mainNotes = Array(size)
-//     .fill(1)
-//     .map(v => randomNoteObject(Scale, octave))
-//     .map(v => {
-//       if (randomRange() > 0.7) {
-//         return [v, v]
-//       } else {
-//         return v
-//       }
-//     })
-
-//   const melodyBass = [...mainNotes]
-//   const melodyDrum = mainNotes.map(v => {
-//     const range = randomRange()
-//     if (range > 0.7) {
-//       return [v, v]
-//     } else {
-//       return v
-//     }
-//     // } else if (range > 0.3) {
-//     //   return randomArrayElement(mainNotes)
-//     // } else {
-//     //   return v
-//     // }
-//   })
-//   const melodyPart = mainNotes.map(v => {
-//     const range = randomRange()
-//     if (range > 0.7) {
-//       return [v, v]
-//     } else if (range > 0.3) {
-//       // return v
-//       return randomArrayElement(mainNotes)
-//     } else {
-//       return v
-//     }
-//   })
-//   const melodyBassFull = Array(parts)
-//     .fill(melodyBass)
-//     .reduce((acc, val) => [...acc, ...val], [])
-//   const melodyDrumFull = Array(parts)
-//     .fill(melodyDrum)
-//     .reduce((acc, val) => [...acc, ...val], [])
-//   const melodyPartFull = Array(parts)
-//     .fill(melodyPart)
-//     .reduce((acc, val) => [...acc, ...val], [])
-
-//   // const melodyPart = Array(size)
-//   //   .fill(1)
-//   //   .map(v => randomNoteObject(Scale, octave))
-//   const melodyShuffled = Array(parts)
-//     .fill(1)
-//     .map(val => randomArrayShuffle(melodyPart))
-//     .reduce((acc, val) => [...acc, ...randomArrayShuffle(melodyPart)], [])
-//   const melodyDoubled = Array(parts)
-//     .fill(1)
-//     .reduce((acc, val) => [...acc, ...randomArrayElementDoubled(melodyPart)], [])
-
-//   return {
-//     mainNotes,
-//     melodyBass: melodyBassFull,
-//     melodyDrum: melodyDrumFull,
-//     melodyPart: melodyPartFull
-//   }
-//   // return {
-//   //   melodyBass,
-//   //   melodyDrum,
-//   //   melodyPart
-//   // }
-//   // return melodyPart
-//   // return melodyShuffled
-//   // return melodyDoubled
-// }
-// export const getInstrument = ({ instrument }) => {
-//   const synth = new Tone.PolySynth({ volume: 0 }).toDestination()
-//   const drum = new Tone.PluckSynth({ volume: -5 }).toDestination()
-//   const bass = new Tone.Synth({ volume: 0 }).toDestination()
-//   return { synth, bass, drum }
-// }
-// export const getTrack = ({ instrument, melody, transport }) => {
-//   console.log('melody', melody)
-//   const trackBass = new Tone.Sequence(
-//     (time, { noteBass, duration, velocity }) => {
-//       instrument.bass.triggerAttackRelease(noteBass, duration, time, velocity)
-//     },
-//     melody.melodyBass,
-//     '4n'
-//   ).set({ humanize: true, probability: 1, playbackRate: 1 })
-//   const trackDrum = new Tone.Sequence(
-//     (time, { noteDrum, duration, velocity }) => {
-//       instrument.drum.triggerAttackRelease(noteDrum, duration, time, velocity)
-//     },
-//     melody.melodyDrum,
-//     '4n'
-//   ).set({ humanize: true, probability: 1, playbackRate: 1 })
-//   const trackPart = new Tone.Sequence(
-//     (time, { noteSynth, duration, velocity }) => {
-//       instrument.synth.triggerAttackRelease(noteSynth, duration, time, velocity)
-//     },
-//     melody.melodyPart,
-//     '4n'
-//   ).set({ humanize: true, probability: 1, playbackRate: 1 })
-//   const track = {
-//     stop: (time = 0) => {
-//       trackPart.stop(time)
-//       trackBass.stop(time)
-//       trackDrum.stop(time)
-//     },
-//     start: (time = 0) => {
-//       trackPart.start(time)
-//       trackBass.start(time)
-//       trackDrum.start(time)
-//     }
-//   }
-
-//   transport.set({ bpm: randomBpm() })
-
-//   return track
-// }
-// export const getTransport = () => Tone.Transport
+module.exports = {
+  Random,
+  Helpers,
+  Validate,
+  Matchers,
+  NOTES,
+  SCALES,
+  TUNINGS,
+  TUNING_NAMES,
+  INSTRUMENT_NAMES,
+  SYNTH_NAMES,
+  SAMPLES,
+  SAMPLE_NAMES,
+  DURATION_SYMBOLS,
+  NOTE_COLORS,
+  COLORS
+}

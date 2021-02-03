@@ -1,9 +1,4 @@
-class Matchers {
-  static noteChar = str => new RegExp('^[a-g#]+', 'i').exec(str).join()
-  static octave = str => new RegExp('\\d$', 'i').exec(str).join()
-  static durationValue = str => new RegExp('^\\d+', 'i').exec(str).join()
-  static durationSymbol = str => new RegExp('[ntms]$', 'i').exec(str).join()
-}
+const { Matchers } = require('../Values')
 
 describe('Matchers Test', () => {
   it('noteChar', () => {
