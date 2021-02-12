@@ -1,5 +1,5 @@
 import * as TYPES from './types'
-import * as Helpers from '../components/MelodyGenerator/Helpers'
+import { Helpers } from '../components/helpers'
 
 const initialState = {
   sound: {
@@ -66,18 +66,18 @@ const playTrack = state => {
 
 export const reducers = (state = initialState, { type, payload }) => {
   switch (type) {
-    case TYPES.UPDATE_SOUND: {
-      return { ...state, sound: { ...state.sound, ...payload } }
-    }
-    case TYPES.UPDATE_FRETBOARD: {
-      return { ...state, fretboard: { ...state.fretboard, ...payload } }
-    }
-    case TYPES.UPDATE_PLAYER: {
-      const updated = payload === 'Play' ? playTrack(state) : stopTrack(state)
-      return { ...state, ...updated }
-    }
-    case TYPES.UPDATE_STATE:
-      return { ...state, ...payload }
+    // case TYPES.UPDATE_SOUND: {
+    //   return { ...state, sound: { ...state.sound, ...payload } }
+    // }
+    // case TYPES.UPDATE_FRETBOARD: {
+    //   return { ...state, fretboard: { ...state.fretboard, ...payload } }
+    // }
+    // case TYPES.UPDATE_PLAYER: {
+    //   const updated = payload === 'Play' ? playTrack(state) : stopTrack(state)
+    //   return { ...state, ...updated }
+    // }
+    // case TYPES.UPDATE_STATE:
+    //   return { ...state, ...payload }
     default:
       return { ...state }
   }

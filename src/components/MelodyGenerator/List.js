@@ -1,7 +1,9 @@
 import React from 'react'
-import { NOTES, SCALES_SHORT } from './Helpers'
+import { Constants } from '../helpers'
 import { updateSound, updatePlayer } from '../../store/actions'
 import { useDispatch } from 'react-redux'
+
+const { NOTES, SCALES } = Constants
 
 const styles = {
   first: {
@@ -48,7 +50,7 @@ export const ListRows = () => {
     dispatch(updateSound({ key: note, scale }))
     dispatch(updatePlayer('Play'))
   }
-  return SCALES_SHORT.map((scale, key) => (
+  return SCALES.map((scale, key) => (
     <div className="list-group list-group-horizontal mx-auto" key={key}>
       <ListRowLabel label={scale} />
       {NOTES.map((note, noteKey) => (

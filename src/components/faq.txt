@@ -1,0 +1,66 @@
+`Note from Note: ${scaleName}
+  Note: ${Note.toString()}
+  Note.octave: ${Note.octave()}
+  Note.duration: ${Note.duration.toString()}
+  Note.accidental: ${Note.accidental()}
+  Note.accidentalValue: ${Note.accidentalValue()}
+  Note.key: ${Note.key()}
+  Note.midi: ${Note.midi()}
+  Note.fq: ${Note.fq()}
+  Note.chroma: ${Note.chroma()}
+  Note.interval1: ${Note.interval('P1').chord().notes().toString()}
+  Note.interval2: ${Note.interval('M2').chord().notes().toString()}
+  Note.interval3: ${Note.interval('M3').chord().notes().toString()}
+  Note.interval4: ${Note.interval('P4').chord().notes().toString()}
+  Note.interval5: ${Note.interval('P5').chord().notes().toString()}
+  Note.interval6: ${Note.interval('M6').chord().notes().toString()}
+  Note.interval7: ${Note.interval('M7').chord().notes().toString()}
+  Note.chord: ${Note.chord().notes().toString()}
+  Note.helmholtz: ${Note.helmholtz()}
+  Note.scientific: ${Note.scientific()}
+  Note.enharmonics: ${Note.enharmonics()}
+  Note.durationInSeconds: ${Note.durationInSeconds()}
+  Note.durationName: ${Note.durationName()}
+  Note.scaleDegree: ${Note.scaleDegree(Note.scale(scaleName))}
+  Note.solfege: ${Note.solfege(Note.scale(scaleName))}
+  Note.toString: ${Note.toString()}
+  
+  Scale from Note: ${scaleName} and Scale: ${scaleName}:
+  Scale:  ${Scale.simple().toString()}
+  Scale.name:  ${Scale.name.toString()}
+  Scale.tonic:  ${Scale.tonic.toString()}
+  Scale.notes:  ${Scale.notes().toString()}
+  Scale.simple:  ${Scale.simple().toString()}
+  Scale.type:  ${Scale.type().toString()}
+  
+  Chord from Note: ${noteChar}
+  Chord: ${Chord.toString()}
+  Chord.root: ${Chord.root.toString()}
+  Chord.name: ${Chord.name}
+  Chord.notes: ${Chord.notes().toString()}
+  Chord.simple: ${Chord.simple()}
+  Chord.bass: ${Chord.bass().toString()}
+  Chord.voicing: ${Chord.voicing().toString()}
+  Chord.get: ${Chord.get('third').toString()}
+  Chord.quality: ${Chord.quality()}
+  Chord.dominant: ${Chord.dominant().toString()}
+  Chord.subdominant: ${Chord.subdominant().toString()}
+  Chord.parallel: ${Chord.parallel().toString()}
+  Chord.interval: ${Chord.interval('P5').toString()}
+  Chord.chordType: ${Chord.chordType()}
+  Chord.toString: ${Chord.toString()}
+  
+  Interval from Note: ${noteChar} and Scale: ${scaleName}:
+  Interval: ${Interval.toString()}
+  Interval.coord: ${Interval.coord.toString()}
+  Interval.number: ${Interval.number().toString()}
+  Interval.value: ${Interval.value().toString()}
+  Interval.base: ${Interval.base().toString()}
+  Interval.type: ${Interval.type().toString()}
+  Interval.quality: ${Interval.quality().toString()}
+  Interval.qualityValue: ${Interval.qualityValue().toString()}
+  Interval.direction: ${Interval.direction().toString()}
+  Interval.semitones: ${Interval.semitones().toString()}
+  Interval.simple: ${Interval.simple().toString()}
+  Interval.octaves: ${Interval.octaves().toString()}
+  Interval.isCompound: ${Interval.isCompound().toString()}`

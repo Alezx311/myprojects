@@ -1,7 +1,9 @@
 import React from 'react'
-import { NOTES, SCALES } from '../constants'
+import { Constants } from '../helpers'
 import { updateSound } from '../../store/actions'
 import { useDispatch } from 'react-redux'
+
+const { NOTES, SCALES } = Constants
 
 const styles = {
   first: {

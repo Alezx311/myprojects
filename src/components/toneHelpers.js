@@ -1,19 +1,17 @@
-import * as Tone from 'tone'
-import * as CONSTANTS from './constants'
-import * as Random from './random'
-import TotalSerializm from 'total-serialism'
-import SampleLibrary from './toneInstruments'
+// import * as Tone from 'tone'
+import { Rhythms, Sounds } from './music'
+import { Helpers, Constants } from './helpers'
 
-export const startContext = async () => {
-  await Tone.start()
-  console.log('tone loaded', Tone.context.state)
-}
-export const loadInstrument = async (name = 'guitar-electric') =>
-  await SampleLibrary.load({
-    instruments: 'guitar-electric',
-    baseUrl: '/samples/'
-  }).toDestination()
-export const loadSynth = () => new Tone.PolySynth(Tone.Synth, CONSTANTS.PolySynthOptions).toDestination()
+// export const startContext = async () => {
+//   await Tone.start()
+//   console.log('tone loaded', Tone.context.state)
+// }
+// export const loadInstrument = async (name = 'guitar-electric') =>
+//   await SampleLibrary.load({
+//     instruments: 'guitar-electric',
+//     baseUrl: '/samples/'
+//   }).toDestination()
+// export const loadSynth = () => new Tone.PolySynth(Tone.Synth, CONSTANTS.PolySynthOptions).toDestination()
 export const loadSequence = (player, synth) => {
   player.synth = synth
   player.track = new Tone.Sequence((time, { note, duration, strength }) => {

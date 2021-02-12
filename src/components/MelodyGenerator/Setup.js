@@ -2,7 +2,13 @@ import React from 'react'
 import Select from 'react-select'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateSound } from '../../store/actions'
-import { NOTES, SCALES, randomArrayElement } from './Helpers'
+import { Random, Constants } from '../helpers'
+
+const { ArrayElement } = Random
+const { NOTES, SCALES, INSTRUMENT_NAMES, SYNTH_NAMES, PROPS } = Constants
+
+// const propsToFull = (props = PROPS, opt = PROPS) => Object.assign({}, { ...props }, { ...opt }, { ...PROPS })
+
 
 const getOptions = arr => arr.map(v => ({ value: v, label: v }))
 
@@ -12,14 +18,14 @@ const optionsSize = [3, 4, 5, 7, 9, 11, 13, 17, 20, 100]
 const optionsParts = [3, 4, 5, 7, 9, 11, 13, 17, 20, 100]
 const optionsOctave = [1, 2, 3, 4]
 const optionsInstrument = ['Synth', 'PolySynth']
-// const optionsInstrument = ['Synth', 'PolySynth', 'Guitar']
+
 const randomSoundSetup = () => ({
-  size: randomArrayElement(optionsSize),
-  parts: randomArrayElement(optionsParts),
-  key: randomArrayElement(optionsKey),
-  // octave: randomArrayElement(optionsOctave),
-  scale: randomArrayElement(optionsScale)
-  // instrument: randomArrayElement(optionsInstrument)
+  size: ArrayElement(optionsSize),
+  parts: ArrayElement(optionsParts),
+  key: ArrayElement(optionsKey),
+  octave: ArrayElement(optionsOctave),
+  scale: ArrayElement(optionsScale),
+  instrument: ArrayElement(optionsInstrument)
 })
 
 const SetupSelectLabel = ({ text }) => <div className="text-center align-middle m-1">{text}</div>
@@ -62,6 +68,7 @@ const SetupRandomize = () => {
 const Setup = () => {
   return (
     <div className="container">
+      <ConstantsList />
       <div className="row">
         <SetupSelect text="Key" options={optionsKey} />
         <SetupSelect text="Scale" options={optionsScale} />
