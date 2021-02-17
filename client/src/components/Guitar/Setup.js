@@ -1,4 +1,4 @@
-import Select from 'react-select'
+/* import Select from 'react-select'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateGuitar } from '../../store/actions'
 import { TUNING_NAMES, TUNINGS } from '../constants'
@@ -42,7 +42,7 @@ const SelectElement = (props, { placeholder, options } = props) => {
     dispatch(updateGuitar(placeholder, value))
   }
 
-  return <Select value={{ value: selected }} { ...props, onChange } />
+  return <Select value={{ value: selected }} {...props} onChange={onChange} />
 }
 const SelectElements = props => {
   return (
@@ -55,9 +55,7 @@ const SelectElements = props => {
   )
 }
 const SelectStrings = props => {
-  const propValues = { ...props, options, defaultValue: options[0], placeholder, onChange }
-
-  return <Select {...propValues} />
+  return <Select {...props} />
 }
 const SelectFrets = props => {
   const onChange = ({ value }) => placeholder(title, value)
@@ -107,3 +105,4 @@ const Setup = () => (
 )
 
 export default Setup
+ */

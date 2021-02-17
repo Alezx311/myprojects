@@ -1,0 +1,127 @@
+* const Examples = () => {
+  const synths = Object.fromEntries(SYNTHS.map(name => [[name], [new Tone[name]().toDestination()]]))
+  const instruments = Object.fromEntries(INSTRUMENTS.map(name => [[name], [new Tone[name]().toDestination()]]))
+  
+  const loadExamples = obj => {
+    Object.keys(obj).map((val, key) => (<div className="col">
+      <div className="row">
+      {val}
+      </div>
+      {NOTES.map((note, key2) => (
+        <div>
+      <div className="row">
+      {note}
+      </div>
+
+        </div>))}
+    </div>))
+  }
+  return <div>
+    <div>
+      <span>synths</span>
+      {Object.keys(synths).map((val, key) => (
+        <div key={key} className="row">
+          <span>synths.{val}</span>
+          </div>
+          {NOTES.map((note, key2) => (
+            
+            ))}
+           
+            )) }
+             </div>
+    </div>
+    <div>
+      <span>instruments</span>
+      {Object.keys(instruments).map((val, key) => (
+        <div key={key} className="row">
+          <span>instruments.{val}</span>
+          </div>
+          {NOTES.map((note, key2) => (
+            
+            ))}
+            
+            )) }
+         
+    </div>
+  </div>
+}
+const InstrumentExamples = props => {
+  return <div>InstrumentExamples</div>
+}
+const SynthExamples = props => {
+  return SYNTHS.map(name => {
+    const synth = new Tone[name]().toDestination()
+    const notes = NOTES.map(char => `${char}4`)
+
+    let clicked = document.getElementById(`${synth}_clicked_block`) ?? false
+    let history = document.getElementById(`${synth}_history_block`) ?? false
+    let historyMessage = `${new Date(Date.now()).toUTCString()}: `
+
+    const onClick = note => {
+      if (!clicked || !history) {
+        clicked = document.getElementById(`${synth}_clicked_block`)
+        history = document.getElementById(`${synth}_history_block`)
+      }
+      if (clicked && history) {
+        historyMessage = `${historyMessage} ${note} -> `.trim().substr(-100)
+        clicked.innerText = `Clicked : ${name} / ${note}`
+        history.innerText = `History: ${historyMessage} ...`
+      }
+
+      synth.triggerAttackRelease(note, '8n', Tone.now())
+    }
+
+    const onMouseEnter = note => {
+      document.getElementById(`${synth}_hovered_block`).innerHTML = `Hovered : ${name} / ${note}`
+    }
+
+    
+    
+    // const instruments = INSTRUMENTS.map(name => Object.fromEntries([[name], [new Tone[name]().toDestination()]])).reduce((acc, val) => ({...acc, ...val}))
+
+    const playSynthNote = ({ note, synth }) => {
+      synths[synth].triggerAttackRelease(note, '8n', Tone.now())
+    }
+    const playIntrumentNote = ({ note, instrument }) => {
+      instruments[instrument].triggerAttackRelease(note, '8n', Tone.now())
+    }
+
+    return (
+      <div className="row justify-content-md-center text-center">
+        <div {...props} className="card">
+          <div className="card-body text-center">
+            <div className="row card-title">Note Sounds Examples:</div>
+            <div className="row card-text">
+              <div className="col">
+                <div>SYNTHS Examples: </div>
+                {SYNTHS.map((synth, key) => (
+                  <div className="row text-center" key={key}>
+                    <div className="title">{synth}</div>
+                  </div>
+                  {NOTES.map((note, key2) => (
+                  <div className="row text-center" key={key2}>
+                    <button className="btn btn-outline-success"  onClick={() => play({note, synth})}>{note}</button>
+                  </div>
+{note}{' '}{Random.color()}
+                  ))}
+                ))}
+                <div className="row text-center">
+                  <span className="subtitle">Synth: </span>
+                </div>
+              </div>
+              <div className="col">
+                <div>INTRUMENTS Examples: </div>
+                {INTRUMENTS.map((name, key) => (
+                  <div></div>
+                ))}
+                <div className="row text-center">
+                  <span className="subtitle">Instrument: </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  })
+} */}

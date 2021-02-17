@@ -4,6 +4,7 @@ import CONSTANTS from './constants'
 
 export class Note {
   // Teoria
+  static chars = () => CONSTANTS.NOTES
   static loadNote = note => Teoria.note(note)
   static loadScale = (note, scale = 'minor') => this.loadNote(note).scale(scale).simple()
   static loadData = note => {
@@ -98,7 +99,7 @@ export class Random {
     Color: this.color(),
     Interval: this.interval(),
     Sample: this.sample(),
-    number: this.number(0, size),
+    number: this.number(1, 100),
     numbers: arr,
     numbersPart: this.arrayPart(arr),
     numbersSequence: this.arraySequence(arr),

@@ -1,13 +1,13 @@
-import Guitar from './Guitar'
+// import Guitar from './Guitar'
+// import Riffs from './Riffs'
 import Player from './Player'
-import Riffs from './Riffs'
 
 export default function Main() {
   return (
     <div className="container">
-      <Guitar />
       <Player />
-      <Riffs />
+      {/* <Guitar /> */}
+      {/* <Riffs /> */}
     </div>
   )
 }
