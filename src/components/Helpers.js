@@ -116,8 +116,7 @@ export class Random {
   static ArrayElement = (array, { length } = array) => length > 1 && array[this.Number(0, length)]
   //* shuffle given array
   static ArrayUnicals = (array, { length } = array) => length > 1 && [...new Set([...array])]
-  static ArrayMultiply = (array, repeats = this.options.repeats) =>
-    this.Values(repeats, array).reduce(acc => [...acc, ...array], array)
+  static ArrayMultiply = (array, repeats = 5) => this.Values(repeats, array).reduce(acc => [...acc, ...array], array)
   static ArrayShuffle = (array, { length } = array) =>
     length > 1 && this.ArrayUnicals(this.ArrayMultiply(array)).sort(this.SortFunc)
   //* get random note char like: 'c', 'd#', 'bb' with possible '#' and 'b' symbols

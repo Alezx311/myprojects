@@ -1,177 +1,98 @@
+import React from 'react'
 import * as Tone from 'tone'
+// import { Container, Row, Col, Card, Button, ButtonGroup, Alert } from 'react-bootstrap'
+import { SYNTHS, NOTES, SCALES, INSTRUMENTS, COLOR_CLASSES } from '../constants'
 import { Note, Random } from '../helpers'
-import { NOTES, INSTRUMENTS, SYNTHS } from '../constants'
 
-const Info = props => {
+const NoteButtons = ({ synth }) => {
+  const notes = NOTES.map(char => `${char}4`)
+  const randNote = Random.note()
+  const duration = '8n'
+
+  const playNote = note => {
+    synth.triggerAttackRelease(note, duration, Tone.now())
+    console.log(`note played. ${note} ${duration}`)
+  }
+  const playNotes = (note, size) => {
+    const scaleNotes = Note.loadScale(note, 'minor')
+    const shuffles = Random.arrayShuffles(scaleNotes)
+    const sequenceNotes = Random.values(size, shuffles)
+    const sequence = new Tone.Sequence((time, note) => {
+      synth.triggerAttackRelease(note, '8n', Tone.now(), Math.random())
+
+      console.log(`note played. ${note} ${duration}`)
+    }, sequenceNotes).set({ humanize: true, loop: size > 10 })
+
+    Tone.Transport.start(0)
+    sequence.start('+1')
+  }
+
+  const PlayNote = props => (
+    <button type="button" className="btn btn-outline-success m-1 p-1" {...props}>
+      {props.note}
+    </button>
+  )
+
   return (
-    <div className="row justify-content-md-center text-center">
-      <div {...props} className="card">
-        <div className="card-body text-center">
-          <div className="row card-title">
-            <span className="title">Sounds Info</span>
-            <span className="subtitle">Notes: {NOTES.join(' -> ')}</span>
-          </div>
-          <div className="row card-text">
-            <span className="title">Log: </span>
-          </div>
-          <div className="row card-text">
-            <div className="col">
-              <div className="row text-center">
-                <span className="subtitle">Synths: </span>
-              </div>
-              {SYNTHS.map((v, key) => (
-                <div key={key} className="row text-center">
-                  <span className="subtitle">{v}</span>
-                </div>
-              ))}
-            </div>
-            <div className="col">
-              <div className="row text-center">
-                <span className="subtitle">Instruments: </span>
-              </div>
-              {INSTRUMENTS.map((v, key) => (
-                <div key={key} className="row text-center">
-                  <span className="subtitle">{v}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <>
+      <div className="btn-group" role="group">
+        {notes.map((note, key) => (
+          <PlayNote note={note} key={key} onClick={() => playNote(note)} />
+        ))}
       </div>
+
+      <div className="btn-group" role="group">
+        <PlayNote note={randNote} size={10} onClick={() => playNotes(randNote, 10)} text="Short" />
+        <PlayNote note={randNote} size={20} onClick={() => playNotes(randNote, 20)} text="Normal" />
+        <PlayNote note={randNote} size={50} onClick={() => playNotes(randNote, 50)} text="Long" />
+        <PlayNote note={randNote} size={100} onClick={() => playNotes(randNote, 100)} text="Very Long" />
+      </div>
+    </>
+  )
+}
+
+const Synths = props => {
+  const synths = SYNTHS.map(name => ({ name, synth: new Tone[name]().toDestination() }))
+
+  return synths.map(({ synth, name }, key) => (
+    <div className="card shadow-lg bg-light bg-gradient m-3" key={key}>
+      <div className="card-body text-center">
+        <h6 className="fw-bold fst-italic">{name}</h6>
+        <NoteButtons synth={synth} />
+      </div>
+    </div>
+  ))
+}
+
+const Instruments = props => {
+  return (
+    <div className="container">
+      {INSTRUMENTS.map((value, key) => (
+        <div key={key} value={value}>
+          {value}
+        </div>
+      ))}
     </div>
   )
 }
-const SynthExamples = props => {
-  let logMessage = `${new Date(Date.now()).toUTCString()}: `
-  let logBlock = document.getElementById(`show_logs_block`) ?? false
-  const notes = NOTES.map(char => `${char}4`)
-
-  return SYNTHS.map((name, key) => {
-    const synth = new Tone[name]().toDestination()
-    const onClick = ({ note }) => {
-      synth.triggerAttackRelease(note, '4n', Tone.now())
-
-      if (!logBlock) {
-        logBlock = document.getElementById(`show_logs_block`) ?? false
-      }
-      // logBlock.color = Random.color()
-      // logBlock.style = '{{ background-color: {Random.color()}}}'
-      logMessage += ` -> ${note}`
-    }
-
-    const playSeq = (size = 20) => {
-      const randNote = Random.arrayElement(notes)
-      const chordNotes = Note.loadChord(randNote)
-      const scaleNotes = Note.loadScale(randNote, 'minor')
-      const notesArray = notes
-        .reduce((acc, v) => [...acc, ...Random.arrayShuffle(scaleNotes)], scaleNotes)
-        .map(v => `${v}4`)
-      const seqNotes = Random.values(notesArray, size)
-
-      if (logBlock) {
-        logBlock.innerText += `\n\n\nrandNote: ${randNote} scaleNotes: ${scaleNotes} notesArray: ${notesArray}  seqNotes: ${seqNotes}`
-      } else {
-        logBlock = document.getElementById(`show_logs_block`) ?? false
-      }
-
-      const seq = new Tone.Sequence((time, note) => {
-        console.log(`Time: ${time} Note: ${note}`)
-
-        synth.triggerAttackRelease(note, '8n', Tone.now(), Math.random())
-        // synth.triggerAttackRelease(note, '8n', time)
-
-        // synth.triggerAttackRelease(note, '8n', Tone.now())
-      }, seqNotes).set({
-        humanize: true,
-        probability: 1,
-        playbackRate: 1
-      })
-
-      Tone.Transport.start(0)
-      seq.start('+1')
-
-      return seq
-    }
-
-    return (
-      <div className="card" key={key}>
-        <div className="card-body">
-          <div className="row text-center mx-1">
-            <div className="card-title">{name}</div>
-          </div>
-          <div className="col btn-group">
-            <button className="btn btn-outline-primary" onClick={() => playSeq(10)}>
-              Short
-            </button>
-            <button className="btn btn-outline-warning" onClick={() => playSeq(50)}>
-              Medium
-            </button>
-            <button className="btn btn-outline-danger" onClick={() => playSeq(100)}>
-              Long
-            </button>
-          </div>
-          <div className="row">
-            <div className="card-text btn-group">
-              {notes.map((note, key2) => (
-                <button
-                  key={key2}
-                  note={note}
-                  {...props}
-                  name={name}
-                  onClick={() => onClick({ note })}
-                  synth={synth}
-                  className="btn btn-outline-success"
-                >
-                  {note}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  })
-}
-const InstrumentExamples = props => {
-  let logMessage = `${new Date(Date.now()).toUTCString()}: `
-  let logBlock = document.getElementById(`show_logs_block`) ?? false
-  const notes = NOTES.map(char => `${char}4`)
-
+const Scales = props => {
   return (
-    <div className="col justify-content-md-center text-center">
-      {INSTRUMENTS.map((name, key) => (
-        <div className="row" key={key}>
-          <div className="card">
-            <div className="card-body">
-              <div className="row">
-                <div className="card-title">{name}</div>
-              </div>
-            </div>
-          </div>
+    <div className="container">
+      {SCALES.map((value, key) => (
+        <div key={key} value={value}>
+          {value}
         </div>
       ))}
     </div>
   )
 }
 
-const Player = props => {
+export const Player = props => {
   return (
-    <div className="container">
-      <div className="row">
-        <Info />
-      </div>
-      <div className="row title text-center">
-        <div id="show_logs_block">Log</div>
-      </div>
-
-      <div className="row">
-        <div className="col">
-          <SynthExamples />
-        </div>
-        <div className="col">
-          <InstrumentExamples />
-        </div>
-      </div>
+    <div className="container fluid">
+      <Scales />
+      <Synths />
+      <Instruments />
     </div>
   )
 }

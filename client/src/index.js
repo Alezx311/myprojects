@@ -1,13 +1,12 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
+import App from './App'
 import { compose, createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { rootReducer } from './store/reducers'
 
-
-
-import App from './App'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const store = createStore(
   rootReducer,
@@ -20,7 +19,7 @@ const app = (
   </Provider>
 )
 
-ReactDOM.render(app, document.getElementById('root'))
+render(app, document.getElementById('root'))
 
 /* import React from 'react';
 import ReactDOM from 'react-dom';

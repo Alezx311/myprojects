@@ -5,7 +5,7 @@ import { updateSound } from '../../store/actions'
 import { Random, Constants } from '../helpers'
 
 const { ArrayElement } = Random
-const { NOTES, SCALES, INSTRUMENT_NAMES, SYNTH_NAMES, PROPS } = Constants
+const { NOTES, SCALES, INSTRUMENTS, SYNTHS } = Constants
 
 // const propsToFull = (props = PROPS, opt = PROPS) => Object.assign({}, { ...props }, { ...opt }, { ...PROPS })
 

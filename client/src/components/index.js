@@ -1,13 +1,11 @@
-// import Guitar from './Guitar'
-// import Riffs from './Riffs'
 import Player from './Player'
 
-export default function Main() {
+export const Main = () => {
   return (
     <div className="container">
       <Player />
-      {/* <Guitar /> */}
-      {/* <Riffs /> */}
     </div>
   )
 }
+
+export default Main

@@ -1,10 +1,22 @@
 import * as Tone from 'tone'
 import * as Teoria from 'teoria'
-import CONSTANTS from './constants'
+import {
+  NOTES,
+  COLORS,
+  COLOR_NAMES,
+  COLOR_CLASSES,
+  TUNINGS,
+  INTERVALS,
+  SAMPLES,
+  SCALES,
+  INSTRUMENTS,
+  SYNTHS,
+  DURATIONS
+} from './constants'
 
 export class Note {
   // Teoria
-  static chars = () => CONSTANTS.NOTES
+  static chars = () => NOTES
   static loadNote = note => Teoria.note(note)
   static loadScale = (note, scale = 'minor') => this.loadNote(note).scale(scale).simple()
   static loadData = note => {
@@ -18,8 +30,8 @@ export class Note {
 
     return { note, values, char, octave, color }
   }
-  static loadColor = note => CONSTANTS.COLORS[this.toMidi(note) % 12]
-  static loadTuning = tuning => CONSTANTS.TUNINGS[tuning]
+  static loadColor = note => COLORS[this.toMidi(note) % 12]
+  static loadTuning = tuning => TUNINGS[tuning]
   static loadTuningFull = (tuning, notes = this.loadTuning(tuning)) => [...notes, ...notes.map(this.loadOctaved)]
   static loadFretboard = tuning =>
     this.loadTuningFull(tuning).map(open => this.loadSteps(open).map(v => this.loadData(v)))
@@ -30,7 +42,7 @@ export class Note {
   static loadArpeggios = notes => Random.arrayShuffles(this.loadArpeggio(notes))
   static loadChord = note => this.loadNote(note).chord().notes()
   static loadInterval = (note, interval) => interval > 0 && interval < 7 && this.loadNote(note).interval(interval)
-  static loadIntervals = note => CONSTANTS.INTERVALS.map(interval => this.loadInterval(note, interval))
+  static loadIntervals = note => INTERVALS.map(interval => this.loadInterval(note, interval))
   static toMidi = note => this.loadNote(note).midi()
   static fromMidi = midi => midi > 0 && midi < 120 && Teoria.note.fromMIDI(midi).toString()
   static loadStep = (note, step = 1) => step > 0 && this.fromMidi(this.toMidi(note) + step)
@@ -45,7 +57,7 @@ export class Note {
   static toneOptions = opt => ({ ...{ size: 2 ** this.number(1, 10), type: 'fft', smoothing: true }, ...opt })
   static toneAnalyser = () => new Tone.Analyser(this.toneOptions())
   static loadSamples = instrument => {
-    const { notes, baseUrl } = CONSTANTS.SAMPLES[instrument]
+    const { notes, baseUrl } = SAMPLES[instrument]
     const urlEntries = notes.map(v => [v, `${v}.mp3`])
     const urls = Object.fromEntries(urlEntries)
     const sampler = this.toneSampler({ urls, baseUrl })
@@ -88,32 +100,7 @@ export class Random {
   static numbers = (size = 10, max = 100) => this.array(size).map(v => this.number(0, max))
   static numbersDeep = (len = 10, max = 4) => this.numbers(len, max).map(v => (v > 1 ? this.numbers(v, max) : v))
   static values = arr => this.array(10).map(v => this.arrayElement(arr))
-  static example = (arr = this.numbers(10, 100)) => ({
-    note: this.note(),
-    notes: this.notes(),
-    Scale: this.scale(),
-    Tuning: this.tuning(),
-    Instrument: this.instrument(),
-    Synth: this.synth(),
-    Duration: this.duration(),
-    Color: this.color(),
-    Interval: this.interval(),
-    Sample: this.sample(),
-    number: this.number(1, 100),
-    numbers: arr,
-    numbersPart: this.arrayPart(arr),
-    numbersSequence: this.arraySequence(arr),
-    numbersChange: this.arrayChange(arr),
-    numbersMerge: this.arrayMerge(arr),
-    numbersDouble: this.arrayDouble(arr),
-    numbersRepeats: this.arrayRepeats(arr),
-    numbersUnicals: this.arrayUnicals(arr),
-    numbersShuffle: this.arrayShuffle(arr),
-    numbersShuffles: this.arrayShuffles(arr),
-    numbersShuffledUnicals: this.arrayShuffledUnicals(arr),
-    numbersIndex: this.arrayIndex(arr),
-    numbersElement: this.arrayElement(arr)
-  })
+
   static array = (size = 10, fill = this.boolean(20)) => Array(size).fill(fill)
   static arrays = (size = 10, maxDeep = 5) => this.array(size).map(v => this.array(this.number(2, maxDeep)))
   static arrayPart = (arr, chance = 20) => arr.filter((v, i) => this.boolean(chance))
@@ -128,26 +115,39 @@ export class Random {
   static arrayShuffle = arr => arr.sort(() => this.range() - 0.5)
   static arrayShuffles = (arr, repeats = 2) => this.arrayShuffle(this.arrayRepeats(arr, repeats))
   static arrayShuffleUnicals = arr => this.arrayUnicals(this.array(arr.length * 2).map(v => this.arrayShuffle(arr)))
-  static arrayIndex = arr => this.number(0, arr.length)
-  static arrayElement = (arr, i = this.arrayIndex(arr)) => arr[i]
+  static arrayIndex = arr => arr && this.number(0, arr.length)
+  static arrayElement = (arr, i = this.arrayIndex(arr)) => arr && arr[i]
   static arrayDoubleSome = (arr, chance = 50) => this.arrayShuffles(arr).map(v => (this.boolean(20) ? [v, v] : v))
   static objectKey = obj => this.arrayElement(Object.keys(obj))
   static objectProp = (obj, key = this.objectKey(obj)) => obj[key]
-  static note = (notes = CONSTANTS.NOTES) => this.arrayElement(notes)
-  static notes = (size = 10, notes = CONSTANTS.NOTES) => this.values(notes, size)
-  static scale = () => this.arrayElement(CONSTANTS.SCALES)
-  static tuning = () => this.objectKey(CONSTANTS.TUNINGS)
-  static instrument = () => this.arrayElement(CONSTANTS.INSTRUMENTS)
-  static synth = () => this.arrayElement(CONSTANTS.SYNTHS)
-  static duration = () => this.arrayElement(CONSTANTS.DURATIONS)
-  static color = () => this.arrayElement(CONSTANTS.COLORS)
-  static interval = () => this.arrayElement(CONSTANTS.INTERVALS)
-  static sample = () => this.objectProp(CONSTANTS.SAMPLES)
+  static note = (notes = NOTES) => this.arrayElement(notes)
+  static velocity = () => 0.5 + this.range() / 2
+  static notes = (size = 10, notes = NOTES) => this.values(notes, size)
+  static scale = () => this.arrayElement(SCALES)
+  static tuning = () => this.objectKey(TUNINGS)
+  static instrument = () => this.arrayElement(INSTRUMENTS)
+  static synth = () => this.arrayElement(SYNTHS)
+  // duration -> '4n', '16t', '8s'... -> powerOfTwo + durationChar
+  static duration = () => `${this.number(1, 4) ** 2}${this.arrayElement(DURATIONS)}`
+  static color = () => this.arrayElement(COLORS)
+  static colorClass = () => this.arrayElement(COLOR_CLASSES)
+  static interval = () => this.arrayElement(INTERVALS)
+  static sample = () => this.objectProp(SAMPLES)
   static rhythmValues = (size = 10, max = 4) => this.numbers(size, max)
   static rhythmValuesDeep = (size = 10, max = 4) => this.numbersDeep(size, max)
   static rhythmNotes = (size = 10) => this.numbers(size, 1, 4).map(v => (v > 1 ? this.notes(v) : this.note()))
   static rhythmNotesDeep = (size = 10, max = 4, notes = this.notes(size)) =>
     this.arrayDeepSome(this.rhythmNotes(size, notes), notes)
+}
+export class React {
+  static colorName = () => Random.arrayElement(COLOR_NAMES)
+  static colorHex = () => Random.arrayElement(COLORS)
+  static colorClass = () => Random.arrayElement(COLOR_CLASSES)
+  static textColor = () => `text-${this.colorClass()}`
+  static borderColor = () => `border-${this.colorClass()}`
+  static buttonColor = () => `btn-${this.colorClass()}`
+  static bgColor = () => `bg-${this.colorClass()}`
+  static bgGradient = () => `bg-${this.colorClass()} bg-gradient`
 }
 
 export class Sound {
@@ -158,7 +158,7 @@ export class Sound {
   static toneOptions = opt => ({ ...{ size: 2 ** this.number(1, 10), type: 'fft', smoothing: true }, ...opt })
   static toneAnalyser = () => new Tone.Analyser(this.toneOptions())
   static loadSamples = instrument => {
-    const { notes, baseUrl } = CONSTANTS.SAMPLES[instrument]
+    const { notes, baseUrl } = SAMPLES[instrument]
     const urlEntries = notes.map(v => [v, `${v}.mp3`])
     const urls = Object.fromEntries(urlEntries)
     const sampler = this.toneSampler({ urls, baseUrl })
@@ -166,3 +166,30 @@ export class Sound {
     return { instrument, notes, baseUrl, urls, sampler }
   }
 }
+
+// static example = (arr = this.numbers(10, 100)) => ({
+//   note: this.note(),
+//   notes: this.notes(),
+//   Scale: this.scale(),
+//   Tuning: this.tuning(),
+//   Instrument: this.instrument(),
+//   Synth: this.synth(),
+//   Duration: this.duration(),
+//   Color: this.color(),
+//   Interval: this.interval(),
+//   Sample: this.sample(),
+//   number: this.number(1, 100),
+//   numbers: arr,
+//   numbersPart: this.arrayPart(arr),
+//   numbersSequence: this.arraySequence(arr),
+//   numbersChange: this.arrayChange(arr),
+//   numbersMerge: this.arrayMerge(arr),
+//   numbersDouble: this.arrayDouble(arr),
+//   numbersRepeats: this.arrayRepeats(arr),
+//   numbersUnicals: this.arrayUnicals(arr),
+//   numbersShuffle: this.arrayShuffle(arr),
+//   numbersShuffles: this.arrayShuffles(arr),
+//   numbersShuffledUnicals: this.arrayShuffledUnicals(arr),
+//   numbersIndex: this.arrayIndex(arr),
+//   numbersElement: this.arrayElement(arr)
+// })

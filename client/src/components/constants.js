@@ -1,4 +1,18 @@
 //! Constant Values for using in generate values, validate, etc...
+export const COLOR_CLASSES = [
+  'primary',
+  'secondary',
+  'success',
+  'danger',
+  'warning',
+  'info',
+  'light',
+  'dark',
+  'body',
+  'white',
+  'transparent'
+]
+export const COLOR_NAMES = ['blue', 'indigo', 'purple', 'pink', 'red', 'orange', 'yellow', 'green', 'teal', 'cyan']
 // Note Symbols in #
 export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
 // Music Scale Names
