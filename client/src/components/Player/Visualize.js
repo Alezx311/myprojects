@@ -1,35 +1,47 @@
-import React from 'react'
-import { Figure, Image } from 'react-bootstrap'
-
 const Character = props => {
-  return <div>Character</div>
+  return (
+    <div className="container">
+      <p>Character</p>
+      <div {...props}></div>
+    </div>
+  )
 }
 const Color = props => {
-  return <div>Color</div>
+  return (
+    <div className="container">
+      <p>Color</p>
+      <div {...props}></div>
+    </div>
+  )
 }
 const Bliss = props => {
-  return <div>Bliss</div>
-
-  // <Image src={src} rounded></Image>
+  return (
+    <div className="container">
+      <p>Bliss</p>
+      <div {...props}></div>
+    </div>
+  )
 }
 const Controls = props => {
-  return <div>Controls</div>
+  return (
+    <div className="container">
+      <p>Controls</p>
+      <div {...props}></div>
+    </div>
+  )
 }
 
 const Visualize = props => (
-  <Figure>
-    <Figure.Caption>{props.note}</Figure.Caption>
-    <Figure.Image>
-      <Bliss />
-    </Figure.Image>
-    <Figure.Caption>
-      <Character />
-    </Figure.Caption>
-    <Figure.Caption>
-      <Color />
-    </Figure.Caption>
-    <Figure.Caption>
-      <Controls />
-    </Figure.Caption>
-  </Figure>
+  <div className="container">
+    <div className="row">
+      <div className="col text-center">
+        <Character />
+        <Color />
+        <Bliss />
+        <Controls />
+      </div>
+    </div>
+  </div>
 )
+
+export default Visualize
