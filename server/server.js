@@ -1,21 +1,32 @@
+require('dotenv').config()
+
 const express = require('express')
-const bodyParser = require('body-parser')
-const path = require('path')
-const { indexRouter } = require('./routes')
-const { PORT } = process.env
+const cors = require('cors')
 
 const app = express()
+const PORT = process.env.PORT
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-app.use(express.static(path.join(__dirname, 'files')))
+app.use(express.static('public'))
+app.use(cors())
+app.use(fileUpload())
 
-app.use('/', indexRouter)
+app.get('/bliss', (req, res) => {
+  if (!req.words) {
+    return res.status(500).send({ message: 'Words for bliss not founded!' })
+  }
+
+  const images = Bliss.findByWords(req.words)
+
+  if (images.length) {
+    return res.status(200).send({ message: `${images.length} images finded!`, images })
+  }
+})
 
 app.listen(PORT, err => {
   if (err) {
-    console.error(`Error:`, err)
+    console.error(err)
+    process.exitCode = 1
   } else {
-    console.log(`Server started at ${PORT}`)
+    console.info(`Server listening on ${PORT}`)
   }
 })

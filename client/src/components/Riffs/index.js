@@ -1,11 +1,10 @@
 import { NOTES, SCALES } from '../constants'
 import { Note, Random } from '../helpers'
 
-export const Riff = props => {
+export const Riffs = props => {
   return (
     <div className="container">
-      <p>Riff</p>
-      <div {...props}></div>
+      <p>Riffs</p>
     </div>
   )
 }

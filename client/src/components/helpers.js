@@ -1,6 +1,5 @@
 import * as Tone from 'tone'
 import * as Teoria from 'teoria'
-import { SAMPLE_NAMES, SAMPLE_FILES } from './samplesData'
 
 import {
   NOTES,
@@ -85,6 +84,7 @@ export class Note {
 
     return INSTRUMENTS[instrument]
   }
+  static stringToNotes = str => [...str].map(Note.loadNote).filter(Boolean)
   // Guitar
   static scaleRiff = (note, scale, size = 20) => {
     const repeats = Random.arrayRepeats([note], size).map((v, i) => i > 0 && this.loadStep(v, 12 * Random.number(1, 5)))
@@ -157,6 +157,6 @@ export class Random {
   static rhythmNotesDeep = (size = 10, max = 4, notes = this.notes(size)) =>
     this.arrayDeepSome(this.rhythmNotes(size, notes), notes)
   static colorName = () => Random.arrayElement(COLOR_NAMES)
-  static colorHex = () => Random.arrayElement(COLOR_HEX)
+  static colorHex = () => Random.arrayElement(COLOR_CODES)
   static colorClassName = () => Random.arrayElement(COLOR_CLASSNAMES)
 }
