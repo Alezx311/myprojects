@@ -3,66 +3,96 @@ import * as Tone from 'tone'
 import { SYNTHS, NOTES, INSTRUMENTS } from '../constants'
 import { Note, Random } from '../helpers'
 
+const NoteButtons = ({ synth, name }) => {
+  const NoteButton = ({ note }, ...props) => (
+    <button
+      type="button"
+      note={note}
+      className="btn btn-sm btn-outline-success m-1"
+      onClick={() => {
+        synth.triggerAttackRelease(note, '8n', Tone.now())
+      }}
+    >
+      {note ?? 'Play'}
+    </button>
+  )
 
+  const MelodyButton = props => {
+    const size = props?.size ?? 20
+    const octave = props?.octave ?? 4
+    const tonical = `${Random.note()}4`
+    const scaleNotes = Note.loadScale(tonical).map(char => `${char}${octave}`)
+    const melodyNotes = Random.arrayShuffles(scaleNotes)
+    const sequenceNotes = Random.notes(size, melodyNotes)
 
-const SoundExampleButtons = props => {
-  const { synth, synthName } = props
+    const sequence = new Tone.Sequence((time = Tone.now(), note) => {
+      synth.triggerAttackRelease(note, '8n', time, Math.random())
+    }, sequenceNotes).set({ humanize: true, probability: 1, playbackRate: 1 })
 
-  const play = (note, duration = '4n', time = Tone.now(), velocity = Math.random()) => {
-    if (!note) return false
-    synth.triggerAttackRelease(note, duration, time, velocity)
-  }
-  const playMany = (time, note) => play(note, '4n', time)
-  const Button = props => <button className="btn btn-primary" {...props}></button>
-  const ButtonExampleNote = props => {
-    const { note } = props
-    const onClick = () => play(note)
-
-    return (
-      <Button note={note} onClick={onClick}>
-        {note}
-      </Button>
-    )
-  }
-  const ButtonExampleChord = props => {
-    const { note } = props
-    const onClick = note => {
-      const chordNotes = Note.loadChord(note)
-      const chordTrack = new Tone.Part(playMany, chordNotes)
-
-      Tone.Transport.start('+1')
+    const onClick = () => {
+      Tone.Transport.start(0)
+      sequence.start('+1')
     }
-    return (
-      <Button note={note} onClick={onClick}>
-        {note}
-      </Button>
-    )
-  }
-  const ButtonExampleMelody = props => {
-    const { note } = props
-    const onClick = note => {
-      const scaleNotes = Note.loadScale(note)
-      const melodyNotes = Random.values(scaleNotes, 20)
-      const melodyTrack = new Tone.Sequence(playMany, melodyNotes)
 
-      Tone.Transport.start('+1')
-    }
     return (
-      <Button note={note} onClick={onClick}>
-        {note}
-      </Button>
+      <button type="button" className="btn btn-sm btn-outline-success m-1" onClick={onClick}>
+        {`${size} notes melody`}
+      </button>
     )
   }
 
   return (
-    <div className="btn-group">
-      {NOTES.map(noteChar => `${noteChar}4`).map(note => (
-        <div key={note}>
-          <ButtonExampleNote note={note} />
-          <ButtonExampleChord note={note} />
-          <ButtonExampleMelody note={note} />
+    <div className="container">
+      <div className="row">
+        <div className="btn-group" role="group">
+          {NOTES.map(char => `${char}4`).map((note, key) => (
+            <NoteButton note={note} key={key} />
+          ))}
+        </div>
+      </div>
+      <div className="row">
+        <MelodyButton size={10} />
+        <MelodyButton size={20} />
+        <MelodyButton size={50} />
+      </div>
+    </div>
+  )
+}
+
+const Synths = props => {
+  const synths = SYNTHS.map(name => ({ name, synth: new Tone[name]().toDestination() }))
+
+  return synths.map(({ synth, name }, key) => (
+    <div className="card shadow-lg bg-light bg-gradient m-3" key={key}>
+      <div className="card-body text-center">
+        <h6 className="fw-bold fst-italic">{name}</h6>
+        <div className="row">
+          <NoteButtons synth={synth} />
+        </div>
+      </div>
+    </div>
+  ))
+}
+
+const Instruments = props => {
+  return (
+    <div className="container">
+      {Object.keys(INSTRUMENTS).map((value, key) => (
+        <div key={key} value={value}>
+          {value}
         </div>
       ))}
     </div>
   )
 }
+
+export const Player = props => {
+  return (
+    <div className="container container-fluid">
+      <Synths />
+      <Instruments />
+    </div>
+  )
+}
+
+export default Player

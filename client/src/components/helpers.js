@@ -43,8 +43,8 @@ export class Note {
 
     return { note, values, char, octave, text, color }
   }
-  static loadScaleFull = (note, scaleName = 'minor') => this.loadNote(note).scale(scaleName)
-  static loadScale = (note, scaleName = 'minor') => this.loadScaleFull(note, scaleName).simple()
+  static loadScaleFull = (note, scaleName = 'minorpentatonic') => this.loadNote(note).scale(scaleName)
+  static loadScale = (note, scaleName = 'minorpentatonic') => this.loadScaleFull(note, scaleName).simple()
 
   static loadColor = note => COLOR_CODES[this.toMidi(note) % 12]
   static loadGuitarTuning = tuning => GUITAR_TUNINGS[tuning]

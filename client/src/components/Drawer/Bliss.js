@@ -1,1 +1,0 @@
-const Bliss = (word) => {};
