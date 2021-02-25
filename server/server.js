@@ -1,32 +1,19 @@
 require('dotenv').config()
 
 const express = require('express')
-const cors = require('cors')
+const ecstatic = require('ecstatic')
+const http = require('http')
+const { PORT } = process.env
 
 const app = express()
-const PORT = process.env.PORT
 
-app.use(express.static('public'))
-app.use(cors())
-app.use(fileUpload())
+app.use(
+  ecstatic({
+    root: `${__dirname}/public`,
+    showDir: true
+  })
+)
 
-app.get('/bliss', (req, res) => {
-  if (!req.words) {
-    return res.status(500).send({ message: 'Words for bliss not founded!' })
-  }
+http.createServer(app).listen(PORT)
 
-  const images = Bliss.findByWords(req.words)
-
-  if (images.length) {
-    return res.status(200).send({ message: `${images.length} images finded!`, images })
-  }
-})
-
-app.listen(PORT, err => {
-  if (err) {
-    console.error(err)
-    process.exitCode = 1
-  } else {
-    console.info(`Server listening on ${PORT}`)
-  }
-})
+console.log(`Server ready at http://localhost:${PORT}`)
