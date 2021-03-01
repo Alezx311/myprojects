@@ -1,6 +1,0 @@
-export const UPDATE_MELODY = 'MELODY/UPDATE_MELODY'
-export const UPDATE_GUITAR = 'GUITAR/UPDATE_GUITAR'
-
-export const TYPES = { UPDATE_GUITAR, UPDATE_MELODY }
-
-export default TYPES

@@ -1,98 +1,60 @@
 import React from 'react'
 import * as Tone from 'tone'
+import { Button, Container, Col, Row, ToggleButtonGroup, Card } from 'react-bootstrap'
 import { SYNTHS, NOTES, INSTRUMENTS } from '../constants'
 import { Note, Random } from '../helpers'
 
-const NoteButtons = ({ synth, name }) => {
-  const NoteButton = ({ note }, ...props) => (
-    <button
-      type="button"
-      note={note}
-      className="btn btn-sm btn-outline-success m-1"
-      onClick={() => {
-        synth.triggerAttackRelease(note, '8n', Tone.now())
-      }}
-    >
-      {note ?? 'Play'}
-    </button>
-  )
-
-  const MelodyButton = props => {
-    const size = props?.size ?? 20
-    const octave = props?.octave ?? 4
-    const tonical = `${Random.note()}4`
-    const scaleNotes = Note.loadScale(tonical).map(char => `${char}${octave}`)
-    const melodyNotes = Random.arrayShuffles(scaleNotes)
-    const sequenceNotes = Random.notes(size, melodyNotes)
-
-    const sequence = new Tone.Sequence((time = Tone.now(), note) => {
-      synth.triggerAttackRelease(note, '8n', time, Math.random())
-    }, sequenceNotes).set({ humanize: true, probability: 1, playbackRate: 1 })
-
-    const onClick = () => {
-      Tone.Transport.start(0)
-      sequence.start('+1')
-    }
-
-    return (
-      <button type="button" className="btn btn-sm btn-outline-success m-1" onClick={onClick}>
-        {`${size} notes melody`}
-      </button>
-    )
+const Notes = props => {
+  const playOne = note => {
+    const synth = new Tone[props.synthName]().toDestination()
+    console.log(note)
+    synth.triggerAttackRelease(note, '4n')
   }
+  const playMany = note => {
+    const synth = new Tone[props.synthName]().toDestination()
+    const fm = new Tone.FMSynth().toDestination()
+    const drum = new Tone.PluckSynth().toDestination()
+    const notes = Note.melody(note)
+    console.table(notes)
+    new Tone.Sequence((time, str) => {
+      synth.triggerAttackRelease(str, '8n', time)
+    }, notes)
+      .start()
+      .set({ humanize: true, playbackRate: 1, probability: 1 })
+    // new Tone.Sequence((time, str) => {
+    //   fm.triggerAttackRelease(str, '4n', time, 0.1)
+    // }, notes)
+    //   .start(0)
+    //   .set({ humanize: true, playbackRate: 1.3, probability: 1 })
 
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="btn-group" role="group">
-          {NOTES.map(char => `${char}4`).map((note, key) => (
-            <NoteButton note={note} key={key} />
-          ))}
-        </div>
-      </div>
-      <div className="row">
-        <MelodyButton size={10} />
-        <MelodyButton size={20} />
-        <MelodyButton size={50} />
-      </div>
-    </div>
-  )
-}
-
-const Synths = props => {
-  const synths = SYNTHS.map(name => ({ name, synth: new Tone[name]().toDestination() }))
-
-  return synths.map(({ synth, name }, key) => (
-    <div className="card shadow-lg bg-light bg-gradient m-3" key={key}>
-      <div className="card-body text-center">
-        <h6 className="fw-bold fst-italic">{name}</h6>
-        <div className="row">
-          <NoteButtons synth={synth} />
-        </div>
-      </div>
-    </div>
+    Tone.Transport.start('0.1')
+  }
+  return NOTES.map(v => Note.getOctave(v)).map(v => (
+    <Row key={v}>
+      <Button onClick={() => playOne(v)}>{v}</Button>
+      <Button className={`${v}_play_many`} onClick={() => playMany(v)}>{`${v} melody`}</Button>
+    </Row>
   ))
 }
-
-const Instruments = props => {
-  return (
-    <div className="container">
-      {Object.keys(INSTRUMENTS).map((value, key) => (
-        <div key={key} value={value}>
-          {value}
-        </div>
-      ))}
-    </div>
-  )
+const Synths = props => {
+  return SYNTHS.map((v, i) => (
+    <Card key={v + i}>
+      <Card.Body>
+        <Card.Title>{v}</Card.Title>
+        <Notes synthName={v} />
+        {/* <Card.Text>
+        </Card.Text> */}
+      </Card.Body>
+    </Card>
+  ))
 }
 
 export const Player = props => {
   return (
-    <div className="container container-fluid">
-      <Synths />
-      <Instruments />
-    </div>
+    <Container>
+      <Row>
+        <Synths />
+      </Row>
+    </Container>
   )
 }
-
-export default Player

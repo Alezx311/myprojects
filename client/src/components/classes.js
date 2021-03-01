@@ -23,7 +23,7 @@
 
 // Если это состояние является заключительным, то говорят, что автомат допустил слово x}x[прояснить]
 import * as Teoria from 'teoria'
-import * as Tone from 'tone'
+import { NOTES, SCALES } from './constants'
 
 export class Random {
   static range = (size = 2) => Math.random().toFixed(size)
@@ -34,57 +34,55 @@ export class Random {
     Array(size)
       .fill(1)
       .map(v => this.range())
-  static values = (from, size = 10) => {
+  static values = (size = 10, from) => {
     const arr = this.array(size)
     if (!from) {
       return arr
     }
     return arr.map(v => this.element(from))
   }
+  static noteChar = () => this.arrayElement(NOTES)
+  static scaleName = () => this.arrayElement(SCALES)
 }
 
 export class Note {
-  constructor(char, octave) {
+  constructor(char) {
     this.char = char
-    this.octave = octave || 4
-    this.note = `${this.char}${this.octave}`
+    this.octave = char.match(/\d$/)?.[1] ?? 4
+    this.data = Teoria.note(this.note)
+    this.arpeggio = this.data.chord().notes()
+    this.duration = '8n'
+    this.velocity = Math.random()
+    this.midi = this.data.midi()
   }
-  get duration() {
-    return this?.duration ?? '8n'
+  set octave(value) {
+    this.octave = value
   }
-  get velocity() {
-    return this?.velocity ?? Math.random()
+  get note() {
+    return `${this.char}${this.octave}`
   }
-  get time() {
-    return this?.time ?? Tone.now()
+  steps(value = 1) {
+    const stepMidiIndex = this.midi + value
+    return Teoria.note.fromMIDI(stepMidiIndex).toString()
   }
-  get data() {
-    return Teoria.note(this.note)
-  }
-  get arpeggio() {
-    return this.data.chord().notes()
-  }
-  get midi() {
-    return this.data.midi()
-  }
-  step(steps = 1) {
-    if (typeof steps !== 'number') {
-      throw new Error(`Invalid steps value ${steps}`)
-    }
-
-    return Teoria.note.fromMidi(this.midi + steps)
+  scale(scale) {
+    return this.data.scale(scale).simple()
   }
 }
 export class Melody {
-  constructor(notes, options) {
-    if (!notes.length) {
-      throw new Error(`Invalid notes array ${notes}`)
-    }
-
-    this.notes = notes
-    this.size = notes.length
-    this.key = options?.key ?? notes[0].char
-    this.scale = options?.scale ?? 'minorpentatonic'
+  constructor(options) {
+    this.key = options?.key ?? Random.noteChar()
+    this.scale = options?.scale ?? Random.scaleName()
+    this.size = options?.size ?? Random.number(5, 50)
+    this.octave = options?.octave ?? Random.number(2, 4)
+    this.scaleNotes = new Note(`${this.key}${this.octave}`).scale(this.scale)
+    this.notes = Array(this.size)
+      .fill(1)
+      .map(s => Random.arrayElement(this.scaleNotes))
+      .map(v => new Note(`${v}${this.octave}`))
+  }
+  shuffle() {
+    return this.notes.sort(v => Math.random - 0.5)
   }
   get like() {
     const scaleNotes = Teoria.note(this.key).scale(this.scale).simple()
@@ -95,32 +93,3 @@ export class Melody {
     this.scale = scaleName
   }
 }
-export class Music {}
-
-// Constructor Pattern //
-// Используйте для создания новых объектов в их собственной области видимости.
-// var Person = function(name, age, favFood) {
-//   this.name = name;
-//   this.age = age;
-//   this.favFood = favFood;
-// };
-// // Прототип позволяет всем экземплярам Person ссылаться на него без повторения функции.
-// Person.prototype.greet = function() {
-//   console.log(`Hello, my name is ${this.name}, I'm ${this.age} years old, and my favorite food is ${this.favFood}`);
-// // new создает объект {} и передает "this" в конструктор
-// // Конструктор устанавливает значение для этого объекта и возвращает его.
-// var bob = new Person('Bob', 22, 'Chicken');
-// bob.greet();
-// // Hello, my name is Bob, I'm 22 years old, and my favorite food is Chicken
-// // ES6 / ES2015 Классы
-// class Vehicle {
-//   constructor(type, color) {
-//     this.type = type;
-//     this.color = color;
-//   }
-//   getSpecs() {
-//     console.log(`Type: ${this.type}, Color: ${this.color}`);
-//   }
-// };
-// var someTruck = new Vehicle('Truck', 'red');
-// someTruck.getSpecs();
