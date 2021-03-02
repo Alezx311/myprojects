@@ -14,7 +14,9 @@ const Notes = props => {
     const synth = new Tone[props.synthName]().toDestination()
     const fm = new Tone.FMSynth().toDestination()
     const drum = new Tone.PluckSynth().toDestination()
-    const notes = Note.melody(note)
+const melodySize = document.querySelector("#melodySize")
+
+    const notes = Note.melody(note, melodySize.value)
     console.table(notes)
     new Tone.Sequence((time, str) => {
       synth.triggerAttackRelease(str, '8n', time)
@@ -25,12 +27,13 @@ const Notes = props => {
     //   fm.triggerAttackRelease(str, '4n', time, 0.1)
     // }, notes)
     //   .start(0)
-    //   .set({ humanize: true, playbackRate: 1.3, probability: 1 })
+    //.set({ humanize: true, playbackRate: 1.3, probability: 1 })
 
     Tone.Transport.start('0.1')
   }
   return NOTES.map(v => Note.getOctave(v)).map(v => (
     <Row key={v}>
+<div id="melodySize" value={20}></div>
       <Button onClick={() => playOne(v)}>{v}</Button>
       <Button className={`${v}_play_many`} onClick={() => playMany(v)}>{`${v} melody`}</Button>
     </Row>
