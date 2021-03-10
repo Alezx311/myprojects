@@ -3,6 +3,7 @@ Processing Melody
 # Example
 
 <video>https://youtu.be/XAxc8smsMlM</video>
+[Watch the video](https://youtu.be/XAxc8smsMlM)
 
 not ready yet, just proto to have fun
 
