@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
+
 import { Player } from './Player'
 import { Guitar } from './Guitar'
 import { Box } from 'grommet'
 
 export const Main = props => {
+  const [state, setState] = useState({
+    strings: 6,
+    frets: 24,
+    tuning: 'E Standart',
+    rootNote: 'C2',
+    scale: 'minor',
+    size: 20,
+    riff: [],
+    synth: false,
+    synthName: 'PolySynth',
+    isPlaying: false
+  })
+  const reducer = obj => setState({ ...state, ...obj })
+
   return (
     <Box
       height="xlarge"
@@ -12,8 +27,8 @@ export const Main = props => {
       alignSelf="start"
     >
       <Box direction="column" justify="center" align="center" pad="large" gap="large">
-        <Guitar />
-        <Player />
+        <Guitar state={state} reducer={reducer} />
+        <Player state={state} reducer={reducer} />
       </Box>
     </Box>
   )

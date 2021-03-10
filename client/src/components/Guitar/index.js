@@ -1,119 +1,137 @@
-import React, { useState } from 'react'
-import { Box, Button, Text, RangeInput, DropButton } from 'grommet'
-import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES } from '../constants'
+import React from 'react'
+import * as Tone from 'tone'
+import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, SYNTHS } from '../constants'
 import { Random, Note } from '../helpers'
+import { Box, Button, Text, DropButton } from 'grommet'
+let synth
 
-const Fret = ({ noteChar, ...props }) => {
-  return <Button size="small" style={{ fontSize: 10 }} label={noteChar} noteChar={noteChar} {...props} />
-}
-const String = ({ openNote, frets, onClick }) => {
+const DropSelect = ({ label, value, options, onClick }) => {
+  const dropContent = options.map(v => <Button key={v} label={v} onClick={() => onClick(v)} />)
+
   return (
-    <Box direction="row" gap="xsmall">
-      {Random.noteSteps(openNote, frets).map(noteChar => (
-        <Fret key={noteChar} noteChar={noteChar} onClick={() => onClick(noteChar)} />
-      ))}
-    </Box>
+    <DropButton label={`${label}: ${value}`} dropAlign={{ top: 'bottom', right: 'right' }} dropContent={dropContent} />
   )
 }
-
-const InputRange = ({ label, ...props }) => (
-  <Box direction="row">
-    <Text>{label}: </Text>
-    <Text>{props.value}</Text>
-    <RangeInput {...props} />
-  </Box>
-)
-
-const DropSelect = ({ label, value, options, onClick }) => (
-  <DropButton
-    label={`${label}: ${value}`}
-    dropAlign={{ top: 'bottom', right: 'right' }}
-    dropContent={options.map(v => (
-      <Button key={v} background="light-2" onClick={() => onClick(v)}>
-        {v}
-      </Button>
-    ))}
-  />
-)
 
 export const Guitar = props => {
-  const [strings, setStrings] = useState(6)
-  const [frets, setFrets] = useState(12)
-  const [tuning, setTuning] = useState(0)
-  const [rootNote, setRootNote] = useState('C2')
-  const [scale, setScale] = useState('minor')
-  const [size, setSize] = useState(20)
-  const [riff, setRiff] = useState([])
+  const { state, reducer } = props
 
-  const openNotes = Object.values(GUITAR_TUNINGS)[tuning]
-  const openNotesStrings = [...openNotes, ...openNotes.map(v => Random.noteStep(v, 12))].filter((v, i) => i < strings)
+  const updateSynth = () => {
+    synth = new Tone[state.synthName]().toDestination()
+  }
+  updateSynth()
 
-  const Strings = openNotesStrings
-    .reverse()
-    .map(openNote => <String key={openNote} openNote={openNote} frets={frets} onClick={setRootNote} />)
+  const opened = GUITAR_TUNINGS[state.tuning]
+  const octaved = opened.map(v => Random.noteStep(v, 12))
+  const stringNotes = [...opened, ...octaved].filter((v, i) => i < state.strings).reverse()
 
-  const RiffView = () => {
-    const riffString = riff.length ? riff.filter((v, i) => i < 10).join(' -> ') : 'Riff not generated'
+  const Fretboard = () =>
+    stringNotes.map(open => (
+      <Box key={open} direction="row" gap="small">
+        {Random.noteSteps(open, state.frets).map(note => (
+          <Button
+            key={note}
+            size="small"
+            label={note}
+            onClick={() => {
+              reducer({ rootNote: note })
+              synth.triggerAttackRelease(note, '4n')
+            }}
+          />
+        ))}
+      </Box>
+    ))
+  const RiffView = () => <Text hidden={!state.riff.length}>{state.riff.filter((v, i) => i < 10).join(' -> ')}</Text>
+  const RiffPlay = () => {
+    const onPlay = () => {
+      const notes = state.riff.map(v => Random.noteValues(v))
 
-    return <Text>{`${riffString}...`}</Text>
+      const sequence = new Tone.Sequence(
+        (time = Tone.now(), { note, duration, velocity }) => {
+          synth.triggerAttackRelease(note, '8n', time)
+        },
+        notes,
+        '8n'
+      )
+        .set({ humanize: true })
+        .start(1)
+
+      Tone.Transport.start('+0.1')
+
+      reducer({ isPlaying: true })
+    }
+    const onStop = () => {
+      Tone.Transport.stop(0)
+      reducer({ isPlaying: false })
+    }
+
+    return (
+      <>
+        <Button disabled={!state.riff.length && state.isPlaying} label="Play" onClick={onPlay} />
+        <Button disabled={!state.isPlaying} label="Stop" onClick={onStop} />
+      </>
+    )
   }
 
-  const SetupGuitar = () => (
+  const SetupFretboard = () => (
     <>
-      <Box direction="column" gap="small" align="center" justify="center">
-        <InputRange
-          label="Strings"
-          value={strings}
-          step={1}
-          min={4}
-          max={8}
-          onChange={({ target }) => setStrings(target.value)}
-        />
-        <InputRange
-          label="Frets"
-          value={frets}
-          step={3}
-          min={12}
-          max={27}
-          onChange={({ target }) => setFrets(target.value)}
-        />
-        <InputRange
-          label="Tuning"
-          value={tuning}
-          step={1}
-          min={0}
-          max={3}
-          onChange={({ target }) => setTuning(target.value)}
-        />
-      </Box>
-      <Box direction="column" gap="small" align="center" justify="center">
-        <DropSelect label="Root Note" value={rootNote ?? ''} options={NOTES} onClick={v => setRootNote(v)} />
-        <DropSelect label="Scale" value={scale ?? ''} options={SCALES} onClick={v => setScale(v)} />
-        <DropSelect label="Melody Size" value={size ?? ''} options={[10, 20, 50, 100]} onClick={v => setSize(v)} />
-      </Box>
-      <Box direction="column" gap="small" align="center" justify="center">
-        <Button background="light-2" disabled={!rootNote} onClick={() => setRiff(Note.melody(rootNote, scale, size))}>
-          Generate Riff
-        </Button>
-      </Box>
+      <DropSelect
+        label="Strings"
+        value={state.strings}
+        options={[4, 5, 6, 7, 8]}
+        onClick={v => reducer({ strings: v })}
+      />
+      <DropSelect label="Frets" value={state.frets} options={[12, 21, 24]} onClick={v => reducer({ frets: v })} />
+      <DropSelect label="Tuning" value={state.tuning} options={TUNING_NAMES} onClick={v => reducer({ tuning: v })} />
     </>
   )
-
+  const SetupRiff = () => (
+    <>
+      <DropSelect label="Root Note" value={state.rootNote} options={NOTES} onClick={v => reducer({ rootNote: v })} />
+      <DropSelect label="Scale" value={state.scale} options={SCALES} onClick={v => reducer({ scale: v })} />
+      <DropSelect
+        label="Melody Size"
+        value={state.size}
+        options={[10, 20, 50, 100]}
+        onClick={v => reducer({ size: v })}
+      />
+      <DropSelect
+        label="Sound Synth"
+        value={state.synthName}
+        options={SYNTHS}
+        onClick={v => {
+          reducer({ synthName: v })
+          updateSynth()
+        }}
+      />
+    </>
+  )
+  const SetupButtons = () => (
+    <>
+      <Button
+        disabled={!state.rootNote}
+        label="Generate Riff"
+        onClick={() => {
+          const { rootNote, scale, size } = state
+          const riff = Note.melody(rootNote, scale, size)
+          reducer({ riff })
+        }}
+      />
+    </>
+  )
+  const SetupGuitar = () => (
+    <Box direction="row" align="center" gap="medium">
+      <SetupFretboard />
+      <SetupRiff />
+      <SetupButtons />
+    </Box>
+  )
   return (
-    <Box direction="column" align="center" gap="medium" pad="medium">
-      <Box direction="row" gap="large" pad="medium" align="center">
-        <SetupGuitar />
-      </Box>
-      <br />
-      <Box direction="row" gap="medium" align="center" justify="center">
-        <Box direction="column" gap="xxsmall" pad="small" align="center">
-          {Strings}
-        </Box>
-      </Box>
-      <br />
-      <Box direction="row" gap="medium" align="center" justify="center">
-        <RiffView />
-      </Box>
+    <Box direction="column" align="center" gap="medium">
+      <SetupGuitar />
+      <Fretboard />
+      <RiffView />
+      <RiffPlay />
     </Box>
   )
 }

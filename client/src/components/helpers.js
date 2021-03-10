@@ -19,7 +19,7 @@ export class Note {
     const Note = Teoria.note(note)
     const scaleNotes = Note.scale(scale)
       .simple()
-      .map(char => `${char}${Random.number(2, 4)}`)
+      .map(char => `${char}${Random.number(2, 5)}`)
 
     return scaleNotes
   }
@@ -28,8 +28,9 @@ export class Note {
     const melody = Array(size)
       .fill(root)
       .map(v => Random.arrayElement(scaleNotes))
+    const shuffles = Random.arrayShuffles(melody)
 
-    return melody
+    return shuffles
   }
 }
 export class Random {
