@@ -11,11 +11,13 @@ export const Main = props => {
     tuning: 'E Standart',
     rootNote: 'C2',
     scale: 'minor',
-    size: 20,
+    size: 100,
     riff: [],
     synth: false,
     synthName: 'PolySynth',
-    isPlaying: false
+    instrumentName: null,
+    isPlaying: false,
+    valueOnPlay: {}
   })
   const reducer = obj => setState({ ...state, ...obj })
 
@@ -28,7 +30,7 @@ export const Main = props => {
     >
       <Box direction="column" justify="center" align="center" pad="large" gap="large">
         <Guitar state={state} reducer={reducer} />
-        <Player state={state} reducer={reducer} />
+        {/* <Player /> */}
       </Box>
     </Box>
   )

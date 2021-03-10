@@ -1,13 +1,12 @@
 import React from 'react'
 import * as Tone from 'tone'
-import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, SYNTHS } from '../constants'
-import { Random, Note } from '../helpers'
+import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, SYNTHS, INSTRUMENTS } from '../constants'
+import { Random, Note, Sound } from '../helpers'
 import { Box, Button, Text, DropButton } from 'grommet'
 let synth
 
 const DropSelect = ({ label, value, options, onClick }) => {
   const dropContent = options.map(v => <Button key={v} label={v} onClick={() => onClick(v)} />)
-
   return (
     <DropButton label={`${label}: ${value}`} dropAlign={{ top: 'bottom', right: 'right' }} dropContent={dropContent} />
   )
@@ -15,11 +14,6 @@ const DropSelect = ({ label, value, options, onClick }) => {
 
 export const Guitar = props => {
   const { state, reducer } = props
-
-  const updateSynth = () => {
-    synth = new Tone[state.synthName]().toDestination()
-  }
-  updateSynth()
 
   const opened = GUITAR_TUNINGS[state.tuning]
   const octaved = opened.map(v => Random.noteStep(v, 12))
@@ -41,33 +35,34 @@ export const Guitar = props => {
         ))}
       </Box>
     ))
-  const RiffView = () => <Text hidden={!state.riff.length}>{state.riff.filter((v, i) => i < 10).join(' -> ')}</Text>
+  const RiffView = () => (
+    <>
+      <Text hidden={!state.riff.length}>{state.riff.filter((v, i) => i < 10).join(' -> ')}</Text>
+      <Text>{JSON.stringify(state.valueOnPlay, null, '\t')}</Text>
+    </>
+  )
   const RiffPlay = () => {
     const onPlay = () => {
       const notes = state.riff.map(v => Random.noteValues(v))
 
-      const sequence = new Tone.Sequence(
-        (time = Tone.now(), { note, duration, velocity }) => {
-          synth.triggerAttackRelease(note, '8n', time)
-        },
-        notes,
-        '8n'
-      )
-        .set({ humanize: true })
-        .start(1)
+      const sequence = new Tone.Sequence((time = Tone.now(), { note, duration, velocity }) => {
+        reducer({ valueOnPlay: { note, duration, velocity }, isPlaying: true })
 
+        synth.triggerAttackRelease(note, '4n', time, velocity)
+      }, notes).start(1)
+
+      Tone.Transport.set({ bpm: 130, humanize: true, playbackRate: 1.3 })
       Tone.Transport.start('+0.1')
-
-      reducer({ isPlaying: true })
     }
     const onStop = () => {
       Tone.Transport.stop(0)
+
       reducer({ isPlaying: false })
     }
 
     return (
       <>
-        <Button disabled={!state.riff.length && state.isPlaying} label="Play" onClick={onPlay} />
+        <Button disabled={state.isPlaying} label="Play" onClick={onPlay} />
         <Button disabled={!state.isPlaying} label="Stop" onClick={onStop} />
       </>
     )
@@ -96,6 +91,19 @@ export const Guitar = props => {
         onClick={v => reducer({ size: v })}
       />
       <DropSelect
+        label="Sound Instrument"
+        value={state.instrumentName}
+        options={Object.keys(INSTRUMENTS)}
+        onClick={v => {
+          const urlEntries = Object.entries(INSTRUMENTS[v]).map(([key, val]) => [key, `/samples/${v}/${val}`])
+          const samples = Object.fromEntries(urlEntries)
+
+          synth = new Tone.Sampler(samples).toDestination()
+
+          reducer({ synthName: null, instrumentName: v })
+        }}
+      />
+      {/* <DropSelect
         label="Sound Synth"
         value={state.synthName}
         options={SYNTHS}
@@ -103,7 +111,7 @@ export const Guitar = props => {
           reducer({ synthName: v })
           updateSynth()
         }}
-      />
+      /> */}
     </>
   )
   const SetupButtons = () => (
@@ -114,6 +122,7 @@ export const Guitar = props => {
         onClick={() => {
           const { rootNote, scale, size } = state
           const riff = Note.melody(rootNote, scale, size)
+
           reducer({ riff })
         }}
       />

@@ -1,4 +1,5 @@
 import * as Teoria from 'teoria'
+import * as Tone from 'tone'
 
 import {
   NOTES,
@@ -14,12 +15,39 @@ import {
   INTERVAL_CHARS
 } from './constants'
 
+export class Sound {
+  static synth = name => new Tone[name]().toDestination()
+
+  static playOne = (note, synth) => {
+    synth.triggerAttackRelease(note, '4n')
+  }
+  static playMany = (notes, synth) => {
+    const noteValues = Random.noteValues(notes)
+    const seq = new Tone.Sequence(
+      (time = Tone.now(), { note, duration, velocity }) => {
+        synth.triggerAttackRelease(note, duration, time, velocity)
+      },
+      noteValues,
+      '4n'
+    )
+      .set({ humanize: true })
+      .start(1)
+
+    this.play()
+  }
+  static play = () => {
+    Tone.Transport.start('0.1')
+  }
+  static stop = () => {
+    Tone.Transport.stop(0)
+  }
+}
 export class Note {
   static getScale = (note, scale) => {
     const Note = Teoria.note(note)
     const scaleNotes = Note.scale(scale)
       .simple()
-      .map(char => `${char}${Random.number(2, 5)}`)
+      .map(char => `${char}${Random.number(2, 4)}`)
 
     return scaleNotes
   }
@@ -66,7 +94,7 @@ export class Random {
   static notes = (size = 10, octave) => this.array(size, v => this.note(octave))
   static scale = () => this.arrayElement(SCALES)
   static durationChar = () => this.arrayElement(DURATION_CHARS)
-  static duration = () => `${this.durationChar()}${this.powerOfTwo(4)}`
+  static duration = () => `${2 * this.powerOfTwo(4)}${this.durationChar()}`
   static interval = () => this.arrayElement(INTERVAL_CHARS)
   static velocity = () => 1 - this.range() / 3
   static tuningName = () => this.arrayElement(TUNING_NAMES)
