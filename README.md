@@ -1,5 +1,9 @@
 Processing Melody
 
+# Example
+
+<video>https://youtu.be/XAxc8smsMlM</video>
+
 not ready yet, just proto to have fun
 
 cd client
