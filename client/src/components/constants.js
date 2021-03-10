@@ -55,6 +55,7 @@ export const GUITAR_TUNINGS = {
   'Drop C': ['C2', 'G2', 'C3', 'F3', 'A4', 'D4'],
   'Drop B': ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4']
 }
+export const TUNING_NAMES = Object.keys(GUITAR_TUNINGS)
 export const SYNTHS = [
   'AMSynth',
   'FMSynth',

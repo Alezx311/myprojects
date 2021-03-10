@@ -1,10 +1,11 @@
 import React from 'react'
 import { Main } from './components'
+import { Grommet } from 'grommet'
 
 const App = () => (
-  <div className="container">
+  <Grommet>
     <Main />
-  </div>
+  </Grommet>
 )
 
 export default App

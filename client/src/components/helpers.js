@@ -7,6 +7,7 @@ import {
   COLOR_NAMES,
   COLOR_CODES,
   GUITAR_TUNINGS,
+  TUNING_NAMES,
   SYNTHS,
   INSTRUMENTS,
   DURATION_CHARS,
@@ -14,19 +15,21 @@ import {
 } from './constants'
 
 export class Note {
-  static getOctave = str => `${str}${Random.number(3, 5)}`
-  static charIndex = char => NOTES.indexOf(char.toUpperCase())
-  static melody = (str, scaleName = 'minorpentatonic') => {
-    const data = Teoria.note(str)
-    const scaleNotes = data
-      .scale(scaleName)
+  static getScale = (note, scale) => {
+    const Note = Teoria.note(note)
+    const scaleNotes = Note.scale(scale)
       .simple()
-      .map(v => this.getOctave(v))
-    const shuffled = Random.arrayShuffles([...scaleNotes, ...scaleNotes])
-    return shuffled
-    // return Array(20)
-    //   .fill(1)
-    //   .map(v => Random.arrayElement(shuffled))
+      .map(char => `${char}${Random.number(2, 4)}`)
+
+    return scaleNotes
+  }
+  static melody = (root, scale, size) => {
+    const scaleNotes = this.getScale(root, scale)
+    const melody = Array(size)
+      .fill(root)
+      .map(v => Random.arrayElement(scaleNotes))
+
+    return melody
   }
 }
 export class Random {
@@ -34,6 +37,7 @@ export class Random {
   static boolean = (chance = 50) => this.number(1, 100) > chance
   static number = (min = 1, max = 100) => Math.floor(this.range() * (max - min)) + min
   static numbers = (size = 10, max = 100) => this.array(size).map(v => this.number(0, max))
+  static powerOfTwo = (max = 10) => 2 ** this.number(1, max)
   static numbersDeep = (len = 10, max = 4) => this.numbers(len, max).map(v => (v > 1 ? this.numbers(v, max) : v))
   static values = arr => this.array(10).map(v => this.arrayElement(arr))
   static array = (size = 10, fill = this.boolean(20)) => Array(size).fill(fill)
@@ -55,23 +59,57 @@ export class Random {
   static arrayDoubleSome = (arr, chance = 50) => this.arrayShuffles(arr).map(v => (this.boolean(20) ? [v, v] : v))
   static objectKey = obj => this.arrayElement(Object.keys(obj))
   static objectProp = (obj, key = this.objectKey(obj)) => obj[key]
-  static note = (notes = NOTES) => this.arrayElement(notes)
-  static velocity = () => 0.5 + this.range() / 2
-  static notes = (size = 10, notes = NOTES) => this.values(notes, size)
+  static noteChar = () => this.arrayElement(NOTES)
+  static octave = (min = 2, max = 4) => this.number(min, max)
+  static note = (octave = this.octave()) => `${this.noteChar()}${octave}`
+  static notes = (size = 10, octave) => this.array(size, v => this.note(octave))
   static scale = () => this.arrayElement(SCALES)
-  static tuning = () => this.objectKey(GUITAR_TUNINGS)
-  static instrumentName = () => this.arrayElement(Object.keys(INSTRUMENTS))
-  static instrument = () => this.arrayElement(INSTRUMENTS)
-  static synth = () => this.arrayElement(SYNTHS)
-  static duration = () => `${this.number(1, 4) ** 2}${this.arrayElement(DURATION_CHARS)}`
+  static durationChar = () => this.arrayElement(DURATION_CHARS)
+  static duration = () => `${this.durationChar()}${this.powerOfTwo(4)}`
   static interval = () => this.arrayElement(INTERVAL_CHARS)
-  static sample = () => this.objectProp(INSTRUMENTS)
+  static velocity = () => 1 - this.range() / 3
+  static tuningName = () => this.arrayElement(TUNING_NAMES)
+  static tuning = () => GUITAR_TUNINGS[this.tuningName()]
+  static noteValues = note => ({ note, duration: this.duration(), velocity: this.velocity() })
+  static noteParse = str => {
+    let [note, char, octave] = str.trim().match(/^([a-g#]+)(\d)$/i)
+
+    if (!octave) {
+      console.error(`Invalid octave on parsing note: ${str} ${[note, char, octave]}`)
+      octave = 1
+    } else if (!char) {
+      throw new Error(`Invalid char on parsing note: ${str} ${[note, char, octave]}`)
+    }
+
+    return { note, char, octave }
+  }
+  static noteIndex = note => NOTES.indexOf(note.trim().match(/^([a-g#]+)/i)?.[1])
+  static noteStep = (noteChar, step = 1) => {
+    let { note, char, octave } = this.noteParse(noteChar)
+    let noteIndex = this.noteIndex(char)
+    let newIndex = noteIndex + step
+
+    if (newIndex === NOTES.length) {
+      octave = Number(octave) + 1
+      newIndex = 0
+    } else if (newIndex > NOTES.length) {
+      octave = Number(octave) + Math.floor(newIndex / NOTES.length)
+      newIndex = newIndex % NOTES.length
+    }
+
+    return `${NOTES[newIndex]}${octave}`
+  }
+  static noteSteps = (note, size = 24) => {
+    return Array(size)
+      .fill(note)
+      .map((v, i) => this.noteStep(v, i))
+  }
   static rhythmValues = (size = 10, max = 4) => this.numbers(size, max)
   static rhythmValuesDeep = (size = 10, max = 4) => this.numbersDeep(size, max)
   static rhythmNotes = (size = 10) => this.numbers(size, 1, 4).map(v => (v > 1 ? this.notes(v) : this.note()))
   static rhythmNotesDeep = (size = 10, max = 4, notes = this.notes(size)) =>
     this.arrayDeepSome(this.rhythmNotes(size, notes), notes)
-  static colorName = () => Random.arrayElement(COLOR_NAMES)
-  static colorHex = () => Random.arrayElement(COLOR_CODES)
-  static colorClassName = () => Random.arrayElement(COLOR_CLASSNAMES)
+  static colorName = () => this.arrayElement(COLOR_NAMES)
+  static colorHex = () => this.arrayElement(COLOR_CODES)
+  static colorClassName = () => this.arrayElement(COLOR_CLASSNAMES)
 }
