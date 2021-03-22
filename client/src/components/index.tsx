@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-// import { Player } from './Player'
+import { Player, ShowText } from './Player';
 // import { Guitar } from './Guitar'
 import { Box, Text } from 'grommet';
 
@@ -31,6 +31,7 @@ export function Main() {
     >
       <Box direction='column' justify='center' align='center' pad='large' gap='large'>
         <Text>Hello!</Text>
+        <Player />
       </Box>
     </Box>
   );
