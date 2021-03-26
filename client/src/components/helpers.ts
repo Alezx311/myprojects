@@ -38,6 +38,12 @@ export class Note {
     return scaleNotes;
   }
 
+  static getRandomNotes(source: string[] = NOTES, size: number = 100): string[] {
+    const notes = Random.values(source, size);
+
+    return notes;
+  }
+
   static getMelody(root: string, scale: string, size: number): NoteSound[] {
     const scaleNotes = Note.getScaleNotes(root, scale);
     const melody = Random.arrayValues(scaleNotes, size).map(
