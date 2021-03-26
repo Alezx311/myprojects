@@ -53,7 +53,28 @@ async function writeUpdatedContent() {
   // await writeToFile(text.join('\n'), `${fileDir}/text/text.txt`);
 
   const translateExamples = Random.array(10, () => createTranslate());
-  console.debug(translateExamples);
+
+  const musicNotes = await fs.readFile(`./music.txt`, { encoding: 'utf8' });
+  const musicNotesCharsOnly = musicNotes
+    .match(/[a-g]/g)
+    .map(v => 'abcdefg'.indexOf(v))
+    .map(v => chars[v])
+    .filter(Boolean);
+
+  const musicPhrases = Random.array(Random.number(10, musicNotes.length / 2)).map(v => {
+    const orig = Random.arrayValues(musicNotesCharsOnly, Random.number(1, 2))
+      .filter(v => wordsOriginal.includes(v))
+      .join('');
+    const tran = translate(orig);
+
+    return { orig, tran };
+    // return `${orig} -> ${tran}`;
+  });
+  const musicOriginal = musicPhrases.map(v => v.orig).join(' ');
+  const musicTranslate = musicPhrases.map(v => v.tran).join(' ');
+
+  console.debug(`${musicOriginal}\n\n\n--->>>\n\n\n${musicTranslate}`);
+  console.debug();
 }
 
 writeUpdatedContent();
