@@ -1,4 +1,32 @@
 const { Random, Values, Constants } = require('jsuseful');
+const fs = require('fs').promises;
+
+const readDictionaryFile = async file => {
+  if (!file) {
+    throw new Error('Unknown file!');
+  }
+
+  const content = await fs.readFile(file, 'utf8');
+
+  // Use index as access keys
+  const SOLRESOL_WORDS = content.match(/^(\w+)\s.+$/gim);
+  const TRANSLATED_WORDS = content.match(/^\w+\s(.+)$/gim);
+
+  const data = content.split('\n').lines.map(line => {
+    let [pair, solresolWord, translateWords] = line.match(/^(\w)\s(.+)$/i);
+
+    return {
+      pair,
+      solresolWord,
+      translateWords: translateWords
+        .split(',')
+        .map(v => v.trim())
+        .filter(Boolean),
+    };
+  });
+
+  return data;
+};
 
 const chars = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
 const words = {
