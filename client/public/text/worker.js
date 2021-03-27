@@ -1,7 +1,15 @@
+// TODO Rewrite code on .ts
+
 const fs = require('fs').promises;
 const path = require('path');
+
 const { Random, Values, Constants } = require('jsuseful');
 const { words, chars, translate, wordsRus, wordsOriginal } = require('./dictionary');
+
+//! Use bash grep command with these func
+const useGrep = command => {
+  const bashFile = './useGrep.sh';
+};
 
 const fileDir = path.resolve(__dirname, 'public');
 
