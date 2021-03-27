@@ -1,11 +1,17 @@
 import Teoria from 'teoria';
 import { Random } from 'jsuseful';
-import { NOTES, DURATION_CHARS } from './constants';
+import { NOTES, DURATION_CHARS, SCALES } from './constants';
 
 type NoteSound = {
   char: string;
   duration: string;
   velocity: number;
+};
+export type MelodyOptions = {
+  key: string;
+  scale?: string;
+  bpm?: number;
+  size?: [number, number];
 };
 
 export class Note {
@@ -13,6 +19,12 @@ export class Note {
     const note = Random.arrayElement(NOTES);
 
     return `${note}${octave}`;
+  }
+
+  static randomScale(): string {
+    const scaleName = Random.arrayElement(SCALES);
+
+    return scaleName;
   }
 
   static randomOctave(min: number = 2, max: number = 4): number {
@@ -60,4 +72,29 @@ export class Note {
 
     return shuffles;
   }
+}
+
+export async function generateMelody(opt: MelodyOptions) {
+  const defaults = {
+    scale: Note.randomScale(),
+    bpm: Random.number(60, 180),
+    size: [Random.number(3, 5), Random.number(3, 5)],
+  };
+  // TODO Set the BPM (beats per minute)
+  const { key, scale, bpm, size } = { ...defaults, ...opt };
+  // TODO Create main chords and chord progressions
+  const mainChords = Note.getScaleNotes(key, scale);
+  const mainProgression = Random.arrayValues(mainChords, size[0]);
+  const progressions = Array(size[1])
+    .fill(mainProgression)
+    .map(v => Random.arrayShuffles(v));
+
+  // TODO Add the main melody
+
+  const melody = Array(size[0]).fill(key).map(v => {
+    return Random.arrayElement(mainChords)
+  })
+  // TODO Include the drums
+  // TODO Bring in the bass
+  // TODO Put in the finishing touches
 }
