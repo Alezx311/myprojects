@@ -1,5 +1,5 @@
 //! Constant Values for using in generate values, validate, etc...
-export const NOTES: string[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
+export const NOTES: string[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#'];
 export const SCALES: string[] = [
   'major',
   'minor',
@@ -20,7 +20,7 @@ export const SCALES: string[] = [
   'harmonicminor',
   'melodicminor',
   'wholetone',
-]
+];
 export const COLOR_CLASSNAMES: string[] = [
   'primary',
   'secondary',
@@ -33,7 +33,7 @@ export const COLOR_CLASSNAMES: string[] = [
   'body',
   'white',
   'transparent',
-]
+];
 export const COLOR_NAMES: string[] = [
   'blue',
   'indigo',
@@ -45,7 +45,7 @@ export const COLOR_NAMES: string[] = [
   'green',
   'teal',
   'cyan',
-]
+];
 export const COLOR_CODES: string[] = [
   '#ff0000',
   '#ff4e00',
@@ -59,14 +59,14 @@ export const COLOR_CODES: string[] = [
   '#3c00ff',
   '#a800ff',
   '#ff00fd',
-]
+];
 export const GUITAR_TUNINGS: {} = {
   'E Standart': ['E2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop D': ['D2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop C': ['C2', 'G2', 'C3', 'F3', 'A4', 'D4'],
   'Drop B': ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4'],
-}
-export const TUNING_NAMES: string[] = Object.keys(GUITAR_TUNINGS)
+};
+export const TUNING_NAMES: string[] = Object.keys(GUITAR_TUNINGS);
 export const SYNTHS: string[] = [
   'AMSynth',
   'FMSynth',
@@ -78,10 +78,10 @@ export const SYNTHS: string[] = [
   'PluckSynth',
   'PolySynth',
   'Synth',
-]
-export const DURATION_CHARS: string[] = ['n']
-export const INTERVAL_CHARS: string[] = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7']
-export const INSTRUMENTS: {} = {
+];
+export const DURATION_CHARS: string[] = ['n'];
+export const INTERVAL_CHARS: string[] = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'];
+export const INSTRUMENTS = {
   'bass-electric': {
     'A#2': 'As2.[mp3|ogg]',
     'A#3': 'As3.[mp3|ogg]',
@@ -565,4 +565,4 @@ export const INSTRUMENTS: {} = {
     C5: 'C5.[mp3|ogg]',
     C6: 'C6.[mp3|ogg]',
   },
-}
+};

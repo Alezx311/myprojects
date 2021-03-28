@@ -23,6 +23,23 @@ export const replaceAllEntries = async (text: string) => {
 
   return result.join(' ');
 };
+export const generate = (scale = SOLRESOL_BASIC, size = 1000) => {
+  const words = Random.numbers(size, 2, 7).map(len => Random.arrayValues(scale, len).join(' '));
+  return words.replace(/\s/g, v => `${Random.arrayElement(...[',,.\n\n!?          '], size / 4)}${v}`);
+};
+export const playNotes = (text: string, bpm: number): void => {
+  const words = splitToWords(text);
+  const time = 60000 / bpm;
+
+  let counter = 0;
+  let wordToPlay = words[0];
+
+  setInterval(() => {
+    counter++;
+    console.log(wordToPlay);
+    wordToPlay = replaceIfHaveTranslation(words[counter]);
+  }, time);
+};
 
 // }
 

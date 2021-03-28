@@ -1,6 +1,7 @@
 // import Meyda from "meyda";
 import { Random } from 'jsuseful';
-import Tone, { Player, Player, Sampler, UserMedia } from 'tone';
+import Tone, { Player, Sampler, UserMedia } from 'tone';
+import { INSTRUMENTS } from '../constants';
 
 // TODO import guitar records
 export const guitar_record_names: string[] = [
@@ -9,10 +10,22 @@ export const guitar_record_names: string[] = [
   'Gm speed.mp3',
 ];
 
+export const createAudioElement = (url: string): string => ``;
+
 export const guitar_record_samples: Player[] = guitar_record_names.map(file => {
   const player = new Tone.Player(`samples/guitar_long/${file}`).toDestination();
   return player;
 });
+
+// export const loadSamples = async (name: string): Promise<void> => {
+//   const samplesUrlEntryes = Object.entries(INSTRUMENTS[name]).map(([key, val]): [string, string] => [
+//     key,
+//     `/samples/${name}/${val}`,
+//   ]);
+//   const sampler = new Sampler(Object.fromEntries(samplesUrlEntryes));
+
+//   // return sampler
+// };
 
 export async function mediaStream(): Promise<void> {
   try {
@@ -26,6 +39,4 @@ export async function mediaStream(): Promise<void> {
   }
 }
 
-
-
-export function splitToChunks(sample: Player): Promise<Sampler> {}
+// export function splitToChunks(sample: Player): Promise<Sampler> {}
