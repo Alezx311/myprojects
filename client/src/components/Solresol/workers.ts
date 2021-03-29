@@ -3,6 +3,8 @@ import { SOLRESOL_SOURCE } from './dictionary';
 export const SOLRESOL_BASIC = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
 export const filterStr = (arr: string[], minSize = 1): string[] => arr.filter(str => str?.trim()?.length >= minSize);
 export const splitToWords = (str: string): string[] => filterStr(str.split(' '));
+export const noteToSolresol = note => SOLRESOL_BASIC[NOTES[note.toLowerCase().replace(/\d/, '')]];
+export const generateWord = (size = Random.number(2, 5)) => Random.arrayValues(SOLRESOL_BASIC, size);
 
 export const SOLRESOL_ENTRIES = SOLRESOL_SOURCE.toLowerCase()
   .match(/^(\w+)\s(.+)$/gim)
@@ -27,19 +29,36 @@ export const generate = (scale = SOLRESOL_BASIC, size = 1000) => {
   const words = Random.numbers(size, 2, 7).map(len => Random.arrayValues(scale, len).join(' '));
   return words.replace(/\s/g, v => `${Random.arrayElement(...[',,.\n\n!?          '], size / 4)}${v}`);
 };
-export const playNotes = (text: string, bpm: number): void => {
-  const words = splitToWords(text);
-  const time = 60000 / bpm;
 
-  let counter = 0;
-  let wordToPlay = words[0];
+const queryVariations = ['some', 'product', '1', 'any'];
+const projectVariations = ['smartsearch', 'moosp', 'some'];
 
-  setInterval(() => {
-    counter++;
-    console.log(wordToPlay);
-    wordToPlay = replaceIfHaveTranslation(words[counter]);
-  }, time);
+const wordsGenerate = async () => {
+  const addChars = (acc: string[], char: string): string[] => [...acc, ...SOLRESOL_BASIC.reduce((acc, v) => [...acc, `${char}${v}`], []);
+  const sizeTwo = SOLRESOL_BASIC.reduce((charWords, char) => );
 };
+// queryVariations.reduce((queryAcc, q) => {
+//   const ex = projectVariations.reduce(
+//     (acc, p) => [...acc, `query=${q}&limit=10&project=${p}`],
+//     [],
+//   );
+//   return [...queryAcc, ...ex];
+// }, []);
+
+//! need some sleep
+//  export const playNotes = (text: string, bpm: number): void => {
+//   const words = splitToWords(text);
+//   const time = 60000 / bpm;
+
+//   let counter = 0;
+//   let wordToPlay = words[0];
+
+//   setInterval(() => {
+//     counter++;
+//     console.log(wordToPlay);
+//     wordToPlay = replaceIfHaveTranslation(words[counter]);
+//   }, time);
+// };
 
 // }
 

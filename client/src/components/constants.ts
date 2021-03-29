@@ -1,4 +1,27 @@
 //! Constant Values for using in generate values, validate, etc...
+export const INITIAL_STATE = {
+  // Тональность
+  melodyKey: 'C',
+  // мин и макс октавы при генерации
+  minOctave: 2,
+  maxOctave: 6,
+  // размер паттерна (4 четвертные ноты)
+  PatternSize: 4,
+  // количество паттернов в мелодии (4 типа паттернов должны образовать замыкающуюся мелодию)
+  melodySize: 4,
+  // удары в секунду
+  melodyBpm: 120,
+  // гамма
+  melodyScale: 'minor',
+  // при синтезации звука
+  melodySynthName: 'PolySynth',
+  // при использовании семплов
+  melodyInstrumentName: 'guitar-acoustic',
+  // максимум инструментов звучащих одновременно
+  melodyMaxVoices: 4,
+  // использовать текст в качестве зерна для генерации нот
+  melodySourceText: null,
+};
 export const NOTES: string[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#'];
 export const SCALES: string[] = [
   'major',

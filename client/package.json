@@ -12,6 +12,7 @@
     "@types/react-dom": "^17.0.3",
     "bootstrap": "^4.6.0",
     "grommet": "^2.16.3",
+    "grommet-icons": "^4.5.0",
     "jsuseful": "^1.0.10",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

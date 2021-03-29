@@ -27,7 +27,7 @@ export class Music {
 
     if (noteIndex >= 0 && noteOctave) {
       return noteIndex * noteOctave;
-    }
+    }const
 
     throw new Error(`Invalid note to get midi index`);
   }
