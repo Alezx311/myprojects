@@ -1,5 +1,3 @@
-import { Box, Text } from 'grommet';
-
 // import { SYNTHS, NOTES } from '../constants';
 // import { Random } from 'jsuseful';
 
@@ -62,6 +60,9 @@ import { Box, Text } from 'grommet';
 //   );
 // }
 
+export function Player() {
+  return <div>Player</div>
+}
 // export function Player() {
 //   const dictText = 'a aa aaa b ba bba bbb abb aab c cc ccc ccb';
 //   // const notesText = Random.arrayValues(dictText.split(' '));

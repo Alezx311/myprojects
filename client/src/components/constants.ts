@@ -1,28 +1,33 @@
 //! Constant Values for using in generate values, validate, etc...
-export const INITIAL_STATE = {
-  // Тональность
-  melodyKey: 'C',
-  // мин и макс октавы при генерации
+
+export const INITIAL_FRETBOARD_STATE = {
+  strings: 6,
+  frets: 24,
+  tuning: 'E Standart',
+}
+
+export const INITIAL_SOUND_STATE = {
+  synthName: 'PolySynth',
+  instrumentName: 'guitar-acoustic',
+  effects: [],
+  maxVoices: 4,
+}
+
+export const INITIAL_MELODY_STATE = {
+  key: 'C',
   minOctave: 2,
   maxOctave: 6,
-  // размер паттерна (4 четвертные ноты)
   PatternSize: 4,
-  // количество паттернов в мелодии (4 типа паттернов должны образовать замыкающуюся мелодию)
-  melodySize: 4,
-  // удары в секунду
-  melodyBpm: 120,
-  // гамма
-  melodyScale: 'minor',
-  // при синтезации звука
-  melodySynthName: 'PolySynth',
-  // при использовании семплов
-  melodyInstrumentName: 'guitar-acoustic',
-  // максимум инструментов звучащих одновременно
-  melodyMaxVoices: 4,
-  // использовать текст в качестве зерна для генерации нот
-  melodySourceText: null,
-};
-export const NOTES: string[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#'];
+  size: 4,
+  bpm: 120,
+  scale: 'minor',
+  sourceText: null,
+}
+
+export const INITIAL_STATE = { ...INITIAL_FRETBOARD_STATE, ...INITIAL_SOUND_STATE, ...INITIAL_MELODY_STATE }
+
+export const NOTES: string[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
+
 export const SCALES: string[] = [
   'major',
   'minor',
@@ -43,7 +48,8 @@ export const SCALES: string[] = [
   'harmonicminor',
   'melodicminor',
   'wholetone',
-];
+]
+
 export const COLOR_CLASSNAMES: string[] = [
   'primary',
   'secondary',
@@ -56,7 +62,8 @@ export const COLOR_CLASSNAMES: string[] = [
   'body',
   'white',
   'transparent',
-];
+]
+
 export const COLOR_NAMES: string[] = [
   'blue',
   'indigo',
@@ -68,7 +75,8 @@ export const COLOR_NAMES: string[] = [
   'green',
   'teal',
   'cyan',
-];
+]
+
 export const COLOR_CODES: string[] = [
   '#ff0000',
   '#ff4e00',
@@ -82,14 +90,17 @@ export const COLOR_CODES: string[] = [
   '#3c00ff',
   '#a800ff',
   '#ff00fd',
-];
+]
+
 export const GUITAR_TUNINGS: {} = {
   'E Standart': ['E2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop D': ['D2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop C': ['C2', 'G2', 'C3', 'F3', 'A4', 'D4'],
   'Drop B': ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4'],
-};
-export const TUNING_NAMES: string[] = Object.keys(GUITAR_TUNINGS);
+}
+
+export const TUNING_NAMES: string[] = Object.keys(GUITAR_TUNINGS)
+
 export const SYNTHS: string[] = [
   'AMSynth',
   'FMSynth',
@@ -101,9 +112,12 @@ export const SYNTHS: string[] = [
   'PluckSynth',
   'PolySynth',
   'Synth',
-];
-export const DURATION_CHARS: string[] = ['n'];
-export const INTERVAL_CHARS: string[] = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'];
+]
+
+export const DURATION_CHARS: string[] = ['n']
+
+export const INTERVAL_CHARS: string[] = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7']
+
 export const INSTRUMENTS = {
   'bass-electric': {
     'A#2': 'As2.[mp3|ogg]',
@@ -588,4 +602,4 @@ export const INSTRUMENTS = {
     C5: 'C5.[mp3|ogg]',
     C6: 'C6.[mp3|ogg]',
   },
-};
+}
