@@ -8,3 +8,6 @@ when second part is coming, play track part and generated sounds
 change volume with curve
 track lower, sounds higher
 at 3/4 of track length, only sound will be played
+
+OSEM by @uduk
+A computer generated melody project, optionally users can plug-in their guitar and/or MIDI key controller to dictate input harmonic. Meyda.js is being used to extract audio signal features, such as beat dynamic and music segmentation in order to help OSEM to produce high-quality music melody. It is meant to answer the question: “Given an arbitrary backing track (format: wav, mp3) can computer compose?”
