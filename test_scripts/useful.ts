@@ -34,6 +34,16 @@
 
 // import { Note } from './jsuseful'
 
+//* WorkFlow ->
+//* Track sliced to two parts ->
+//* Playing first part
+//* Get chroma values from second part ->
+//* generate samples music from chroma values ->
+//* when second part is coming, play track part and generated sounds ->
+//* change volume with curve
+//* track lower, sounds higher
+//* at 3/4 of track length, only sound will be played
+
 //? Dependencies
 import fs, { promises as fsPromise } from 'fs'
 import path from 'path'
