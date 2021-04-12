@@ -274,29 +274,14 @@ export class Values {
 			const h = Math.floor(l / 2)
 			const r = [arr.slice(0, h), arr.slice(h + (l % 2 === 0 ? 0 : 1), l)]
 
-			console.debug(`chunk size: ${l}`)
-			console.debug(`slice at: ${h}`)
-			console.debug(`results size: ${r[0].length} <-> ${r[1].length}`)
+			// console.debug(`chunk size: ${l}`)
+			// console.debug(`slice at: ${h}`)
+			// console.debug(`results size: ${r[0].length} <-> ${r[1].length}`)
 
 			return r
 		})
 
 		return parts
-		// if (len >= 8) {
-		// 	return this.sliceToEquals(arr)
-		// } else if (len >= 2) {
-		// 	const h = Math.floor(len / 2)
-
-		// 	if (len % 2 === 0) {
-		// 		return [arr.slice(0, h), arr.slice(h, len)]
-		// 	} else {
-		// 		return [arr.slice(0, h), arr.slice(h + 1, len)]
-		// 	}
-		// } else if (len <= 0) {
-		// 	return null
-		// } else if (len === 1) {
-		// 	return arr
-		// }
 	}
 
 	public static sliceToParts(arr: any[], opt?: any): any[] {
@@ -321,6 +306,24 @@ export class Values {
 		}
 	}
 
+	public static createSliceCoordsProgression(max: number, step: number): number[][] {
+		return Array(Math.floor(max / step))
+			.fill(0)
+			.map((v, i) => {
+				const x = v + i * step
+				const y = x + step
+
+				return [x, y]
+			})
+	}
+
+	public static unicalFreq(arr: any[]): any[] {
+		return this.unicals(arr)
+			.map(str => arr.filter(v => v === str).length)
+			.filter(num => num && num > 1)
+			.sort((a, b) => a - b)
+	}
+
 	public static unicals(arr: any[]): any[] {
 		return Array.from(new Set(...[arr]))
 	}
@@ -333,14 +336,80 @@ export class Values {
 		return results
 	}
 
-	// public static unicalSequences(arr: [number | string]): [number | string][] {
-	// 	const sequences = Array(10)
-	// 		.fill([])
-	// 		.map((v, i) => {
-	// 			const seqLength = 2 + i
-	// 			this.sliceToParts(arr, { size: seqLength }).map(v => this.filter(v => ))
+	public static sliceToUnicalPieces(arr: any[]): any[] {
+		const len = arr?.length ?? 0
 
+		if (len < 2) {
+			return null
+		}
+
+		const sequences = Array(10)
+			.fill(3)
+			.map((val, ind) => {
+				const size = val + ind
+				const piecesCoordinates = this.createSliceCoordsProgression(Math.floor(len / size), size)
+				const piecesValues = piecesCoordinates.map(([x, y]) => arr.slice(x, y).join(' -> '))
+
+				return this.unicals(piecesValues).filter(v => v?.trim())
+			})
+			.reduce((acc, piece) => [...acc, piece], [])
+
+		return sequences
+	}
+
+	// public static sliceToSequences(arr: any[]): any[] {
+	// 	const len = arr?.length ?? 0
+
+	// 	if (len < 12) {
+	// 		return null
+	// 	}
+
+	// 	console.table(arr.length)
+
+	// 	const results = Array(12)
+	// 		.fill(3)
+	// 		.map((seqV, seqI) => {
+	// 			const size = seqV + seqI
+	// 			// const size = Math.floor(len / amount)
+
+	// 			const sequences = Array(size)
+	// 				.fill(0)
+	// 				.map((v, i) => {
+	// 					const x = v + i * size
+	// 					const y = x + size
+
+	// 					return arr.slice(x, y).join(' -> ')
+	// 				})
+	// 				.filter(v => v.trim())
+	// 			// .reduce((acc, values) => {
+	// 			// 	console.log(`\n\n\n -> acc\n\n ${acc} -> values\n\n ${values} -> reduced\n\n ${[...acc, values]}`)
+
+	// 			// 	return [...acc, values]
+	// 			// }, [])
+
+	// 			// console.log(`Sequences amount: ${size}, parts: ${unicalSeq.length}`)
+	// 			console.log(`Sequences finded: ${sequences.length}, unicals: ${this.unicals(sequences).length}`)
+
+	// 			if (sequences.length < 10) {
+	// 				console.table(sequences)
+	// 			}
+
+	// 			// console.table(amount)
+
+	// 			// console.log('0', sequences[0])
+	// 			// console.log('1', sequences[1])
+	// 			// console.log('2', sequences[2])
+	// 			// console.log('3', sequences[3])
+
+	// 			// console.table(this.unicals(sequences))
+
+	// 			return sequences
 	// 		})
+	// 		.filter(({ length }) => length > 2)
+	// 	// .reduce((acc, values) => [...acc, values], [])
+	// 	console.table(results.length)
+
+	// 	return results
 	// }
 
 	public static async exampleStat(): Promise<void> {
@@ -348,11 +417,47 @@ export class Values {
 		console.debug(chroma?.length / 60)
 	}
 
-	public static showStat(data): void {
-		console.debug(`Stat initialized...`)
-		console.debug(`Data size: ${data?.length}`)
-		console.debug(`Data unicals size: ${this.unicals([...data])?.length}`)
-		console.debug(`Data unicals chars: ${this.sliceToEquals(data)}`)
+	public static showStat(data: any[], name = 'Unknown array'): void {
+		if (!data?.length || data.length < 2) {
+			return null
+		}
+
+		const seqRegExp = str => new RegExp(str, 'gi')
+		const dataString = data.join(' -> ')
+		const unicals = this.unicals(data)
+		const frequencies = this.unicalFreq(data).map((v, i) => `${unicals[i]} -> ${v}`)
+		const sequences = this.sliceToUnicalPieces(data)
+		const seqLengths = sequences.map((v, i) => `With ${i + 3} chars: ${v.length}`)
+		const seqFreq = sequences.filter(v => dataString.match(seqRegExp(v)).length > 0)
+		const [three, four, five, six, seven] = sequences
+
+		const statMessage = `
+		=> Analyze of ${name} Array started
+
+		
+		---> Notes Finded: ${data.length}
+		
+		---> Unical Values: ${unicals}
+		
+		---> Unical Values Frequency: ${JSON.stringify(frequencies, null, '\t')}
+		
+		---> Unical Sequences finded: ${sequences.length}
+		
+		---> Unical Sequences Lengths: ${JSON.stringify(seqLengths, null, '\t')}
+		
+		---> Sequences Frequency: ${seqFreq}
+
+		
+		=> Analyze of ${name} finished.
+		`
+
+		console.table(three)
+		console.table(four)
+		console.table(five)
+		console.table(six)
+		console.table(seven)
+
+		console.info(statMessage)
 	}
 }
 

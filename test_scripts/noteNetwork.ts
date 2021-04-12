@@ -24,15 +24,14 @@ import { FileSystem, Values, BashShell, Chroma } from './useful'
 
 async function init() {
 	const notesSeq = await FileSystem.read('./values/txt/music.txt')
-	const notes = notesSeq.split('\n')
-	console.debug(`notes size: ${notes}`)
+	const notes = notesSeq.split('\n').map(v => (Math.random() > 0.5 ? v.replace('#', '') : v).toUpperCase())
 
 	// const { chroma } = await FileSystem.readJson('./values/harmonics_65.json')
 	// console.debug(`chroma size: ${chroma?.length}`)
 	// console.debug(`chroma size: ${chroma?.length}`)
 	// return { notes, chroma }
 
-	Values.showStat(notes)
+	Values.showStat(notes, 'Harmonical Notes')
 	// Values.showStat(notes)
 	// Values.showStat(chroma)
 }
