@@ -2,7 +2,7 @@
 
 echo "Track file path: $1"
 
-$RESULTFILE = "$2".wav
+$RESULTFILE = "$1".wav
 
 ffmpeg -i "$1" "$RESULTFILE"
 
