@@ -274,10 +274,6 @@ export class Values {
 			const h = Math.floor(l / 2)
 			const r = [arr.slice(0, h), arr.slice(h + (l % 2 === 0 ? 0 : 1), l)]
 
-			// console.debug(`chunk size: ${l}`)
-			// console.debug(`slice at: ${h}`)
-			// console.debug(`results size: ${r[0].length} <-> ${r[1].length}`)
-
 			return r
 		})
 
@@ -357,61 +353,6 @@ export class Values {
 		return sequences
 	}
 
-	// public static sliceToSequences(arr: any[]): any[] {
-	// 	const len = arr?.length ?? 0
-
-	// 	if (len < 12) {
-	// 		return null
-	// 	}
-
-	// 	console.table(arr.length)
-
-	// 	const results = Array(12)
-	// 		.fill(3)
-	// 		.map((seqV, seqI) => {
-	// 			const size = seqV + seqI
-	// 			// const size = Math.floor(len / amount)
-
-	// 			const sequences = Array(size)
-	// 				.fill(0)
-	// 				.map((v, i) => {
-	// 					const x = v + i * size
-	// 					const y = x + size
-
-	// 					return arr.slice(x, y).join(' -> ')
-	// 				})
-	// 				.filter(v => v.trim())
-	// 			// .reduce((acc, values) => {
-	// 			// 	console.log(`\n\n\n -> acc\n\n ${acc} -> values\n\n ${values} -> reduced\n\n ${[...acc, values]}`)
-
-	// 			// 	return [...acc, values]
-	// 			// }, [])
-
-	// 			// console.log(`Sequences amount: ${size}, parts: ${unicalSeq.length}`)
-	// 			console.log(`Sequences finded: ${sequences.length}, unicals: ${this.unicals(sequences).length}`)
-
-	// 			if (sequences.length < 10) {
-	// 				console.table(sequences)
-	// 			}
-
-	// 			// console.table(amount)
-
-	// 			// console.log('0', sequences[0])
-	// 			// console.log('1', sequences[1])
-	// 			// console.log('2', sequences[2])
-	// 			// console.log('3', sequences[3])
-
-	// 			// console.table(this.unicals(sequences))
-
-	// 			return sequences
-	// 		})
-	// 		.filter(({ length }) => length > 2)
-	// 	// .reduce((acc, values) => [...acc, values], [])
-	// 	console.table(results.length)
-
-	// 	return results
-	// }
-
 	public static async exampleStat(): Promise<void> {
 		const { chroma } = await FileSystem.readJson(exampleTrackValues)
 		console.debug(chroma?.length / 60)
@@ -451,20 +392,12 @@ export class Values {
 		=> Analyze of ${name} finished.
 		`
 
-		console.table(three)
-		console.table(four)
-		console.table(five)
-		console.table(six)
-		console.table(seven)
-
 		console.info(statMessage)
 	}
 }
 
 //? Working with track chroma values
 export class Chroma {
-	// constructor() {}
-
 	public static parse(values: TrackValues): string[] {
 		const { chroma = [] } = values
 

@@ -23,17 +23,31 @@ import { FileSystem, Values, BashShell, Chroma } from './useful'
 // export const results = data => net.forecast(data)
 
 async function init() {
-	const notesSeq = await FileSystem.read('./values/txt/music.txt')
-	const notes = notesSeq.split('\n').map(v => (Math.random() > 0.5 ? v.replace('#', '') : v).toUpperCase())
-
-	// const { chroma } = await FileSystem.readJson('./values/harmonics_65.json')
-	// console.debug(`chroma size: ${chroma?.length}`)
-	// console.debug(`chroma size: ${chroma?.length}`)
-	// return { notes, chroma }
-
-	Values.showStat(notes, 'Harmonical Notes')
-	// Values.showStat(notes)
-	// Values.showStat(chroma)
+	const guitarOptions = {
+		strings: 6,
+		frets: 24,
+		tuning: 'E Standart',
+	}
+	const resultOptions = {
+		notesLength: 1000,
+		notesRange: [
+			// notes represented as string/fret indexes
+			[6, 0],
+			[6, 3],
+			[6, 5],
+			[6, 7],
+			[6, 8],
+			[6, 10],
+			[6, 12],
+			[5, 0],
+			[5, 3],
+			[5, 5],
+			[5, 7],
+			[5, 8],
+			[5, 10],
+			[5, 12],
+		],
+	}
 }
 
 init()
