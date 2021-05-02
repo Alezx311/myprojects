@@ -1,3 +1,8 @@
+// export findNoteSequenceInAudioValues(sequence: string, valuesFile: string): Promise<number[]> {}
+// export sliceAudio(file: string, sliceType: number): Promise<string[]> {
+
+// }
+
 // export type NoteCharModifier = '#' | 'b' | ''
 // export type NoteChar = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g'
 // export type NoteString = NoteChar & NoteCharModifier
@@ -112,7 +117,10 @@ export class FileSystem {
 		return await fsPromise.appendFile(resolvedPath, data, 'utf8')
 	}
 
-	public static async create(file: string, data = `Created at ${new Date()}`): Promise<void> {
+	public static async create(
+		file: string,
+		data = `Created at ${new Date()}`,
+	): Promise<void> {
 		return await this.write(file, data)
 	}
 
@@ -124,7 +132,11 @@ export class FileSystem {
 		return json
 	}
 
-	public static async writeJson(file: string, data: any, opt?: any): Promise<void> {
+	public static async writeJson(
+		file: string,
+		data: any,
+		opt?: any,
+	): Promise<void> {
 		try {
 			const { mode = 'overwrite', divider = '\t' } = opt
 
@@ -193,7 +205,9 @@ export class BashShell {
 	public static async trackValues(track: string): Promise<TrackValues> {
 		const trackWav = await this.convertToWav(track)
 
-		await this.runBash(`meyda ${track} --format="json" --o="${track}.json" chroma`)
+		await this.runBash(
+			`meyda ${track} --format="json" --o="${track}.json" chroma`,
+		)
 
 		const data = await FileSystem.readJson(`${track}.json`)
 
@@ -282,7 +296,9 @@ export class Values {
 
 	public static sliceToParts(arr: any[], opt?: any): any[] {
 		if (!opt) {
-			const partSize = Math.floor(arr.length / this.powerOfTwoCounter(arr.length))
+			const partSize = Math.floor(
+				arr.length / this.powerOfTwoCounter(arr.length),
+			)
 
 			return Array(partSize)
 				.fill(partSize)
@@ -302,7 +318,10 @@ export class Values {
 		}
 	}
 
-	public static createSliceCoordsProgression(max: number, step: number): number[][] {
+	public static createSliceCoordsProgression(
+		max: number,
+		step: number,
+	): number[][] {
 		return Array(Math.floor(max / step))
 			.fill(0)
 			.map((v, i) => {
@@ -343,8 +362,13 @@ export class Values {
 			.fill(3)
 			.map((val, ind) => {
 				const size = val + ind
-				const piecesCoordinates = this.createSliceCoordsProgression(Math.floor(len / size), size)
-				const piecesValues = piecesCoordinates.map(([x, y]) => arr.slice(x, y).join(' -> '))
+				const piecesCoordinates = this.createSliceCoordsProgression(
+					Math.floor(len / size),
+					size,
+				)
+				const piecesValues = piecesCoordinates.map(([x, y]) =>
+					arr.slice(x, y).join(' -> '),
+				)
 
 				return this.unicals(piecesValues).filter(v => v?.trim())
 			})
@@ -366,10 +390,16 @@ export class Values {
 		const seqRegExp = str => new RegExp(str, 'gi')
 		const dataString = data.join(' -> ')
 		const unicals = this.unicals(data)
-		const frequencies = this.unicalFreq(data).map((v, i) => `${unicals[i]} -> ${v}`)
+		const frequencies = this.unicalFreq(data).map(
+			(v, i) => `${unicals[i]} -> ${v}`,
+		)
 		const sequences = this.sliceToUnicalPieces(data)
-		const seqLengths = sequences.map((v, i) => `With ${i + 3} chars: ${v.length}`)
-		const seqFreq = sequences.filter(v => dataString.match(seqRegExp(v)).length > 0)
+		const seqLengths = sequences.map(
+			(v, i) => `With ${i + 3} chars: ${v.length}`,
+		)
+		const seqFreq = sequences.filter(
+			v => dataString.match(seqRegExp(v)).length > 0,
+		)
 		const [three, four, five, six, seven] = sequences
 
 		const statMessage = `
@@ -408,10 +438,18 @@ export class Chroma {
 		const data = chroma
 			.map((values, index) => ({ values, index }))
 			.filter(a => Math.max(...a.values) > 0.7)
-			.map(({ values, index }) => ({ values, index, chars: Values.replaceByIndexes(values, NOTES) }))
+			.map(({ values, index }) => ({
+				values,
+				index,
+				chars: Values.replaceByIndexes(values, NOTES),
+			}))
 		const chars = data.map(({ chars }) => chars)
-		const unicals = Values.unicals(chars).filter(v => typeof v === `number` || typeof v === `string`)
-		const frequency = unicals.map(v => chroma.filter(a => a.includes(v))?.length ?? 0).sort((a, b) => a - b)
+		const unicals = Values.unicals(chars).filter(
+			v => typeof v === `number` || typeof v === `string`,
+		)
+		const frequency = unicals
+			.map(v => chroma.filter(a => a.includes(v))?.length ?? 0)
+			.sort((a, b) => a - b)
 		const truthy = chroma.filter(a => Math.max(...a) > 0.8)
 		const truthySize = truthy?.length ?? 0
 		const parts = Values.sliceToParts(chroma)
