@@ -16,7 +16,9 @@ export const Guitar = props => {
 	const { state, reducer } = props
 
 	const opened = GUITAR_TUNINGS[state.tuning]
+
 	const octaved = opened.map(v => Random.noteStep(v, 12))
+
 	const stringNotes = [...opened, ...octaved].filter((v, i) => i < state.strings).reverse()
 
 	const Fretboard = () =>
@@ -35,25 +37,28 @@ export const Guitar = props => {
 				))}
 			</Box>
 		))
+
 	const RiffView = () => (
 		<div>
 			<Text hidden={!state.riff.length}>{state.riff.filter((v, i) => i < 10).join(' -> ')}</Text>
 			<Text>{JSON.stringify(state.valueOnPlay, null, '\t')}</Text>
 		</div>
 	)
+
 	const RiffPlay = () => {
 		const onPlay = () => {
 			const notes = state.riff.map(v => Random.noteValues(v))
 
-			const sequence = new Tone.Sequence((time = Tone.now(), { note, duration, velocity }) => {
+			new Tone.Sequence((time = Tone.now(), { note, duration, velocity }) => {
 				reducer({ valueOnPlay: { note, duration, velocity }, isPlaying: true })
 
-				synth.triggerAttackRelease(note, '4n', time, velocity)
+				synth.triggerAttackRelease(note, '4', time, velocity)
 			}, notes).start(1)
 
-			Tone.Transport.set({ bpm: 130, humanize: true, playbackRate: 1.3 })
+			Tone.Transport.set({ bpm: 120, humanize: true, playbackRate: 1 })
 			Tone.Transport.start('+0.1')
 		}
+
 		const onStop = () => {
 			Tone.Transport.stop(0)
 
@@ -80,6 +85,7 @@ export const Guitar = props => {
 			<DropSelect label='Tuning' value={state.tuning} options={TUNING_NAMES} onClick={v => reducer({ tuning: v })} />
 		</div>
 	)
+
 	const SetupRiff = () => (
 		<div>
 			<DropSelect label='Root Note' value={state.rootNote} options={NOTES} onClick={v => reducer({ rootNote: v })} />
@@ -96,6 +102,7 @@ export const Guitar = props => {
 				options={Object.keys(INSTRUMENTS)}
 				onClick={v => {
 					const urlEntries = Object.entries(INSTRUMENTS[v]).map(([key, val]) => [key, `/samples/${v}/${val}`])
+
 					const samples = Object.fromEntries(urlEntries)
 
 					synth = new Tone.Sampler(samples).toDestination()
@@ -103,24 +110,17 @@ export const Guitar = props => {
 					reducer({ synthName: null, instrumentName: v })
 				}}
 			/>
-			{/* <DropSelect
-        label="Sound Synth"
-        value={state.synthName}
-        options={SYNTHS}
-        onClick={v => {
-          reducer({ synthName: v })
-          updateSynth()
-        }}
-      /> */}
 		</div>
 	)
+
 	const SetupButtons = () => (
 		<div>
 			<Button
 				disabled={!state.rootNote}
-				rel='Generate Riff'
+				label='Generate Riff'
 				onClick={() => {
 					const { rootNote, scale, size } = state
+
 					const riff = Note.melody(rootNote, scale, size)
 
 					reducer({ riff })
@@ -128,6 +128,7 @@ export const Guitar = props => {
 			/>
 		</div>
 	)
+
 	const SetupGuitar = () => (
 		<Box direction='row' align='center' gap='medium'>
 			<SetupFretboard />

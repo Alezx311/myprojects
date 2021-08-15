@@ -19,20 +19,7 @@ export class Sound {
 	static playOne = (note, synth) => {
 		synth.triggerAttackRelease(note, '4n')
 	}
-	static playMany = (notes, synth) => {
-		const noteValues = Random.noteValues(notes)
-		const seq = new Tone.Sequence(
-			(time = Tone.now(), { note, duration, velocity }) => {
-				synth.triggerAttackRelease(note, duration, time, velocity)
-			},
-			noteValues,
-			'4n'
-		)
-			.set({ humanize: true })
-			.start(1)
 
-		this.play()
-	}
 	static play = () => {
 		Tone.Transport.start('0.1')
 	}
@@ -113,7 +100,7 @@ export class Random {
 
 	static noteIndex = note => NOTES.indexOf(note.trim().match(/^([a-g#]+)/i)[1])
 	static noteStep = (noteChar, step = 1) => {
-		let { note, char, octave } = this.noteParse(noteChar)
+		let { char, octave } = this.noteParse(noteChar)
 		let noteIndex = this.noteIndex(char)
 		let newIndex = noteIndex + step
 
