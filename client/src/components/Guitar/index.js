@@ -83,16 +83,21 @@ export const Guitar = (props) => {
   const SetupRiff = () => (
     <div>
       <DropSelect label='Root Note' value={state.rootNote} options={NOTES} onClick={(v) => reducer({ rootNote: v })} />
-      <DropSelect label='Scale' value={state.scale} options={SCALES} onClick={(v) => reducer({ scale: v })} />
+      <DropSelect
+        label='Scale'
+        value={state?.scale ?? 'minorpentatonic'}
+        options={SCALES}
+        onClick={(v) => reducer({ scale: v })}
+      />
       <DropSelect
         label='Melody Size'
-        value={state.size}
-        options={[10, 20, 50, 100]}
+        value={state?.size ?? 200}
+        options={[10, 20, 50, 100, 200]}
         onClick={(v) => reducer({ size: v })}
       />
       <DropSelect
         label='Sound Instrument'
-        value={state.instrumentName}
+        value={state?.instrumentName}
         options={Object.keys(INSTRUMENTS)}
         onClick={(v) => {
           const urlEntries = Object.entries(INSTRUMENTS[v]).map(([key, val]) => [key, `/samples/${v}/${val}`]);
