@@ -2,14 +2,21 @@ Processing Melody
 
 # Example
 
-[Watch example on Youtube](https://youtu.be/XAxc8smsMlM)
+- [Watch example of melody processing on Youtube](https://youtu.be/XAxc8smsMlM)
 
-not ready yet, just proto to have fun
+## _!!! Its just proto, not real project !!!_
 
+
+***To launch app, execute next commands in terminal***
+
+```bash
 cd client
-npm i
-npm run start
 
-To play melody, you need to play any note on synth first and then click on melody button.
+yarn install
 
-React & Tone.js
+yarn start
+```
+
+- _!!! At first, choose instrument, for load samples. It can be chosen already, but samples will not work !!!_
+
+_To play melody, click "Generate Melody" and "Play"_
