@@ -1,5 +1,5 @@
 //! Constant Values for using in generate values, validate, etc...
-export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#']
+export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#'];
 export const SCALES = [
   'major',
   'minor',
@@ -19,8 +19,8 @@ export const SCALES = [
   'flamenco',
   'harmonicminor',
   'melodicminor',
-  'wholetone'
-]
+  'wholetone',
+];
 export const COLOR_CLASSNAMES = [
   'primary',
   'secondary',
@@ -32,9 +32,9 @@ export const COLOR_CLASSNAMES = [
   'dark',
   'body',
   'white',
-  'transparent'
-]
-export const COLOR_NAMES = ['blue', 'indigo', 'purple', 'pink', 'red', 'orange', 'yellow', 'green', 'teal', 'cyan']
+  'transparent',
+];
+export const COLOR_NAMES = ['blue', 'indigo', 'purple', 'pink', 'red', 'orange', 'yellow', 'green', 'teal', 'cyan'];
 export const COLOR_CODES = [
   '#ff0000',
   '#ff4e00',
@@ -47,15 +47,15 @@ export const COLOR_CODES = [
   '#00baff',
   '#3c00ff',
   '#a800ff',
-  '#ff00fd'
-]
+  '#ff00fd',
+];
 export const GUITAR_TUNINGS = {
   'E Standart': ['E2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop D': ['D2', 'A2', 'D3', 'G3', 'B4', 'E4'],
   'Drop C': ['C2', 'G2', 'C3', 'F3', 'A4', 'D4'],
-  'Drop B': ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4']
-}
-export const TUNING_NAMES = Object.keys(GUITAR_TUNINGS)
+  'Drop B': ['B2', 'F#2', 'B3', 'E3', 'G#3', 'C#4'],
+};
+export const TUNING_NAMES = Object.keys(GUITAR_TUNINGS);
 export const SYNTHS = [
   'AMSynth',
   'FMSynth',
@@ -66,10 +66,10 @@ export const SYNTHS = [
   'NoiseSynth',
   'PluckSynth',
   'PolySynth',
-  'Synth'
-]
-export const DURATION_CHARS = ['n']
-export const INTERVAL_CHARS = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7']
+  'Synth',
+];
+export const DURATION_CHARS = ['n'];
+export const INTERVAL_CHARS = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'];
 export const INSTRUMENTS = {
   'bass-electric': {
     'A#2': 'As2.[mp3|ogg]',
@@ -87,7 +87,7 @@ export const INSTRUMENTS = {
     G2: 'G2.[mp3|ogg]',
     G3: 'G3.[mp3|ogg]',
     G4: 'G4.[mp3|ogg]',
-    G5: 'G5.[mp3|ogg]'
+    G5: 'G5.[mp3|ogg]',
   },
   bassoon: {
     A3: 'A3.[mp3|ogg]',
@@ -99,7 +99,7 @@ export const INSTRUMENTS = {
     G2: 'G2.[mp3|ogg]',
     G3: 'G3.[mp3|ogg]',
     A1: 'A1.[mp3|ogg]',
-    A2: 'A2.[mp3|ogg]'
+    A2: 'A2.[mp3|ogg]',
   },
   cello: {
     E3: 'E3.[mp3|ogg]',
@@ -136,7 +136,7 @@ export const INSTRUMENTS = {
     'D#2': 'Ds2.[mp3|ogg]',
     'D#3': 'Ds3.[mp3|ogg]',
     'D#4': 'Ds4.[mp3|ogg]',
-    E2: 'E2.[mp3|ogg]'
+    E2: 'E2.[mp3|ogg]',
   },
   clarinet: {
     D3: 'D3.[mp3|ogg]',
@@ -149,7 +149,7 @@ export const INSTRUMENTS = {
     'A#2': 'As2.[mp3|ogg]',
     'A#3': 'As3.[mp3|ogg]',
     'A#4': 'As4.[mp3|ogg]',
-    D2: 'D2.[mp3|ogg]'
+    D2: 'D2.[mp3|ogg]',
   },
   contrabass: {
     C1: 'C1.[mp3|ogg]',
@@ -164,7 +164,7 @@ export const INSTRUMENTS = {
     'G#2': 'Gs2.[mp3|ogg]',
     A1: 'A1.[mp3|ogg]',
     'A#0': 'As0.[mp3|ogg]',
-    B2: 'B2.[mp3|ogg]'
+    B2: 'B2.[mp3|ogg]',
   },
   flute: {
     A5: 'A5.[mp3|ogg]',
@@ -176,7 +176,7 @@ export const INSTRUMENTS = {
     E4: 'E4.[mp3|ogg]',
     E5: 'E5.[mp3|ogg]',
     A3: 'A3.[mp3|ogg]',
-    A4: 'A4.[mp3|ogg]'
+    A4: 'A4.[mp3|ogg]',
   },
   'french-horn': {
     D2: 'D2.[mp3|ogg]',
@@ -188,7 +188,7 @@ export const INSTRUMENTS = {
     A0: 'A0.[mp3|ogg]',
     A2: 'A2.[mp3|ogg]',
     C1: 'C1.[mp3|ogg]',
-    C3: 'C3.[mp3|ogg]'
+    C3: 'C3.[mp3|ogg]',
   },
   'guitar-acoustic': {
     F3: 'F3.[mp3|ogg]',
@@ -227,7 +227,7 @@ export const INSTRUMENTS = {
     E2: 'E2.[mp3|ogg]',
     E3: 'E3.[mp3|ogg]',
     F1: 'F1.[mp3|ogg]',
-    F2: 'F2.[mp3|ogg]'
+    F2: 'F2.[mp3|ogg]',
   },
   'guitar-electric': {
     'D#3': 'Ds3.wav',
@@ -246,7 +246,7 @@ export const INSTRUMENTS = {
     C4: 'C4.wav',
     C5: 'C5.wav',
     C6: 'C6.wav',
-    'C#2': 'Cs2.wav'
+    'C#2': 'Cs2.wav',
   },
   'guitar-nylon': {
     'F#2': 'Fs2.[mp3|ogg]',
@@ -277,7 +277,7 @@ export const INSTRUMENTS = {
     E2: 'E2.[mp3|ogg]',
     E3: 'E3.[mp3|ogg]',
     E4: 'E4.[mp3|ogg]',
-    E5: 'E5.[mp3|ogg]'
+    E5: 'E5.[mp3|ogg]',
   },
   harmonium: {
     C2: 'C2.[mp3|ogg]',
@@ -314,7 +314,7 @@ export const INSTRUMENTS = {
     A4: 'A4.[mp3|ogg]',
     'A#2': 'As2.[mp3|ogg]',
     'A#3': 'As3.[mp3|ogg]',
-    'A#4': 'As4.[mp3|ogg]'
+    'A#4': 'As4.[mp3|ogg]',
   },
   harp: {
     C5: 'C5.[mp3|ogg]',
@@ -339,7 +339,7 @@ export const INSTRUMENTS = {
     B3: 'B3.[mp3|ogg]',
     B5: 'B5.[mp3|ogg]',
     B6: 'B6.[mp3|ogg]',
-    C3: 'C3.[mp3|ogg]'
+    C3: 'C3.[mp3|ogg]',
   },
   organ: {
     C3: 'C3.[mp3|ogg]',
@@ -362,7 +362,7 @@ export const INSTRUMENTS = {
     A4: 'A4.[mp3|ogg]',
     A5: 'A5.[mp3|ogg]',
     C1: 'C1.[mp3|ogg]',
-    C2: 'C2.[mp3|ogg]'
+    C2: 'C2.[mp3|ogg]',
   },
   piano: {
     A0: 'A0.[mp3|ogg]',
@@ -449,7 +449,7 @@ export const INSTRUMENTS = {
     'G#3': 'Gs3.[mp3|ogg]',
     'G#4': 'Gs4.[mp3|ogg]',
     'G#5': 'Gs5.[mp3|ogg]',
-    'G#6': 'Gs6.[mp3|ogg]'
+    'G#6': 'Gs6.[mp3|ogg]',
   },
   saxophone: {
     'D#4': 'Ds4.[mp3|ogg]',
@@ -483,7 +483,7 @@ export const INSTRUMENTS = {
     D3: 'D3.[mp3|ogg]',
     D4: 'D4.[mp3|ogg]',
     'D#2': 'Ds2.[mp3|ogg]',
-    'D#3': 'Ds3.[mp3|ogg]'
+    'D#3': 'Ds3.[mp3|ogg]',
   },
   trombone: {
     'A#2': 'As2.[mp3|ogg]',
@@ -502,7 +502,7 @@ export const INSTRUMENTS = {
     'G#1': 'Gs1.[mp3|ogg]',
     'G#2': 'Gs2.[mp3|ogg]',
     'A#0': 'As0.[mp3|ogg]',
-    'A#1': 'As1.[mp3|ogg]'
+    'A#1': 'As1.[mp3|ogg]',
   },
   trumpet: {
     C5: 'C5.[mp3|ogg]',
@@ -515,7 +515,7 @@ export const INSTRUMENTS = {
     A2: 'A2.[mp3|ogg]',
     A4: 'A4.[mp3|ogg]',
     'A#3': 'As3.[mp3|ogg]',
-    C3: 'C3.[mp3|ogg]'
+    C3: 'C3.[mp3|ogg]',
   },
   tuba: {
     'A#1': 'As1.[mp3|ogg]',
@@ -526,7 +526,7 @@ export const INSTRUMENTS = {
     F0: 'F0.[mp3|ogg]',
     F1: 'F1.[mp3|ogg]',
     F2: 'F2.[mp3|ogg]',
-    'A#0': 'As0.[mp3|ogg]'
+    'A#0': 'As0.[mp3|ogg]',
   },
   violin: {
     A3: 'A3.[mp3|ogg]',
@@ -542,7 +542,7 @@ export const INSTRUMENTS = {
     E6: 'E6.[mp3|ogg]',
     G4: 'G4.[mp3|ogg]',
     G5: 'G5.[mp3|ogg]',
-    G6: 'G6.[mp3|ogg]'
+    G6: 'G6.[mp3|ogg]',
   },
   xylophone: {
     C7: 'C7.[mp3|ogg]',
@@ -552,6 +552,6 @@ export const INSTRUMENTS = {
     G6: 'G6.[mp3|ogg]',
     C4: 'C4.[mp3|ogg]',
     C5: 'C5.[mp3|ogg]',
-    C6: 'C6.[mp3|ogg]'
-  }
-}
+    C6: 'C6.[mp3|ogg]',
+  },
+};
