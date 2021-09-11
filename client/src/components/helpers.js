@@ -87,12 +87,9 @@ export class Random {
   static tuning = () => GUITAR_TUNINGS[this.tuningName()];
   static noteValues = (note) => ({ note, duration: this.duration(), velocity: this.velocity() });
   static noteParse = (str) => {
-    let [note, char, octave] = str.trim().match(/^([a-g#]+)(\d)$/i);
+    let [note, char, octave = 1] = str.trim().match(/^([a-g#]+)(\d)$/i);
 
-    if (!octave) {
-      console.error(`Invalid octave on parsing note: ${str} ${[note, char, octave]}`);
-      octave = 1;
-    } else if (!char) {
+    if (!char) {
       throw new Error(`Invalid char on parsing note: ${str} ${[note, char, octave]}`);
     }
 

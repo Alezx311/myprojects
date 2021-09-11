@@ -2,22 +2,10 @@ import React, { useState } from 'react';
 
 import { Guitar } from './Guitar';
 import { Box } from 'grommet';
+import { INITIAL_STATE } from './constants';
 
-export const Main = (props) => {
-  const [state, setState] = useState({
-    strings: 6,
-    frets: 24,
-    tuning: 'E Standart',
-    rootNote: 'C4',
-    scale: 'minorpentatonic',
-    size: 200,
-    riff: [],
-    synth: false,
-    synthName: 'PolySynth',
-    instrumentName: 'piano',
-    isPlaying: false,
-    valueOnPlay: {},
-  });
+export const Main = () => {
+  const [state, setState] = useState(INITIAL_STATE);
   const reducer = (obj) => setState({ ...state, ...obj });
 
   return (

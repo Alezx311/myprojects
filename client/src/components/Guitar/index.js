@@ -7,9 +7,9 @@ let synth;
 
 const DropSelect = ({ label, value, options, onClick }) => {
   const dropContent = options.map((v) => <Button key={v} label={v} onClick={() => onClick(v)} />);
-  return (
-    <DropButton label={`${label}: ${value}`} dropAlign={{ top: 'bottom', right: 'right' }} dropContent={dropContent} />
-  );
+  const dropAlign = { top: 'bottom', right: 'right' };
+
+  return <DropButton label={`${label}: ${value}`} dropAlign={dropAlign} dropContent={dropContent} />;
 };
 
 export const Guitar = (props) => {
@@ -44,13 +44,16 @@ export const Guitar = (props) => {
 
   const RiffPlay = () => {
     const onPlay = () => {
+      const bpm = Random.number(70, 130);
+      const playbackRate = 0.5 + Math.random() / 2;
       const notes = state.riff.map((v) => Random.noteValues(v));
+
       new Tone.Sequence((time = Tone.now(), { note, duration, velocity }) => {
         reducer({ valueOnPlay: { note, duration, velocity }, isPlaying: true });
-        synth.triggerAttackRelease(note, '4', time, velocity);
+        synth.triggerAttackRelease(note, duration, time, velocity);
       }, notes).start(1);
 
-      Tone.Transport.set({ bpm: 120, humanize: true, playbackRate: 1 });
+      Tone.Transport.set({ bpm, humanize: true, playbackRate });
       Tone.Transport.start('+0.1');
     };
 
@@ -83,15 +86,10 @@ export const Guitar = (props) => {
   const SetupRiff = () => (
     <div>
       <DropSelect label='Root Note' value={state.rootNote} options={NOTES} onClick={(v) => reducer({ rootNote: v })} />
-      <DropSelect
-        label='Scale'
-        value={state?.scale ?? 'minorpentatonic'}
-        options={SCALES}
-        onClick={(v) => reducer({ scale: v })}
-      />
+      <DropSelect label='Scale' value={state?.scale} options={SCALES} onClick={(v) => reducer({ scale: v })} />
       <DropSelect
         label='Melody Size'
-        value={state?.size ?? 200}
+        value={state.size}
         options={[10, 20, 50, 100, 200]}
         onClick={(v) => reducer({ size: v })}
       />
@@ -130,6 +128,7 @@ export const Guitar = (props) => {
       <SetupButtons />
     </Box>
   );
+
   return (
     <Box direction='column' align='center' gap='medium'>
       <SetupGuitar />

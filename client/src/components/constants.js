@@ -1,3 +1,18 @@
+export const INITIAL_STATE = {
+  strings: 6,
+  frets: 24,
+  tuning: 'E Standart',
+  rootNote: 'C3',
+  scale: 'minorpentatonic',
+  size: 300,
+  riff: [],
+  synth: false,
+  synthName: 'PolySynth',
+  instrumentName: 'piano',
+  isPlaying: false,
+  valueOnPlay: {},
+};
+
 //! Constant Values for using in generate values, validate, etc...
 export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'F', 'E', 'E#', 'G', 'G#'];
 export const SCALES = [
