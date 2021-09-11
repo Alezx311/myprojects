@@ -2,7 +2,9 @@ import React from 'react';
 import * as Tone from 'tone';
 import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, INSTRUMENTS } from '../constants';
 import { Random, Note } from '../helpers';
-import { Box, Button, Text, DropButton } from 'grommet';
+import { Box, Button, DropButton } from 'grommet';
+import ReactJson from 'react-json-view';
+
 let synth;
 
 const DropSelect = ({ label, value, options, onClick }) => {
@@ -36,16 +38,15 @@ export const Guitar = (props) => {
     ));
 
   const RiffView = () => (
-    <div>
-      <Text hidden={!state.riff.length}>{state.riff.filter((v, i) => i < 10).join(' -> ')}</Text>
-      <Text>{JSON.stringify(state.valueOnPlay, null, '\t')}</Text>
-    </div>
+    <Box>
+      <ReactJson src={state} />
+    </Box>
   );
 
   const RiffPlay = () => {
     const onPlay = () => {
       const bpm = Random.number(70, 130);
-      const playbackRate = 0.5 + Math.random() / 2;
+      const playbackRate = Math.random() * 2;
       const notes = state.riff.map((v) => Random.noteValues(v));
 
       new Tone.Sequence((time = Tone.now(), { note, duration, velocity }) => {
