@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Tone from 'tone';
-import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, INSTRUMENTS } from '../constants';
+import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, INSTRUMENTS, SVG_WORDS } from '../constants';
 import { Random, Note } from '../helpers';
 import { Box, Button, DropButton } from 'grommet';
 import ReactJson from 'react-json-view';
@@ -49,8 +49,31 @@ export const Guitar = (props) => {
       const playbackRate = Math.random() * 2;
       const notes = state.riff.map((v) => Random.noteValues(v));
 
+      // Генерить слово из зерна фразы
+      // Выводить Клемент архива, символ, с длиной 20
+      // const word = ;
+      // const words = Array(5)
+      //   .fill(1)
+      //   .map((v) => [Random.arrayShuffleUnicals(notes).join('_'), word, Random.colorHex()]);
+
+      // Генерить цвет в hex для фона
+      // const colorHex = ;
+      // Соединять линией контрастного цвета
+
+      // console.log(words);
+
       new Tone.Sequence((time = Tone.now(), { note, duration, velocity }) => {
-        reducer({ valueOnPlay: { note, duration, velocity }, isPlaying: true });
+        const word = Random.arrayElement(SVG_WORDS);
+        const words = Array(5)
+          .fill(1)
+          .map((v) => Random.arrayElement(SVG_WORDS));
+
+        reducer({
+          word,
+          words,
+          valueOnPlay: { note, duration, velocity },
+          isPlaying: true,
+        });
         synth.triggerAttackRelease(note, duration, time, velocity);
       }, notes).start(1);
 
@@ -134,8 +157,8 @@ export const Guitar = (props) => {
     <Box direction='column' align='center' gap='medium'>
       <SetupGuitar />
       <Fretboard />
-      <RiffView />
       <RiffPlay />
+      <RiffView />
     </Box>
   );
 };
