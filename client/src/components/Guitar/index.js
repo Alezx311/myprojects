@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Tone from 'tone';
-import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, INSTRUMENTS, SVG_WORDS } from '../constants';
+import { GUITAR_TUNINGS, TUNING_NAMES, NOTES, SCALES, INSTRUMENTS, SVG_WORDS, SVG_FOLDER } from '../constants';
 import { Random, Note } from '../helpers';
 import { Box, Button, DropButton } from 'grommet';
 import ReactJson from 'react-json-view';
@@ -28,6 +28,9 @@ export const Guitar = (props) => {
             key={note}
             size='small'
             label={note}
+            style={
+              state?.valueOnPlay?.note?.includes(note) ? { backgroundColor: 'green' } : { backgroundColor: 'gray' }
+            }
             onClick={() => {
               reducer({ rootNote: note });
               synth.triggerAttackRelease(note, '4n');
@@ -37,43 +40,62 @@ export const Guitar = (props) => {
       </Box>
     ));
 
+  const BlissWords = ({ src }) => {
+    return (
+      <table>
+        <tr>
+          {src.map((word) => (
+            <td key={`label_${word}`}>
+              <p>{word}</p>
+            </td>
+          ))}
+        </tr>
+        <tr>
+          {src.map((word) => (
+            <td key={`image_${word}`}>
+              <SvgImage src={`${SVG_FOLDER}/${word}.svg`} />
+            </td>
+          ))}
+        </tr>
+      </table>
+    );
+  };
+
   const RiffView = () => (
     <Box>
-      <ReactJson src={state} />
+      <SvgImage src={`${SVG_FOLDER}/${state.word}.svg`} />
+      <BlissWords src={state.words} />
+      <ReactJson src={state.valueOnPlay} />
     </Box>
   );
 
+  const SvgImage = ({ src, ...props }) => {
+    return (
+      <img
+        style={{ width: '100px', height: '100px', backgroundColor: state?.color ?? '#000', borderRadius: '25%' }}
+        src={src}
+        alt={src}
+        {...props}
+      />
+    );
+  };
+
   const RiffPlay = () => {
     const onPlay = () => {
-      const bpm = Random.number(70, 130);
-      const playbackRate = Math.random() * 2;
+      // const bpm = Random.number(90, 180);
+      const bpm = 120;
+      // const playbackRate = 0.75 + Math.random() / 3;
+      const playbackRate = 1;
       const notes = state.riff.map((v) => Random.noteValues(v));
 
-      // Генерить слово из зерна фразы
-      // Выводить Клемент архива, символ, с длиной 20
-      // const word = ;
-      // const words = Array(5)
-      //   .fill(1)
-      //   .map((v) => [Random.arrayShuffleUnicals(notes).join('_'), word, Random.colorHex()]);
-
-      // Генерить цвет в hex для фона
-      // const colorHex = ;
-      // Соединять линией контрастного цвета
-
-      // console.log(words);
-
-      new Tone.Sequence((time = Tone.now(), { note, duration, velocity }) => {
+      new Tone.Sequence((time = Tone.now(), { note, duration = Random.duration(), velocity }) => {
+        const color = Random.colorHex();
         const word = Random.arrayElement(SVG_WORDS);
         const words = Array(5)
           .fill(1)
           .map((v) => Random.arrayElement(SVG_WORDS));
 
-        reducer({
-          word,
-          words,
-          valueOnPlay: { note, duration, velocity },
-          isPlaying: true,
-        });
+        reducer({ word, words, color, valueOnPlay: { note, duration, velocity }, isPlaying: true });
         synth.triggerAttackRelease(note, duration, time, velocity);
       }, notes).start(1);
 

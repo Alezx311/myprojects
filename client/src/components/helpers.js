@@ -11,6 +11,7 @@ import {
   TUNING_NAMES,
   DURATION_CHARS,
   INTERVAL_CHARS,
+  DURATIONS,
 } from './constants';
 
 export class Sound {
@@ -80,9 +81,9 @@ export class Random {
   static notes = (size = 10, octave) => this.array(size, (v) => this.note(octave));
   static scale = () => this.arrayElement(SCALES);
   static durationChar = () => this.arrayElement(DURATION_CHARS);
-  static duration = () => `${2 * this.powerOfTwo(4)}${this.durationChar()}`;
+  static duration = () => Random.arrayElement(DURATIONS);
   static interval = () => this.arrayElement(INTERVAL_CHARS);
-  static velocity = () => 1 - this.range() / 3;
+  static velocity = () => 0.75 + this.range() / 3;
   static tuningName = () => this.arrayElement(TUNING_NAMES);
   static tuning = () => GUITAR_TUNINGS[this.tuningName()];
   static noteValues = (note) => ({ note, duration: this.duration(), velocity: this.velocity() });

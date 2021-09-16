@@ -1,6 +1,7 @@
 export const INITIAL_STATE = {
   word: 'N/A',
   words: [],
+  color: '#fff',
   strings: 6,
   frets: 24,
   tuning: 'E Standart',
@@ -86,6 +87,7 @@ export const SYNTHS = [
   'Synth',
 ];
 export const DURATION_CHARS = ['n'];
+export const DURATIONS = ['4n', '8n'];
 export const INTERVAL_CHARS = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'];
 export const INSTRUMENTS = {
   'bass-electric': {
@@ -6557,8 +6559,6 @@ export const SVG_FILES = [
   'z_(lowercase).svg',
   'Z_(uppercase).svg',
 ];
-
 export const SVG_WORDS = SVG_FILES.map((str) => str.replace(/\.svg$/i, ''));
-
 export const SVG_PATHS = SVG_FILES.map((str) => `${SVG_FOLDER}/${str}`);
 export const SVG_ICONS = SVG_FILES.map((file, ind) => ({ file, src: SVG_PATHS[ind], word: SVG_WORDS[ind], ind }));
